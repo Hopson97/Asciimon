@@ -1,10 +1,12 @@
 mod graphics;
+mod game;
 
-use graphics::renderer::Renderer;
+use game::Game;
 
 fn main() {
     print!("\x1b[2J");
-    let renderer = Renderer::new(64, 32);
+    
+    Game::run_game();
 
     println!("");
     println!("");

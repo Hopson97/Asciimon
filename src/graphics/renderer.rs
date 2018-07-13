@@ -9,19 +9,12 @@ pub struct Renderer {
 
 impl Renderer {
     pub fn new(x_size: u8, y_size: u8) -> Renderer {
-        let mut r = Renderer {
+        let mut renderer = Renderer {
             x_size, y_size
         };
-        r.create_border();
+        renderer.create_border();
 
-        for x in 0..x_size {
-            for y in 0..y_size {
-                Renderer::set_cursor_location(x + 1, y + 1);
-                print!("#");
-            }
-        }
-
-        r 
+        renderer
     }
 
     fn create_border(&mut self) {
@@ -43,15 +36,15 @@ impl Renderer {
     /**
      * Colour functions for changing text colour in the terminal
      */
-    fn set_text_colour(colour: &Colour) {
+    pub fn set_text_colour(colour: &Colour) {
         Renderer::set_colour(38, &colour);
     }
     
-    fn set_bg_colour(colour: &Colour) {
+    pub fn set_bg_colour(colour: &Colour) {
         Renderer::set_colour(48, &colour);
     }
 
-    fn set_colour(ansi: u8, colour: &Colour) {
+    pub fn set_colour(ansi: u8, colour: &Colour) {
         print!("\x1b[{};2;{};{};{}m", 
             ansi, colour.r, colour.g, colour.b);
     }
@@ -59,7 +52,7 @@ impl Renderer {
     /**
      * Misc ANSI commands
      */
-    fn set_cursor_location(x: u8, y: u8) {
+    pub fn set_cursor_location(x: u8, y: u8) {
         print!("\x1b[{};{}H", y + 1, x + 1);
     }
 }

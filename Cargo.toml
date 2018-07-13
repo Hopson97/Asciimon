@@ -1,0 +1,6 @@
+[package]
+name = "asciimon"
+version = "0.1.0"
+authors = ["Hopson97 <mhopson@hotmail.co.uk>"]
+
+[dependencies]

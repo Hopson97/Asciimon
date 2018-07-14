@@ -28,13 +28,14 @@ impl Game {
     }
 
     fn run(&mut self) {
-        self.state_stack.push(Box::new(StateExplore::new()));
+        self.state_stack.push(Box::new(StateExplore::new(&mut self.renderer)));
         
         while self.is_running {
             match self.state_stack.last_mut() {
                 None => panic!("Game state vector is empty"),
                 Some(current_state) => {
-                    stdout().flush();
+                    stdout().flush()
+                        .expect("Could not buffer the terminal output!");
                     current_state.input();
                     current_state.update();
                     current_state.draw(&mut self.renderer);

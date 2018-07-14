@@ -4,10 +4,8 @@ use ::graphics::renderer::Renderer;
 use ::graphics::colour::Colour;
 
 use ::game::player::Player;
-use ::game::user_interface::*;
+use ::game::user_interface as ui;
 use ::util::vector::Vector2D;
-
-use std::io;
 
 pub struct StateExplore {
     player: Player,
@@ -18,15 +16,21 @@ impl StateExplore {
         let state = StateExplore {
             player: Player::new(),
         };
-        reset_ui(renderer);
+        ui::reset_ui(renderer);
         state
     }
 }
 
 impl GameState for StateExplore {
-    fn input(&mut self) {
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("oh no");
+    fn input(&mut self, renderer: &Renderer) {
+        let input = ui::get_user_input(renderer);
+
+        match input.trim() {
+            "exit" => {
+                renderer.draw_string("debug", "EXIT", &Vector2D::new(2, 2));
+            },
+            _ => {}
+        }
     }
 
     fn update(&mut self) {

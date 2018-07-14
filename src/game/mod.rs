@@ -8,6 +8,8 @@ use ::graphics::renderer::Renderer;
 use self::game_state::GameState;
 use self::game_state::state_explore::StateExplore;
 
+use self::user_interface as ui;
+
 use std::io::Write;
 use std::io::stdout;
 
@@ -24,7 +26,7 @@ impl Game {
             state_stack: Vec::new(),
             is_running: true
         };
-        
+        ui::init(&mut game.renderer);
         game.run();
     }
 
@@ -37,12 +39,12 @@ impl Game {
                 Some(current_state) => {
                     stdout().flush()
                         .expect("Could not buffer the terminal output!");
-                    current_state.input();
+                    current_state.input(&self.renderer);
                     current_state.update();
                     current_state.draw(&mut self.renderer);
                 }
             } 
-            break;
+           // break;
         }
     }
 }

@@ -4,19 +4,21 @@ use ::graphics::renderer::Renderer;
 use ::graphics::colour::Colour;
 
 use ::game::player::Player;
+use ::game::user_interface::*;
 use ::util::vector::Vector2D;
 
 use std::io;
 
 pub struct StateExplore {
-    player: Player
+    player: Player,
 }
 
 impl StateExplore {
-    pub fn new() -> StateExplore {
+    pub fn new(renderer: &mut Renderer) -> StateExplore {
         let state = StateExplore {
-            player: Player::new()
+            player: Player::new(),
         };
+        reset_ui(renderer);
         state
     }
 }

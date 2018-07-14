@@ -2,6 +2,8 @@ use super::colour::Colour;
 
 use ::util::vector::Vector2D;
 
+use ::game::user_interface::GAME_BEGIN_Y;
+
 pub struct Renderer {
     size: Vector2D<u8>,
     clear_colour: Colour
@@ -12,8 +14,6 @@ pub enum RenderSection {
     GameArea
 }
 
-const GAME_AREA_Y_OFFSET: u8 = 5;
-
 impl Renderer {
     pub fn new(x_size: u8, y_size: u8) -> Renderer {
         let mut renderer = Renderer {
@@ -22,6 +22,8 @@ impl Renderer {
         };
         renderer.create_border();
         renderer.clear(&Colour::new(25, 26, 65));
+
+
         renderer
     }
 
@@ -52,14 +54,22 @@ impl Renderer {
                 self.draw_string(RenderSection::InputArea, " ", &Vector2D::new(x, y));
             }
         }
-        self.draw_solid_line_x(&Colour::new(20, 20, 20), &Vector2D::new(0, 10), 96);
         Renderer::set_cursor_location(0, self.size.y + 3);
     }
 
-    fn draw_solid_line_x(&self, colour: &Colour, begin_position: &Vector2D<u8>, length: u8) {
+    pub fn draw_solid_line_x(&self, colour: &Colour, begin_position: &Vector2D<u8>, length: u8) {
         Renderer::set_bg_colour(colour);
-        Renderer::set_int_cursor_location(begin_position.x, begin_position.y);
+        Renderer::set_cursor_location(begin_position.x + 1, begin_position.y + 1);
         for _x in begin_position.x..length {
+            print!(" ");
+        }
+        Renderer::set_bg_colour(&self.clear_colour);
+    }
+
+    pub fn draw_solid_line_y(&self, colour: &Colour, begin_position: &Vector2D<u8>, height: u8) {
+        Renderer::set_bg_colour(colour);
+        for y in begin_position.y..height {
+            Renderer::set_cursor_location(begin_position.x + 1, begin_position.y + y + 1);
             print!(" ");
         }
         Renderer::set_bg_colour(&self.clear_colour);
@@ -84,12 +94,8 @@ impl Renderer {
     /*
      * Misc ANSI commands
      */
-    fn set_cursor_location(x: u8, y: u8) {
+    pub fn set_cursor_location(x: u8, y: u8) {
         print!("\x1b[{};{}H", y + 1, x + 1);
-    }
-
-    fn set_int_cursor_location(x: u8, y: u8) {
-        print!("\x1b[{};{}H", y + 2, x + 2);
     }
 
     /*
@@ -98,13 +104,21 @@ impl Renderer {
      */
     fn set_cursor_render_section(section: RenderSection, position: &Vector2D<u8>) {
         match section {
-            RenderSection::InputArea  => Renderer::set_int_cursor_location(position.x, position.y),
-            RenderSection::GameArea   => Renderer::set_int_cursor_location(position.x, position.y + GAME_AREA_Y_OFFSET)
+            RenderSection::InputArea  => Renderer::set_cursor_location(position.x + 1, position.y + 1),
+            RenderSection::GameArea   => Renderer::set_cursor_location(position.x + 1, position.y + GAME_BEGIN_Y + 1)
         }
     }
 
     pub fn draw_string(&self, section: RenderSection, string: &str, start_position: &Vector2D<u8>) {
         Renderer::set_cursor_render_section(section, &start_position);
         print!("{}", string);
+    }
+
+
+    /*
+        Misc functions
+    */
+    pub fn get_size(&self) -> &Vector2D<u8> {
+        &self.size
     }
 }

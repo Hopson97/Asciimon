@@ -1,5 +1,6 @@
 mod game_state;
 mod player;
+pub mod user_interface;
 
 use ::graphics::renderer::Renderer;
 
@@ -28,7 +29,7 @@ impl Game {
     }
 
     fn run(&mut self) {
-        self.state_stack.push(Box::new(StateExplore::new()));
+        self.state_stack.push(Box::new(StateExplore::new(&mut self.renderer)));
         
         while self.is_running {
             match self.state_stack.last_mut() {

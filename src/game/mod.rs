@@ -1,4 +1,5 @@
 mod game_state;
+mod player;
 
 use ::graphics::renderer::Renderer;
 
@@ -13,7 +14,7 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(90, 60),
+            renderer: Renderer::new(96, 54),
             state_stack: Vec::new()
         };
 
@@ -22,7 +23,7 @@ impl Game {
 
     fn run(&mut self) {
         self.state_stack.push(Box::new(StateExplore::new()));
-
+        return;
         loop {
             match self.state_stack.last_mut() {
                 None => panic!("Game state vector is empty"),

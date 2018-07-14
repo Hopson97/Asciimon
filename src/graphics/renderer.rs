@@ -4,8 +4,6 @@ use ::util::vector::Vector2D;
 
 pub struct Renderer {
     size: Vector2D<u8>
-
-
 }
 
 impl Renderer {
@@ -14,7 +12,7 @@ impl Renderer {
             size: Vector2D::new(x_size, y_size)
         };
         renderer.create_border();
-
+        renderer.clear();
         renderer
     }
 
@@ -34,7 +32,16 @@ impl Renderer {
         }
     }
 
-    /**
+    fn clear(&mut self) {
+        Renderer::set_bg_colour(&Colour::new(100, 100, 100));
+        for x in 0..self.size.x {
+            for y in 0..self.size.y {
+                self.draw_string(".", &Vector2D::new(x, y));
+            }
+        }
+    }
+
+    /*
      * Colour functions for changing text colour in the terminal
      */
     pub fn set_text_colour(colour: &Colour) {
@@ -45,15 +52,24 @@ impl Renderer {
         Renderer::set_colour(48, &colour);
     }
 
-    pub fn set_colour(ansi: u8, colour: &Colour) {
+    fn set_colour(ansi: u8, colour: &Colour) {
         print!("\x1b[{};2;{};{};{}m", 
             ansi, colour.r, colour.g, colour.b);
     }
 
-    /**
+    /*
      * Misc ANSI commands
      */
-    pub fn set_cursor_location(x: u8, y: u8) {
+    fn set_cursor_location(x: u8, y: u8) {
         print!("\x1b[{};{}H", y + 1, x + 1);
     }
+
+    /*
+     * Public drawing interface
+     */
+    pub fn draw_string(&mut self, string: &str, start_position: &Vector2D<u8>) {
+        Renderer::set_cursor_location(start_position.x + 1, start_position.y + 1);
+        print!("{}", string);
+    }
+
 }

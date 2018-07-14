@@ -11,5 +11,6 @@ fn clear_terminal() {
 fn main() {
     clear_terminal();
     Game::run_game();
-    clear_terminal();
+   // clear_terminal();
+   println!("");println!("");
 }

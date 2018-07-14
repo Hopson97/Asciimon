@@ -28,7 +28,7 @@ impl Game {
     }
 
     fn run(&mut self) {
-        self.state_stack.push(Box::new(StateExplore::new(&mut self.renderer)));
+        self.state_stack.push(Box::new(StateExplore::new()));
         
         while self.is_running {
             match self.state_stack.last_mut() {

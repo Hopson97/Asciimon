@@ -13,12 +13,10 @@ pub struct StateExplore {
 }
 
 impl StateExplore {
-    pub fn new(renderer: &mut Renderer) -> StateExplore {
+    pub fn new() -> StateExplore {
         let state = StateExplore {
             player: Player::new()
         };
-        renderer.draw_solid_line_x(&Colour::new(20, 20, 20), &Vector2D::new(0, 10), 96);
-
         state
     }
 }

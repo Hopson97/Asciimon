@@ -1,6 +1,6 @@
-struct Vector2D<T> {
-    x: T,
-    y: T
+pub struct Vector2D<T> {
+    pub x: T,
+    pub y: T
 }
 
 impl<T> Vector2D<T> {

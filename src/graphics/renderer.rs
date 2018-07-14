@@ -1,8 +1,9 @@
 use super::colour::Colour;
 
+use ::util::vector::Vector2D;
+
 pub struct Renderer {
-    x_size: u8,
-    y_size: u8,
+    size: Vector2D<u8>
 
 
 }
@@ -10,7 +11,7 @@ pub struct Renderer {
 impl Renderer {
     pub fn new(x_size: u8, y_size: u8) -> Renderer {
         let mut renderer = Renderer {
-            x_size, y_size
+            size: Vector2D::new(x_size, y_size)
         };
         renderer.create_border();
 
@@ -19,16 +20,16 @@ impl Renderer {
 
     fn create_border(&mut self) {
         Renderer::set_bg_colour(&Colour::new(0, 0, 0));
-        for x in 0..self.x_size + 2 {
+        for x in 0..self.size.x + 2 {
             Renderer::set_cursor_location(x, 0);
             print!(" ");
-            Renderer::set_cursor_location(x, self.y_size + 1);
+            Renderer::set_cursor_location(x, self.size.y + 1);
             print!(" ");
         }
-        for y in 0..self.y_size + 2 {
+        for y in 0..self.size.y + 2 {
             Renderer::set_cursor_location(0, y);
             print!(" ");
-            Renderer::set_cursor_location(self.x_size + 1, y);
+            Renderer::set_cursor_location(self.size.x + 1, y);
             print!(" ");
         }
     }

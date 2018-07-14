@@ -33,12 +33,13 @@ impl Renderer {
     }
 
     fn clear(&mut self) {
-        Renderer::set_bg_colour(&Colour::new(100, 100, 100));
-        for x in 0..self.size.x {
-            for y in 0..self.size.y {
-                self.draw_string(".", &Vector2D::new(x, y));
+        Renderer::set_bg_colour(&Colour::new(50, 50, 65));
+        for y in 0..self.size.y {
+            for x in 0..self.size.x {
+                self.draw_string("#", &Vector2D::new(x, y));
             }
         }
+        Renderer::set_cursor_location(self.size.x + 3, self.size.y + 3);
     }
 
     /*

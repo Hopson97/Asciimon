@@ -1,3 +1,5 @@
+pub mod state_explore;
+
 use ::graphics::renderer::Renderer;
 
 pub trait GameState {

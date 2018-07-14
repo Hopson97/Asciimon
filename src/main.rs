@@ -1,13 +1,15 @@
 mod graphics;
 mod game;
+mod util;
 
 use game::Game;
 
-fn main() {
+fn clear_terminal() {
     print!("\x1b[2J");
-    
-    Game::run_game();
+}
 
-    println!("");
-    println!("");
+fn main() {
+    clear_terminal();
+    Game::run_game();
+    clear_terminal();
 }

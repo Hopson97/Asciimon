@@ -1,8 +1,10 @@
 use super::GameState;
+use super::ReturnResult;
 
 use ::graphics::renderer::Renderer;
 use ::graphics::colour::Colour;
 
+use ::game::Game;
 use ::game::player::Player;
 use ::game::user_interface as ui;
 use ::util::vector::Vector2D;
@@ -22,22 +24,27 @@ impl StateExplore {
 }
 
 impl GameState for StateExplore {
-    fn input(&mut self, renderer: &Renderer) {
+    fn input(&mut self, renderer: &Renderer)  -> ReturnResult {
         let input = ui::get_user_input(renderer);
+        let input_args: Vec<&str> = input.trim().split(" ").collect();
+        
+        match input_args[0] {
+            "n" => {
 
-        match input.trim() {
+            }
             "exit" => {
-                renderer.draw_string("debug", "EXIT", &Vector2D::new(2, 2));
-            },
+                return ReturnResult::Exit;
+            }
             _ => {}
-        }
+        };
+        ReturnResult::None
     }
 
-    fn update(&mut self) {
-
+    fn update(&mut self) -> ReturnResult {
+        ReturnResult::None
     }
 
     fn draw(&mut self, renderer: &mut Renderer) {
-        
+        renderer.draw_string("game", "@", &self.player.get_local_position());
     }
 }

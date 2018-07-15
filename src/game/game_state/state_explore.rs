@@ -6,6 +6,7 @@ use ::graphics::renderer::Renderer;
 use ::game::player::Player;
 use ::game::user_interface as ui;
 use ::game::map::Map;
+use ::game::{GAME_AREA_X, GAME_AREA_Y};
 
 use ::util::vector::Vector2D;
 use ::util::maths::{clamp};
@@ -18,18 +19,18 @@ enum Action
 
 pub struct StateExplore {
     player: Player,
-    last_action: Action
+    last_action: Action,
+    map_test: Map
 }
 
 impl StateExplore {
     pub fn new(renderer: &mut Renderer) -> StateExplore {
         let state = StateExplore {
             player: Player::new(),
-            last_action: Action::NoAction
+            last_action: Action::NoAction,
+            map_test: Map::load(0, 0),
         };
         ui::reset_ui(renderer);
-
-        let map_test = Map::load(0, 0);
 
         state
     }
@@ -42,11 +43,11 @@ impl StateExplore {
         let y_move = -clamp(y, -1, 1);
 
         for _ in 0..x.abs() {
-            self.player.move_local_position(x_move, 0);
+            self.player.move_position(x_move, 0);
         }
 
         for _ in 0..y.abs() {
-            self.player.move_local_position(0, y_move);
+            self.player.move_position(0, y_move);
         }
     }
 }
@@ -102,8 +103,11 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        let p = &self.player.local_position();
-        let draw_pos = Vector2D::new(p.x as u8, p.y as u8);
-        renderer.draw_string("game", "@", &draw_pos);
+
+        let center_x = GAME_AREA_X / 2;
+        let center_y = GAME_AREA_Y / 2;
+
+        renderer.draw_string("game", "@", &Vector2D::new(center_x, center_y));
+
     }
 }

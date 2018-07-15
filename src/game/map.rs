@@ -5,7 +5,7 @@ use std::io::{BufRead, BufReader, Result};
 
 pub struct Map {
     coordinate: Vector2D<i16>,
-    tile_data: Vec<String>
+    pub tile_data: Vec<String>
 }
 
 impl Map {

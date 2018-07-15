@@ -14,6 +14,9 @@ use self::user_interface as ui;
 use std::io::Write;
 use std::io::stdout;
 
+pub const GAME_AREA_X: u8 = 81;
+pub const GAME_AREA_Y: u8 = 44;
+
 pub struct Game {
     renderer: Renderer,
     state_stack: Vec<Box<GameState>>,
@@ -24,43 +27,49 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(101, 60),
+            renderer: Renderer::new(81, 51),
             state_stack: Vec::new(),
             is_running: true,
             needs_redraw: true
         };
         ui::init(&mut game.renderer);
-        game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(101, 53));
+        game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(GAME_AREA_X, GAME_AREA_Y));
         game.run();
     }
 
     fn run(&mut self) {
         self.state_stack.push(Box::new(StateExplore::new(&mut self.renderer)));
-        
         //Main loop!
         while self.is_running {
             let input_result: ReturnResult;
             let update_result: ReturnResult;
 
+            //Handle current game state
             match self.state_stack.last_mut() {
                 None => panic!("Game state vector is empty"),
                 Some(current_state) => {
-
+                    //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
+                    //got on the first loop
                     if self.needs_redraw {
                         current_state.draw(&mut self.renderer);
                         self.needs_redraw = false;
                     }
-
                     //Ensure what has been drawn is flushed to stdout before getting input/updating
                     stdout().flush()
                         .expect("Could not buffer the terminal output!");
 
+                    let input = ui::get_user_input(&self.renderer);
+                    let input_args: Vec<&str> = input.trim().split(" ").collect();
 
-                    input_result    = current_state.input(&self.renderer);
+                    if input_args.len() == 1 {
+                        if input_args[0]  == "exit" {
+                            self.is_running = false;
+                        }
+                    }
+                    input_result    = current_state.handle_input(&input_args);
                     update_result   = current_state.update();
                 }
             } 
-
             self.handle_return_result(input_result);
             self.handle_return_result(update_result);
         }

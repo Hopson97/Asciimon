@@ -41,7 +41,7 @@ impl Renderer {
 
         renderer
     }
-
+    
     pub fn add_render_section(&mut self, name: &'static str, start_point: Vector2D<u8>, size: Vector2D<u8>) {
         self.render_sections.insert(
             name.to_string(), 
@@ -51,7 +51,7 @@ impl Renderer {
     /*
     *   Functions for crating the user-interface display
     */
-    fn create_border(&mut self) {
+    pub fn create_border(&mut self) {
         Renderer::set_bg_colour(&Colour::new(20, 20, 20));
         for x in 0..self.size.x + 2 {
             Renderer::set_cursor_location(x, 0);

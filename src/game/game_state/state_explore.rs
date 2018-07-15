@@ -53,7 +53,7 @@ impl GameState for StateExplore {
     /**
      * Handles user input for the exploring of the world
      */
-    fn input(&mut self, renderer: &Renderer)  -> ReturnResult {
+    fn handle_input(&mut self, input_args: &Vec<&str>)  -> ReturnResult {
         //This is for the player move input, by converting X/Y diretion string to a intergral value
         fn get_step(n: &str) -> i16 {
             match n.parse::<i16>() {
@@ -63,8 +63,6 @@ impl GameState for StateExplore {
         }
 
         self.last_action = Action::NoAction; //Reset last action so it does not get repeated
-        let input = ui::get_user_input(renderer);
-        let input_args: Vec<&str> = input.trim().split(" ").collect();
 
         if input_args.len() == 2 {
             match input_args[0] {
@@ -79,16 +77,6 @@ impl GameState for StateExplore {
                 _ => {}
             };
         }
-        else if input_args.len() == 1 {
-            match input_args[0] {
-                "exit" => {
-                    return ReturnResult::Exit;
-                }
-                _ => {}
-            };
-        }
-        
-
         ReturnResult::None
     }
 

@@ -37,6 +37,7 @@ impl Game {
     fn run(&mut self) {
         self.state_stack.push(Box::new(StateExplore::new(&mut self.renderer)));
         
+        //Main loop!
         while self.is_running {
             let input_result: ReturnResult;
             let update_result: ReturnResult;
@@ -45,8 +46,11 @@ impl Game {
                 None => panic!("Game state vector is empty"),
                 Some(current_state) => {
                     current_state.draw(&mut self.renderer);
+
+                    //Ensure what has been drawn is flushed to stdout before getting input/updating
                     stdout().flush()
                         .expect("Could not buffer the terminal output!");
+
                     input_result    = current_state.input(&self.renderer);
                     update_result   = current_state.update();
                 }
@@ -69,6 +73,9 @@ impl Game {
             ReturnResult::StatePush(state) => {
                 self.state_stack.push(state);
             },
+            ReturnResult::Redraw => {
+                self.renderer.clear_section("game");
+            }
             ReturnResult::None => {}
         }
     }

@@ -6,6 +6,8 @@ pub enum ReturnResult {
     None,
     StatePush(Box<GameState>),
     StatePop,
+    Redraw,
+
     Exit
 }
 

@@ -1,0 +1,6 @@
+Commands:
+
+Exploring:
+    Command     What it does                                Example     Example Explain
+    x n     -   Move player in X-Direction by n amount  -   x -10   -   Moves player in X-Direction by -10
+    y n     -   Move player in Y-Direction by n amount  -   y 17    -   Moves player in Y-Direction by 17

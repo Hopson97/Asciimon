@@ -32,8 +32,11 @@ impl StateExplore {
         state
     }
 
+    /**
+     * Attempts to the move the player's local position by x/y amount in the x/y direction
+     */
     pub fn handle_move_player(&mut self, x: i16, y: i16) {
-        let x_move = -clamp(x, -1, 1);
+        let x_move = clamp(x, -1, 1);
         let y_move = -clamp(y, -1, 1);
 
         for _ in 0..x.abs() {
@@ -41,9 +44,6 @@ impl StateExplore {
         }
 
         for _ in 0..y.abs() {
-            if self.player.local_position().y + y_move < 0 {
-                break;
-            }
             self.player.move_local_position(0, y_move);
         }
     }

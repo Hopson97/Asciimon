@@ -5,6 +5,7 @@ use ::graphics::renderer::Renderer;
 
 use ::game::player::Player;
 use ::game::user_interface as ui;
+use ::game::map::Map;
 
 use ::util::vector::Vector2D;
 use ::util::maths::{clamp};
@@ -27,6 +28,9 @@ impl StateExplore {
             last_action: Action::NoAction
         };
         ui::reset_ui(renderer);
+
+        let map_test = Map::load(0, 0);
+
         state
     }
 

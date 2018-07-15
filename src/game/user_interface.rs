@@ -16,12 +16,14 @@ pub fn init(renderer: &mut Renderer) {
 }
 
 fn draw_logo(renderer: &Renderer) {
-    renderer.draw_string("logo", "                    _ _                       ",    &Vector2D::new(0, 0));
-    renderer.draw_string("logo", "     /\\            (_|_)                      ",   &Vector2D::new(0, 1));
-    renderer.draw_string("logo", "    /  \\   ___  ___ _ _ _ __ ___   ___  _ __  ",   &Vector2D::new(0, 2));
-    renderer.draw_string("logo", "   / /\\ \\ / __|/ __| | | '_ ` _ \\ / _ \\| '_ \\ ",    &Vector2D::new(0, 3));
+    Renderer::set_text_colour(&Colour::new(50, 255, 200));
+    renderer.draw_string("logo", "                    _ _                       ",      &Vector2D::new(0, 0));
+    renderer.draw_string("logo", "     /\\            (_|_)                      ",     &Vector2D::new(0, 1));
+    renderer.draw_string("logo", "    /  \\   ___  ___ _ _ _ __ ___   ___  _ __  ",     &Vector2D::new(0, 2));
+    renderer.draw_string("logo", "   / /\\ \\ / __|/ __| | | '_ ` _ \\ / _ \\| '_ \\ ", &Vector2D::new(0, 3));
     renderer.draw_string("logo", "  / ____ \\ __ \\ (__| | | | | | | | (_) | | | |",    &Vector2D::new(0, 4));
-    renderer.draw_string("logo", " /_/    \\_\\___/\\___|_|_|_| |_| |_|\\___/|_| |_|",    &Vector2D::new(0, 5));
+    renderer.draw_string("logo", " /_/    \\_\\___/\\___|_|_|_| |_| |_|\\___/|_| |_|",  &Vector2D::new(0, 5));
+    Renderer::set_text_colour(&Colour::new(255, 255, 255));
 }
 
 pub fn reset_ui(renderer: &mut Renderer) {

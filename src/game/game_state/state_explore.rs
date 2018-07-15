@@ -2,9 +2,7 @@ use super::GameState;
 use super::ReturnResult;
 
 use ::graphics::renderer::Renderer;
-use ::graphics::colour::Colour;
 
-use ::game::Game;
 use ::game::player::Player;
 use ::game::user_interface as ui;
 

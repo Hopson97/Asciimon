@@ -1,3 +1,4 @@
+use std::ops::Mul;
 
 #[derive(Clone, Debug)]
 pub struct Colour {
@@ -11,6 +12,17 @@ impl Colour {
         Colour {
             r, g, b
         }
+    }
+}
+
+impl Mul<f32> for Colour {
+    type Output = Colour;
+
+    fn mul(self, rhs: f32) -> Colour {
+        Colour::new(
+            (self.r as f32 * rhs) as u8, 
+            (self.g as f32 * rhs) as u8, 
+            (self.b as f32 * rhs) as u8)
     }
 }
 

@@ -24,13 +24,13 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(100, 60),
+            renderer: Renderer::new(101, 60),
             state_stack: Vec::new(),
             is_running: true,
             needs_redraw: true
         };
         ui::init(&mut game.renderer);
-        game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(100, 53));
+        game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(101, 53));
         game.run();
     }
 
@@ -55,7 +55,7 @@ impl Game {
                     stdout().flush()
                         .expect("Could not buffer the terminal output!");
 
-                    
+
                     input_result    = current_state.input(&self.renderer);
                     update_result   = current_state.update();
                 }

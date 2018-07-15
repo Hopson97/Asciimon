@@ -11,7 +11,7 @@ use ::game::user_interface as ui;
 use ::util::vector::Vector2D;
 use ::util::maths::{clamp};
 
-enum LastAction 
+enum Action 
 {
     NoAction,
     MovePlayer(i16, i16)
@@ -19,14 +19,14 @@ enum LastAction
 
 pub struct StateExplore {
     player: Player,
-    last_action: LastAction
+    last_action: Action
 }
 
 impl StateExplore {
     pub fn new(renderer: &mut Renderer) -> StateExplore {
         let state = StateExplore {
             player: Player::new(),
-            last_action: LastAction::NoAction
+            last_action: Action::NoAction
         };
         ui::reset_ui(renderer);
         state
@@ -54,6 +54,7 @@ impl GameState for StateExplore {
      * Handles user input for the exploring of the world
      */
     fn input(&mut self, renderer: &Renderer)  -> ReturnResult {
+        //This is for the player move input, by converting X/Y diretion string to a intergral value
         fn get_step(n: &str) -> i16 {
             match n.parse::<i16>() {
                 Err(_) => 0,
@@ -61,6 +62,7 @@ impl GameState for StateExplore {
             }
         }
 
+        self.last_action = Action::NoAction; //Reset last action so it does not get repeated
         let input = ui::get_user_input(renderer);
         let input_args: Vec<&str> = input.trim().split(" ").collect();
 
@@ -68,25 +70,25 @@ impl GameState for StateExplore {
             match input_args[0] {
                 "y" => {
                     let step = get_step(input_args[1]);
-                    self.last_action = LastAction::MovePlayer(0, step);
+                    self.last_action = Action::MovePlayer(0, step);
                 }
                 "x" => {
                     let step = get_step(input_args[1]);
-                    self.last_action = LastAction::MovePlayer(step, 0);
+                    self.last_action = Action::MovePlayer(step, 0);
                 }
                 _ => {}
             };
         }
         else if input_args.len() == 1 {
-
+            match input_args[0] {
+                "exit" => {
+                    return ReturnResult::Exit;
+                }
+                _ => {}
+            };
         }
         
-        match input_args[0] {
-            "exit" => {
-                return ReturnResult::Exit;
-            }
-            _ => {}
-        };
+
         ReturnResult::None
     }
 
@@ -96,11 +98,11 @@ impl GameState for StateExplore {
     fn update(&mut self) -> ReturnResult {
         let mut ret_result = ReturnResult::None;
         match self.last_action {
-            LastAction::MovePlayer(x, y) => {
+            Action::MovePlayer(x, y) => {
                 ret_result = ReturnResult::Redraw;
                 self.handle_move_player(x, y);
             }
-            LastAction::NoAction => {}
+            Action::NoAction => {}
         }
 
         ret_result

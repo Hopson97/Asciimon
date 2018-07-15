@@ -13,3 +13,16 @@ impl Colour {
         }
     }
 }
+
+pub fn ansi_text_colour_string(r: u8, g: u8, b: u8) -> String {
+    let mut ansi = String::new();
+    ansi.push_str("\x1b[38;2;");
+    ansi.push_str(r.to_string().as_str());
+    ansi.push_str(";");
+    ansi.push_str(g.to_string().as_str());
+    ansi.push_str(";");
+    ansi.push_str(b.to_string().as_str());
+    ansi.push_str("m");
+
+    ansi
+}

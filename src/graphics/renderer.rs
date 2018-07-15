@@ -8,6 +8,7 @@ use std::collections::HashMap;
 struct RenderSection {
     start_point: Vector2D<u8>,
     size: Vector2D<u8>,
+
 }
 
 pub struct Renderer {
@@ -19,7 +20,8 @@ pub struct Renderer {
 impl RenderSection {
     pub fn new(start_point: Vector2D<u8>, size: Vector2D<u8>) -> RenderSection {
         RenderSection {
-            start_point, size
+            start_point, 
+            size,
         }
     }
 }
@@ -41,7 +43,9 @@ impl Renderer {
     }
 
     pub fn add_render_section(&mut self, name: &'static str, start_point: Vector2D<u8>, size: Vector2D<u8>) {
-        self.render_sections.insert(name.to_string(), RenderSection::new(start_point, size));
+        self.render_sections.insert(
+            name.to_string(), 
+            RenderSection::new(start_point, size));
     }
 
     /*

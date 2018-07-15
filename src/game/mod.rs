@@ -11,15 +11,14 @@ use self::game_state::state_explore::StateExplore;
 
 use self::user_interface as ui;
 
-
-
 use std::io::Write;
 use std::io::stdout;
 
 pub struct Game {
     renderer: Renderer,
     state_stack: Vec<Box<GameState>>,
-    is_running: bool
+    is_running: bool,
+    needs_redraw: bool
 }
 
 impl Game {
@@ -27,7 +26,8 @@ impl Game {
         let mut game = Game {
             renderer: Renderer::new(100, 60),
             state_stack: Vec::new(),
-            is_running: true
+            is_running: true,
+            needs_redraw: true
         };
         ui::init(&mut game.renderer);
         game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(100, 53));
@@ -45,12 +45,17 @@ impl Game {
             match self.state_stack.last_mut() {
                 None => panic!("Game state vector is empty"),
                 Some(current_state) => {
-                    current_state.draw(&mut self.renderer);
+
+                    if self.needs_redraw {
+                        current_state.draw(&mut self.renderer);
+                        self.needs_redraw = false;
+                    }
 
                     //Ensure what has been drawn is flushed to stdout before getting input/updating
                     stdout().flush()
                         .expect("Could not buffer the terminal output!");
 
+                    
                     input_result    = current_state.input(&self.renderer);
                     update_result   = current_state.update();
                 }
@@ -75,6 +80,7 @@ impl Game {
             },
             ReturnResult::Redraw => {
                 self.renderer.clear_section("game");
+                self.needs_redraw = true;
             }
             ReturnResult::None => {}
         }

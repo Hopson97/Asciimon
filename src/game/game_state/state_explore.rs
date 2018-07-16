@@ -5,7 +5,7 @@ use ::graphics::renderer::Renderer;
 
 use ::game::player::Player;
 use ::game::user_interface as ui;
-use ::game::map::Map;
+use ::game::map_manager::MapManager;
 use ::game::{GAME_AREA_X, GAME_AREA_Y};
 
 use ::util::vector::Vector2D;
@@ -19,16 +19,18 @@ enum Action
 
 pub struct StateExplore {
     player: Player,
+    map_manager: MapManager,
     last_action: Action,
-    map_test: Map
+    player_draw_point: Vector2D<u8>,
 }
 
 impl StateExplore {
     pub fn new(renderer: &mut Renderer) -> StateExplore {
         let state = StateExplore {
-            player: Player::new(),
-            last_action: Action::NoAction,
-            map_test: Map::load(0, 0),
+            player:             Player::new(),
+            map_manager:        MapManager::new(),
+            last_action:        Action::NoAction,
+            player_draw_point:  Vector2D::new(GAME_AREA_X / 2, GAME_AREA_Y / 2),
         };
         ui::reset_ui(renderer);
 
@@ -49,6 +51,8 @@ impl StateExplore {
         for _ in 0..y.abs() {
             self.player.move_position(0, y_move);
         }
+
+        self.map_manager.update_player_pos(self.player.position());
     }
 }
 
@@ -104,10 +108,7 @@ impl GameState for StateExplore {
      */
     fn draw(&mut self, renderer: &mut Renderer) {
 
-        let center_x = GAME_AREA_X / 2;
-        let center_y = GAME_AREA_Y / 2;
-
-        renderer.draw_string("game", "@", &Vector2D::new(center_x, center_y));
+        renderer.draw_string("game", "@", &self.player_draw_point);
 
     }
 }

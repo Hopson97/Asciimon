@@ -8,11 +8,11 @@ pub struct Player {
 impl Player {
     pub fn new() -> Player {
         Player {
-            world_position: Vector2D::new(10, 10)
+            world_position: Vector2D::new(0, 0)
         }
     }
 
-    pub fn local_position(&self) -> &Vector2D<i16> {
+    pub fn position(&self) -> &Vector2D<i16> {
         &self.world_position
     }
 

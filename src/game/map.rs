@@ -1,20 +1,30 @@
 use ::util::vector::Vector2D;
 
 use std::fs::File;
-use std::io::{BufRead, BufReader, Result};
+use std::io::{BufRead, BufReader};
+
+use std::fs;
+
+pub const MAP_WIDTH: i16 = 64;
+pub const MAP_HEIGHT: i16 = 32;
 
 pub struct Map {
-    coordinate: Vector2D<i16>,
-    pub tile_data: Vec<String>
+    world_position: Vector2D<i16>,
+    tile_data: Vec<String>,
+    pub keep: bool
+}
+
+fn path_exists(path: &str) -> bool {
+    fs::metadata(path).is_ok()
 }
 
 impl Map {
     /**
      * Loads a map from a file for coordinates (x, y)
      */
-    pub fn load(x: i16, y: i16) -> Map {
+    pub fn load(x: i16, y: i16) -> Option<Map> {
         let mut map = Map {
-            coordinate: Vector2D::new(x, y),
+            world_position: Vector2D::new(x, y),
             tile_data: Vec::with_capacity(32)
         };
 
@@ -23,17 +33,26 @@ impl Map {
         file_name.push(' ');
         file_name.push_str(y.to_string().as_str());
 
-        let file = File::open(file_name)
-            .expect(&format!("Unable to open file for map {} {}", x, y));
-
-        //Each map should be 64x32
-        for line in BufReader::new(file).lines() {
-            map.tile_data.push(line.unwrap());
-            if map.tile_data.len() == 32 {
-                break;
-            }
+        if !path_exists(&file_name) {
+            return None
         }
+        else {
+            let file = File::open(file_name)
+                .expect(&format!("Unable to open file for map {} {}", x, y));
 
-        map
+            //Each map should be 64x32
+            for line in BufReader::new(file).lines() {
+                map.tile_data.push(line.unwrap());
+                if map.tile_data.len() == MAP_HEIGHT as usize {
+                    break;
+                }
+            }
+
+            Some(map)
+        }
+    }
+
+    pub fn world_position(&self) -> &Vector2D<i16> {
+        &self.world_position
     }
 }

@@ -1,3 +1,5 @@
+
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Vector2D<T> {
     pub x: T,
     pub y: T
@@ -10,3 +12,4 @@ impl<T> Vector2D<T> {
         }
     }
 }
+

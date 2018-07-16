@@ -75,7 +75,7 @@ impl Renderer {
         Renderer::set_bg_colour(&self.clear_colour);
 
         match self.render_sections.get(section) {
-            None => {} //Impossible to reach as would have already happened from the set_cursor_render_section function
+            None => { return; },
             Some(render_section) => {
                 for y in 0..render_section.size.y {
                     for x in 0..render_section.size.x {

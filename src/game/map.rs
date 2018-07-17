@@ -5,13 +5,12 @@ use std::io::{BufRead, BufReader};
 
 use std::fs;
 
-pub const MAP_WIDTH: i16 = 64;
-pub const MAP_HEIGHT: i16 = 32;
+pub const MAP_WIDTH: i16 = 100;
+pub const MAP_HEIGHT: i16 = 100;
 
 pub struct Map {
     world_position: Vector2D<i16>,
     tile_data: Vec<String>,
-    pub keep: bool
 }
 
 fn path_exists(path: &str) -> bool {
@@ -54,5 +53,9 @@ impl Map {
 
     pub fn world_position(&self) -> &Vector2D<i16> {
         &self.world_position
+    }
+
+    pub fn get_line(&self, line: usize) -> &String {
+        &self.tile_data[line]
     }
 }

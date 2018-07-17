@@ -26,14 +26,14 @@ pub struct StateExplore {
 
 impl StateExplore {
     pub fn new(renderer: &mut Renderer) -> StateExplore {
-        let state = StateExplore {
+        let mut state = StateExplore {
             player:             Player::new(),
             map_manager:        MapManager::new(),
             last_action:        Action::NoAction,
             player_draw_point:  Vector2D::new(GAME_AREA_X / 2, GAME_AREA_Y / 2),
         };
         ui::reset_ui(renderer);
-
+        state.map_manager.update_player_pos(state.player.position());
         state
     }
 
@@ -107,8 +107,15 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
+        let map_lines = self.map_manager.map_lines(self.player.position(), &self.player_draw_point);
+        let mut y = 0;
+        for line in map_lines {
+            renderer.draw_string("debug", &line, &Vector2D::new(0, y));
+            y+= 1;
+        }
 
         renderer.draw_string("game", "@", &self.player_draw_point);
-
+        renderer.draw_string("debug", &self.player_draw_point.x.to_string(), &Vector2D::new(0, 5));
+        renderer.draw_string("debug", &self.player_draw_point.y.to_string(), &Vector2D::new(0, 6));
     }
 }

@@ -18,7 +18,7 @@ use std::io::Write;
 use std::io::stdout;
 
 pub const GAME_AREA_X: u8 = 81;
-pub const GAME_AREA_Y: u8 = 44;
+pub const GAME_AREA_Y: u8 = 45;
 
 pub struct Game {
     renderer: Renderer,
@@ -30,7 +30,7 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(81, 51),
+            renderer: Renderer::new(81, 52),
             state_stack: Vec::new(),
             is_running: true,
             needs_redraw: true

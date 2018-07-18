@@ -112,18 +112,10 @@ impl GameState for StateExplore {
         
         let x = self.player.local_position().x;
         let y = self.player.local_position().y;
-
-        let mut lines: Vec<String> = Vec::with_capacity(MAP_HEIGHT as usize);
-
-        let sprite = Sprite::make_square(10, 10, 'X');
-
-
-        let mut y = 0;
-        for line in lines {
-            renderer.draw_string("game", &line, &Vector2D::new(0, y));
-
-            y += 1;
-        }
+        
+        let mut sprite = Sprite::make_square(10, 15, 'X');
+        sprite.position = Vector2D::new(20, 20);
+        renderer.draw_sprite("game", &sprite);
 
         //Draw player position
         renderer.draw_string("game", "@", &Vector2D::new(CENTER_X, CENTER_Y));

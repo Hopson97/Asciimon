@@ -138,7 +138,7 @@ impl Renderer {
      * Public drawing interface
      * self is used to ensure these functions are only called on the object itself and not globally
      */
-    pub fn set_cursor_render_section(&self, section: &'static str, position: &Vector2D<u8>) {
+    pub fn set_cursor_render_section(&self, section: &str, position: &Vector2D<u8>) {
         match self.render_sections.get(section) {
             None => panic!(format!("Tried to render to section which doesn't exist: {}", section)),
             Some(section) => {
@@ -147,14 +147,21 @@ impl Renderer {
         }
     }
 
-    pub fn draw_string(&self, section: &'static str, string: &str, start_position: &Vector2D<u8>) {
+    pub fn draw_string(&self, section: &str, string: &str, start_position: &Vector2D<u8>) {
         self.set_cursor_render_section(section, &start_position);
         print!("{}", string);
     }
 
-    pub fn draw_sprite(&self, section: &'static String, sprite: &Sprite) {
+    pub fn draw_sprite(&self, section: &str, sprite: &Sprite) {
         self.set_cursor_render_section(section, &sprite.position);
+        let position = &sprite.position;
+        let data = sprite.render_data();
 
+        let mut line_num = 0;
+        for line in data {
+            self.draw_string(section, line, &Vector2D::new(position.x, position.y + line_num));
+            line_num += 1;
+        }
     }
 
 

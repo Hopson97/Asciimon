@@ -15,9 +15,9 @@ impl Sprite {
 
     pub fn make_square(width: u8, height: u8, fill: char) -> Sprite {
         let mut sprite = Sprite::make_empty();
-        for y in 0..height { 
+        for _y in 0..height { 
             sprite.lines.push(String::new());
-            for x in 0..width {
+            for _x in 0..width {
                 sprite.lines.last_mut().unwrap().push(fill);
             }
         }

@@ -149,7 +149,19 @@ impl Renderer {
 
     pub fn draw_string(&self, section: &str, string: &str, start_position: &Vector2D<u8>) {
         self.set_cursor_render_section(section, &start_position);
-        print!("{}", string);
+        let sect = self.render_sections.get(section).unwrap();
+
+        if start_position.y >= sect.size.y {
+            return
+        }
+        
+        //this is so the string does not go over the section edge
+        if start_position.x as i16 + string.len() as i16 > sect.size.x as i16 {
+            let underlap = sect.size.x - start_position.x;
+            print!("{}", &string[0..underlap as usize]);
+        } else {
+            print!("{}", string);
+        }
     }
 
     pub fn draw_sprite(&self, section: &str, sprite: &Sprite) {

@@ -4,6 +4,8 @@ use ::util::vector::Vector2D;
 
 use std::collections::HashMap;
 
+use super::sprite::Sprite;
+
 
 struct RenderSection {
     start_point: Vector2D<u8>,
@@ -68,11 +70,11 @@ impl Renderer {
     }
 
     pub fn clear(&mut self) {
-        self.clear_section("full");
+        self.clear_section("full", &self.clear_colour);
     }
 
-    pub fn clear_section(&self, section: &'static str) {
-        Renderer::set_bg_colour(&self.clear_colour);
+    pub fn clear_section(&self, section: &'static str, colour: &Colour) {
+        Renderer::set_bg_colour(&colour);
 
         match self.render_sections.get(section) {
             None => { return; },
@@ -84,6 +86,10 @@ impl Renderer {
                 }
             } 
         }
+    }
+
+    pub fn default_clear_colour(&self) -> &Colour {
+        &self.clear_colour
     }
 
     pub fn draw_solid_line_x(&self, colour: &Colour, begin_position: &Vector2D<u8>, length: u8) {
@@ -144,6 +150,11 @@ impl Renderer {
     pub fn draw_string(&self, section: &'static str, string: &str, start_position: &Vector2D<u8>) {
         self.set_cursor_render_section(section, &start_position);
         print!("{}", string);
+    }
+
+    pub fn draw_sprite(&self, section: &'static String, sprite: &Sprite) {
+        self.set_cursor_render_section(section, &sprite.position);
+
     }
 
 

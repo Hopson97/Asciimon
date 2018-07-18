@@ -2,14 +2,21 @@ use super::GameState;
 use super::ReturnResult;
 
 use ::graphics::renderer::Renderer;
+use ::graphics::sprite::Sprite;
 
 use ::game::player::Player;
 use ::game::user_interface as ui;
-use ::game::map_manager::MapManager;
+use ::game::map::{Map, MAP_WIDTH, MAP_HEIGHT};
 use ::game::{GAME_AREA_X, GAME_AREA_Y};
 
 use ::util::vector::Vector2D;
 use ::util::maths::{clamp};
+
+use std::cmp;
+
+
+const CENTER_X: u8 = GAME_AREA_X / 2;
+const CENTER_Y: u8 = GAME_AREA_Y / 2;
 
 enum Action 
 {
@@ -19,21 +26,18 @@ enum Action
 
 pub struct StateExplore {
     player: Player,
-    map_manager: MapManager,
     last_action: Action,
-    player_draw_point: Vector2D<u8>,
+    current_map: Map
 }
 
 impl StateExplore {
     pub fn new(renderer: &mut Renderer) -> StateExplore {
         let mut state = StateExplore {
-            player:             Player::new(),
-            map_manager:        MapManager::new(),
-            last_action:        Action::NoAction,
-            player_draw_point:  Vector2D::new(GAME_AREA_X / 2, GAME_AREA_Y / 2),
+            player:         Player::new(),
+            last_action:    Action::NoAction,
+            current_map:    Map::load(0, 0).unwrap()
         };
         ui::reset_ui(renderer);
-        state.map_manager.update_player_pos(state.player.position());
         state
     }
 
@@ -45,14 +49,12 @@ impl StateExplore {
         let y_move = -clamp(y, -1, 1);
 
         for _ in 0..x.abs() {
-            self.player.move_position(x_move, 0);
+            self.player.move_local_position(x_move, 0);
         }
 
         for _ in 0..y.abs() {
-            self.player.move_position(0, y_move);
+            self.player.move_local_position(0, y_move);
         }
-
-        self.map_manager.update_player_pos(self.player.position());
     }
 }
 
@@ -107,15 +109,23 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        let map_lines = self.map_manager.map_lines(self.player.position(), &self.player_draw_point);
+        
+        let x = self.player.local_position().x;
+        let y = self.player.local_position().y;
+
+        let mut lines: Vec<String> = Vec::with_capacity(MAP_HEIGHT as usize);
+
+        let sprite = Sprite::make_square(10, 10, 'X');
+
+
         let mut y = 0;
-        for line in map_lines {
-            renderer.draw_string("debug", &line, &Vector2D::new(0, y));
-            y+= 1;
+        for line in lines {
+            renderer.draw_string("game", &line, &Vector2D::new(0, y));
+
+            y += 1;
         }
 
-        renderer.draw_string("game", "@", &self.player_draw_point);
-        renderer.draw_string("debug", &self.player_draw_point.x.to_string(), &Vector2D::new(0, 5));
-        renderer.draw_string("debug", &self.player_draw_point.y.to_string(), &Vector2D::new(0, 6));
+        //Draw player position
+        renderer.draw_string("game", "@", &Vector2D::new(CENTER_X, CENTER_Y));
     }
 }

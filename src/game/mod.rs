@@ -5,6 +5,7 @@ pub mod map;
 pub mod map_manager;
 pub mod user_interface;
 
+use ::graphics::colour::Colour;
 use ::graphics::renderer::Renderer;
 use ::util::vector::Vector2D;
 
@@ -37,6 +38,7 @@ impl Game {
         };
         ui::init(&mut game.renderer);
         game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(GAME_AREA_X, GAME_AREA_Y));
+        game.renderer.clear_section("game", &Colour::new(0, 0, 0));
         game.run();
     }
 
@@ -49,7 +51,7 @@ impl Game {
 
             //Handle current game state
             match self.state_stack.last_mut() {
-                None => panic!("Game state vector is empty"),
+                None => return,
                 Some(current_state) => {
                     //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
                     //got on the first loop
@@ -91,7 +93,7 @@ impl Game {
                 self.state_stack.push(state);
             },
             ReturnResult::Redraw => {
-                self.renderer.clear_section("game");
+                self.renderer.clear_section("game", &Colour::new(0, 0, 0));
                 self.needs_redraw = true;
             }
             ReturnResult::None => {}

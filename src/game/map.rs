@@ -6,11 +6,11 @@ use std::io::{BufRead, BufReader};
 use std::fs;
 
 pub const MAP_WIDTH: i16 = 100;
-pub const MAP_HEIGHT: i16 = 100;
+pub const MAP_HEIGHT: i16 = 80;
 
 pub struct Map {
     world_position: Vector2D<i16>,
-    tile_data: Vec<String>,
+    pub tile_data: String,
 }
 
 fn path_exists(path: &str) -> bool {
@@ -24,7 +24,7 @@ impl Map {
     pub fn load(x: i16, y: i16) -> Option<Map> {
         let mut map = Map {
             world_position: Vector2D::new(x, y),
-            tile_data: Vec::with_capacity(32)
+            tile_data: String::with_capacity((MAP_WIDTH * MAP_HEIGHT) as usize)
         };
 
         let mut file_name = String::from("maps/");
@@ -39,9 +39,8 @@ impl Map {
             let file = File::open(file_name)
                 .expect(&format!("Unable to open file for map {} {}", x, y));
 
-            //Each map should be 64x32
             for line in BufReader::new(file).lines() {
-                map.tile_data.push(line.unwrap());
+                map.tile_data.push_str(&line.unwrap());
                 if map.tile_data.len() == MAP_HEIGHT as usize {
                     break;
                 }
@@ -55,7 +54,8 @@ impl Map {
         &self.world_position
     }
 
-    pub fn get_line(&self, line: usize) -> &String {
-        &self.tile_data[line]
+    pub fn get_tile(&self, x: usize, y: usize) -> char {
+        let char_vec: Vec<char> = self.tile_data.chars().collect();
+        char_vec[y * MAP_WIDTH as usize + x]
     }
 }

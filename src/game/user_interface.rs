@@ -40,10 +40,11 @@ pub fn reset_ui(renderer: &mut Renderer) {
         &Vector2D::new(49, 0),
         6);
     draw_logo(&renderer);
+    renderer.clear_section("game", &Colour::new(0, 0, 0));
 }
 
 pub fn get_user_input(renderer: &Renderer) -> String {
-    renderer.clear_section("input");
+    renderer.clear_section("input", renderer.default_clear_colour());
     renderer.draw_string("input", "Enter Input Here:", &Vector2D::new(0, 0));
     renderer.draw_string("input", "> ",                &Vector2D::new(0, 2));
 

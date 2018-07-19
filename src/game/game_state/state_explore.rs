@@ -32,7 +32,7 @@ pub struct StateExplore {
 
 impl StateExplore {
     pub fn new(renderer: &mut Renderer) -> StateExplore {
-        let mut state = StateExplore {
+        let state = StateExplore {
             player:         Player::new(),
             last_action:    Action::NoAction,
             current_map:    Map::load(0, 0).unwrap()
@@ -109,15 +109,32 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
+        let d = self.current_map.data();
+        let mut map_x = CENTER_X as i16 - self.player.local_position().x;
+        let map_y = CENTER_Y as i16 - self.player.local_position().y;
+
+
         
-        let x = self.player.local_position().x;
-        let y = self.player.local_position().y;
+        let mut begin_slice = 0;
+        let mut end_slice = GAME_AREA_X as i16;
 
-        let mut sprite = Sprite::make_square(10, 15, 'X');
-        sprite.position = Vector2D::new(80, 43);
-        renderer.draw_sprite("game", &sprite);
+        if map_x < 0 {
+            begin_slice = map_x.abs();
+            map_x = 0;
+        }
 
+
+        if map_x + MAP_WIDTH > GAME_AREA_X as i16 {
+            end_slice = GAME_AREA_X as i16 - map_x;
+        }
+
+        for y in 0..MAP_HEIGHT {
+            renderer.draw_string("game", 
+                &d[y as usize][begin_slice as usize..end_slice as usize], 
+                &Vector2D::new(map_x, map_y + y));
+        }
+        
         //Draw player position
-        renderer.draw_string("game", "@", &Vector2D::new(CENTER_X, CENTER_Y));
+        renderer.draw_string("game", "@", &Vector2D::new(CENTER_X as i16, CENTER_Y as i16));
     }
 }

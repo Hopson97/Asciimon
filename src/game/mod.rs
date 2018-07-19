@@ -2,7 +2,6 @@ mod game_state;
 mod player;
 
 pub mod map;
-pub mod map_manager;
 pub mod user_interface;
 
 use ::graphics::colour::Colour;

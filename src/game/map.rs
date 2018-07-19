@@ -10,7 +10,7 @@ pub const MAP_HEIGHT: i16 = 80;
 
 pub struct Map {
     world_position: Vector2D<i16>,
-    pub tile_data: String,
+    tile_data: Vec<String>,
 }
 
 fn path_exists(path: &str) -> bool {
@@ -24,7 +24,7 @@ impl Map {
     pub fn load(x: i16, y: i16) -> Option<Map> {
         let mut map = Map {
             world_position: Vector2D::new(x, y),
-            tile_data: String::with_capacity((MAP_WIDTH * MAP_HEIGHT) as usize)
+            tile_data: Vec::with_capacity((MAP_HEIGHT) as usize)
         };
 
         let mut file_name = String::from("maps/");
@@ -40,7 +40,7 @@ impl Map {
                 .expect(&format!("Unable to open file for map {} {}", x, y));
 
             for line in BufReader::new(file).lines() {
-                map.tile_data.push_str(&line.unwrap());
+                map.tile_data.push(line.unwrap());
                 if map.tile_data.len() == MAP_HEIGHT as usize {
                     break;
                 }
@@ -54,8 +54,7 @@ impl Map {
         &self.world_position
     }
 
-    pub fn get_tile(&self, x: usize, y: usize) -> char {
-        let char_vec: Vec<char> = self.tile_data.chars().collect();
-        char_vec[y * MAP_WIDTH as usize + x]
+    pub fn data(&self) -> &Vec<String> {
+        &self.tile_data
     }
 }

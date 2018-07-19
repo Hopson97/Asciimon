@@ -81,7 +81,7 @@ impl Renderer {
             Some(render_section) => {
                 for y in 0..render_section.size.y {
                     for x in 0..render_section.size.x {
-                        self.draw_string(section, " ", &Vector2D::new(x, y));
+                        self.draw_string(section, " ", &Vector2D::new(x as i16, y as i16));
                     }
                 }
             } 
@@ -134,6 +134,8 @@ impl Renderer {
     }
 
 
+
+
     /*
      * Public drawing interface
      * self is used to ensure these functions are only called on the object itself and not globally
@@ -147,26 +149,20 @@ impl Renderer {
         }
     }
 
-    pub fn draw_string(&self, section: &str, string: &str, start_position: &Vector2D<u8>) {
-        self.set_cursor_render_section(section, &start_position);
+    pub fn draw_string(&self, section: &str, string: &str, start_position: &Vector2D<i16>) {
         let sect = self.render_sections.get(section).unwrap();
 
-        if start_position.y >= sect.size.y {
-            return
+        if start_position.y < 0 || start_position.y >= sect.size.y as i16 {
+            return;
         }
-        
-        //this is so the string does not go over the section edge
-        if start_position.x as i16 + string.len() as i16 > sect.size.x as i16 {
-            let underlap = sect.size.x - start_position.x;
-            print!("{}", &string[0..underlap as usize]);
-        } else {
-            print!("{}", string);
-        }
+
+        self.set_cursor_render_section(section, &Vector2D::new(start_position.x as u8, start_position.y as u8));
+        print!("{}", string);
     }
 
     pub fn draw_sprite(&self, section: &str, sprite: &Sprite) {
-        self.set_cursor_render_section(section, &sprite.position);
         let position = &sprite.position;
+        self.set_cursor_render_section(section, &Vector2D::new(position.x as u8, position.y as u8));
         let data = sprite.render_data();
 
         let mut line_num = 0;

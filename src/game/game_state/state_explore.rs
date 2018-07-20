@@ -23,16 +23,22 @@ enum Action
 pub struct StateExplore {
     player: Player,
     last_action: Action,
-    current_map: Map
+    maps: Vec<Map>
 }
 
 impl StateExplore {
     pub fn new(renderer: &mut Renderer) -> StateExplore {
-        let state = StateExplore {
+        let mut state = StateExplore {
             player:         Player::new(),
             last_action:    Action::NoAction,
-            current_map:    Map::load(0, 0).unwrap()
+            maps:           Vec::with_capacity(3),
         };
+
+        state.maps.push(Map::load(0, 1).unwrap());
+        state.maps.push(Map::load(0, 0).unwrap());
+        state.maps.push(Map::load(1, 0).unwrap());
+    
+
         ui::reset_ui(renderer);
         state
     }
@@ -53,10 +59,14 @@ impl StateExplore {
         }
     }
 
-    fn draw_map(&self, renderer: &Renderer) {
-        let d = self.current_map.data();
-        let mut map_x = CENTER_X as i16 - self.player.local_position().x;
-        let map_y = CENTER_Y as i16 - self.player.local_position().y;
+    fn draw_map(&self, renderer: &Renderer, map: &Map) {
+        let d = map.data();
+        let mut map_x = CENTER_X as i16 - self.player.local_position().x + MAP_WIDTH  * map.world_position().x;
+        let     map_y = CENTER_Y as i16 - self.player.local_position().y + MAP_HEIGHT * map.world_position().y;
+
+        if map_x > GAME_AREA_X as i16 || map_x + MAP_WIDTH < 0 {
+            return;
+        }
 
         let mut begin_slice = 0;
         let mut end_slice = GAME_AREA_X as i16;
@@ -68,6 +78,7 @@ impl StateExplore {
 
         if map_x + MAP_WIDTH > GAME_AREA_X as i16 {
             end_slice = GAME_AREA_X as i16 - map_x;
+            renderer.draw_string("debug", &end_slice.to_string(), &Vector2D::new(0, 1));
         }
 
         for y in 0..MAP_HEIGHT {
@@ -129,7 +140,10 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        self.draw_map(&renderer);
+
+        for map in &self.maps {
+            self.draw_map(renderer, map);
+        }
         
         //Draw player position
         renderer.draw_string("game", "@", &Vector2D::new(CENTER_X as i16, CENTER_Y as i16));

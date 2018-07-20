@@ -6,8 +6,9 @@ use std::io::{BufRead, BufReader};
 use std::fs;
 
 pub const MAP_WIDTH: i16 = 100;
-pub const MAP_HEIGHT: i16 = 80;
+pub const MAP_HEIGHT: i16 = 50;
 
+#[!allow(dead_code)]
 pub struct Map {
     world_position: Vector2D<i16>,
     tile_data: Vec<String>,

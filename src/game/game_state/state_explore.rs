@@ -2,7 +2,6 @@ use super::GameState;
 use super::ReturnResult;
 
 use ::graphics::renderer::Renderer;
-use ::graphics::sprite::Sprite;
 
 use ::game::player::Player;
 use ::game::user_interface as ui;
@@ -11,9 +10,6 @@ use ::game::{GAME_AREA_X, GAME_AREA_Y};
 
 use ::util::vector::Vector2D;
 use ::util::maths::{clamp};
-
-use std::cmp;
-
 
 const CENTER_X: u8 = GAME_AREA_X / 2;
 const CENTER_Y: u8 = GAME_AREA_Y / 2;
@@ -54,6 +50,30 @@ impl StateExplore {
 
         for _ in 0..y.abs() {
             self.player.move_local_position(0, y_move);
+        }
+    }
+
+    fn draw_map(&self, renderer: &Renderer) {
+        let d = self.current_map.data();
+        let mut map_x = CENTER_X as i16 - self.player.local_position().x;
+        let map_y = CENTER_Y as i16 - self.player.local_position().y;
+
+        let mut begin_slice = 0;
+        let mut end_slice = GAME_AREA_X as i16;
+
+        if map_x < 0 {
+            begin_slice = map_x.abs();
+            map_x = 0;
+        }
+
+        if map_x + MAP_WIDTH > GAME_AREA_X as i16 {
+            end_slice = GAME_AREA_X as i16 - map_x;
+        }
+
+        for y in 0..MAP_HEIGHT {
+            renderer.draw_string("game", 
+                &d[y as usize][begin_slice as usize..end_slice as usize], 
+                &Vector2D::new(map_x, map_y + y));
         }
     }
 }
@@ -109,30 +129,7 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        let d = self.current_map.data();
-        let mut map_x = CENTER_X as i16 - self.player.local_position().x;
-        let map_y = CENTER_Y as i16 - self.player.local_position().y;
-
-
-        
-        let mut begin_slice = 0;
-        let mut end_slice = GAME_AREA_X as i16;
-
-        if map_x < 0 {
-            begin_slice = map_x.abs();
-            map_x = 0;
-        }
-
-
-        if map_x + MAP_WIDTH > GAME_AREA_X as i16 {
-            end_slice = GAME_AREA_X as i16 - map_x;
-        }
-
-        for y in 0..MAP_HEIGHT {
-            renderer.draw_string("game", 
-                &d[y as usize][begin_slice as usize..end_slice as usize], 
-                &Vector2D::new(map_x, map_y + y));
-        }
+        self.draw_map(&renderer);
         
         //Draw player position
         renderer.draw_string("game", "@", &Vector2D::new(CENTER_X as i16, CENTER_Y as i16));

@@ -34,10 +34,7 @@ impl StateExplore {
             maps:           Vec::with_capacity(3),
         };
 
-        state.maps.push(Map::load(0, 1).unwrap());
         state.maps.push(Map::load(0, 0).unwrap());
-        state.maps.push(Map::load(1, 0).unwrap());
-    
 
         ui::reset_ui(renderer);
         state
@@ -60,15 +57,11 @@ impl StateExplore {
     }
 
     fn draw_map(&self, renderer: &Renderer, map: &Map) {
-        let map_tiles = map.data();
+        let map_tiles = map.tile_data();
 
         //Top left position of where the map is drawn from
         let mut map_x = CENTER_X as i16 - self.player.local_position().x + (MAP_WIDTH  - 1) * map.world_position().x;
         let     map_y = CENTER_Y as i16 - self.player.local_position().y + (MAP_HEIGHT - 1) * map.world_position().y;
-
-    
-        //renderer.draw_string("debug", &map_x.to_string(), &Vector2D::new(0, 0));
-
 
         //Don't try draw map if it is outside of the bounds of the game rendering area
         if map_x > GAME_AREA_X as i16 || map_x + MAP_WIDTH < 0 {
@@ -84,9 +77,7 @@ impl StateExplore {
             map_x = 0;
         }
 
-        let test_val = map_x + (end_slice - begin_slice);
-        if test_val  > GAME_AREA_X as i16 {
-            renderer.draw_string("debug", &test_val.to_string(), &Vector2D::new(0, 1));
+        if map_x + (end_slice - begin_slice)  > GAME_AREA_X as i16 {
             end_slice = (GAME_AREA_X as i16 - map_x) + begin_slice;
         }
 

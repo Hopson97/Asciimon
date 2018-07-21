@@ -55,7 +55,7 @@ impl Map {
         &self.world_position
     }
 
-    pub fn data(&self) -> &Vec<String> {
+    pub fn tile_data(&self) -> &Vec<String> {
         &self.tile_data
     }
 }

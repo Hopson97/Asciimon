@@ -60,30 +60,39 @@ impl StateExplore {
     }
 
     fn draw_map(&self, renderer: &Renderer, map: &Map) {
-        let d = map.data();
-        let mut map_x = CENTER_X as i16 - self.player.local_position().x + MAP_WIDTH  * map.world_position().x;
-        let     map_y = CENTER_Y as i16 - self.player.local_position().y + MAP_HEIGHT * map.world_position().y;
+        let map_tiles = map.data();
 
+        //Top left position of where the map is drawn from
+        let mut map_x = CENTER_X as i16 - self.player.local_position().x + (MAP_WIDTH  - 1) * map.world_position().x;
+        let     map_y = CENTER_Y as i16 - self.player.local_position().y + (MAP_HEIGHT - 1) * map.world_position().y;
+
+    
+        //renderer.draw_string("debug", &map_x.to_string(), &Vector2D::new(0, 0));
+
+
+        //Don't try draw map if it is outside of the bounds of the game rendering area
         if map_x > GAME_AREA_X as i16 || map_x + MAP_WIDTH < 0 {
             return;
         }
 
+        //String slice of where the map lines are drawn from and to
         let mut begin_slice = 0;
-        let mut end_slice = GAME_AREA_X as i16;
+        let mut end_slice = (MAP_WIDTH - 1) as i16;
 
         if map_x < 0 {
             begin_slice = map_x.abs();
             map_x = 0;
         }
 
-        if map_x + MAP_WIDTH > GAME_AREA_X as i16 {
-            end_slice = GAME_AREA_X as i16 - map_x;
-            renderer.draw_string("debug", &end_slice.to_string(), &Vector2D::new(0, 1));
+        let test_val = map_x + (end_slice - begin_slice);
+        if test_val  > GAME_AREA_X as i16 {
+            renderer.draw_string("debug", &test_val.to_string(), &Vector2D::new(0, 1));
+            end_slice = (GAME_AREA_X as i16 - map_x) + begin_slice;
         }
 
         for y in 0..MAP_HEIGHT {
             renderer.draw_string("game", 
-                &d[y as usize][begin_slice as usize..end_slice as usize], 
+                &map_tiles[y as usize][begin_slice as usize..end_slice as usize], 
                 &Vector2D::new(map_x, map_y + y));
         }
     }

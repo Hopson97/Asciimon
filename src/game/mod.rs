@@ -92,6 +92,7 @@ impl Game {
                 self.state_stack.push(state);
             },
             ReturnResult::Redraw => {
+                self.renderer.clear_section("debug", &Colour::new(0, 0, 0));
                 self.renderer.clear_section("game", &Colour::new(0, 0, 0));
                 self.needs_redraw = true;
             }

@@ -51,6 +51,10 @@ impl Map {
         }
     }
 
+    pub fn draw_line(&self, begin: usize, end: usize) {
+
+    }
+
     pub fn world_position(&self) -> &Vector2D<i16> {
         &self.world_position
     }

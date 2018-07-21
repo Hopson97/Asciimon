@@ -1,3 +1,5 @@
+use ::graphics::renderer::Renderer;
+
 use ::util::vector::Vector2D;
 
 use std::fs::File;
@@ -51,15 +53,13 @@ impl Map {
         }
     }
 
-    pub fn draw_line(&self, begin: usize, end: usize) {
-
+    pub fn draw_line(&self, renderer: &Renderer, line: usize, begin: usize, end: usize, draw_point: &Vector2D<i16>) {
+        renderer.draw_string("game", 
+            &self.tile_data[line][begin..end], 
+            &draw_point);
     }
 
     pub fn world_position(&self) -> &Vector2D<i16> {
         &self.world_position
-    }
-
-    pub fn tile_data(&self) -> &Vec<String> {
-        &self.tile_data
     }
 }

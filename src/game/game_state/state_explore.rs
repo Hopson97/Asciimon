@@ -57,8 +57,6 @@ impl StateExplore {
     }
 
     fn draw_map(&self, renderer: &Renderer, map: &Map) {
-        let map_tiles = map.tile_data();
-
         //Top left position of where the map is drawn from
         let mut map_x = CENTER_X as i16 - self.player.position().x + (MAP_WIDTH  - 1) * map.world_position().x;
         let     map_y = CENTER_Y as i16 - self.player.position().y + (MAP_HEIGHT - 1) * map.world_position().y;
@@ -82,8 +80,11 @@ impl StateExplore {
         }
 
         for y in 0..MAP_HEIGHT {
-            renderer.draw_string("game", 
-                &map_tiles[y as usize][begin_slice as usize..end_slice as usize], 
+            map.draw_line(
+                renderer, 
+                y           as usize, 
+                begin_slice as usize, 
+                end_slice   as usize, 
                 &Vector2D::new(map_x, map_y + y));
         }
     }

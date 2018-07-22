@@ -1,4 +1,5 @@
 use ::graphics::renderer::Renderer;
+use ::graphics::colour::Colour;
 
 use ::util::vector::Vector2D;
 
@@ -54,8 +55,25 @@ impl Map {
     }
 
     pub fn draw_line(&self, renderer: &Renderer, line: usize, begin: usize, end: usize, draw_point: &Vector2D<i16>) {
+        let mut render_string = String::with_capacity((MAP_WIDTH * 2) as usize);
+        let ref_string = &self.tile_data[line];
+
+        let mut cur_char = ' ';
+        for c in ref_string[begin..end].chars() {
+            if c != cur_char {
+                cur_char = c;
+                match c {
+                    '.' => render_string.push_str(&Colour::ansi_text_colour_string(100, 255, 25)),
+                    '#' => render_string.push_str(&Colour::ansi_text_colour_string(160, 82, 45)),
+                     _ => {}
+                }
+            }
+            render_string.push(c);
+        } 
+
+
         renderer.draw_string("game", 
-            &self.tile_data[line][begin..end], 
+            &render_string, 
             &draw_point);
     }
 

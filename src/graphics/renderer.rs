@@ -44,7 +44,7 @@ impl Renderer {
         renderer
     }
     
-    pub fn add_render_section(&mut self, name: &'static str, start_point: Vector2D<u8>, size: Vector2D<u8>) {
+    pub fn add_render_section(&mut self, name: &str, start_point: Vector2D<u8>, size: Vector2D<u8>) {
         self.render_sections.insert(
             name.to_string(), 
             RenderSection::new(start_point, size));

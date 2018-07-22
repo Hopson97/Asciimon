@@ -2,6 +2,7 @@ use super::GameState;
 use super::ReturnResult;
 
 use ::graphics::renderer::Renderer;
+use ::graphics::colour::Colour;
 
 use ::game::player::Player;
 use ::game::user_interface as ui;
@@ -41,12 +42,12 @@ impl StateExplore {
     /**
      * Attempts to the move the player's local position by x/y amount in the x/y direction
      */
-    pub fn handle_move_player(&mut self, x: i16, y: i16) {
-        let x_move = clamp(x, -1, 1);
-        let y_move = -clamp(y, -1, 1);
+    pub fn handle_move_player(&mut self, x_offset: i16, y_offset: i16) {
+        let x_move = clamp(x_offset, -1, 1);
+        let y_move = clamp(y_offset, -1, 1);
 
         //@TODO: Handle the "DRY" here
-        for _ in 0..x.abs() {
+        for _ in 0..x_offset.abs() {
             let p_move = Vector2D::new(x_move, 0);
             let next_position = p_move + self.player.position().clone();
             if self.maps.get_tile(&next_position) == '#' {
@@ -55,7 +56,7 @@ impl StateExplore {
             self.player.move_position(x_move, 0);
         }
 
-        for _ in 0..y.abs() {
+        for _ in 0..y_offset.abs() {
             let p_move = Vector2D::new(0, y_move);
             let next_position = p_move + self.player.position().clone();
             if self.maps.get_tile(&next_position) == '#' {
@@ -121,7 +122,9 @@ impl GameState for StateExplore {
 
         renderer.draw_string("debug", &self.maps.get_tile(&self.player.position()).to_string(), &Vector2D::new(0, 0));
         
+
         //Draw player position
+        Renderer::set_text_colour(&Colour::new(0, 153, 175));
         renderer.draw_string("game", "@", &Vector2D::new(CENTER_X as i16, CENTER_Y as i16));
     }
 }

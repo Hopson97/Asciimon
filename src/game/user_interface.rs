@@ -44,6 +44,7 @@ pub fn reset_ui(renderer: &mut Renderer) {
 }
 
 pub fn get_user_input(renderer: &Renderer) -> String {
+    Renderer::set_text_colour(&Colour::new(255, 255, 255));
     renderer.clear_section("input", renderer.default_clear_colour());
     renderer.draw_string("input", "Enter Input Here:", &Vector2D::new(0, 0));
     renderer.draw_string("input", "> ",                &Vector2D::new(0, 2));

@@ -3,6 +3,7 @@ mod player;
 
 pub mod map;
 pub mod user_interface;
+pub mod map_manager;
 
 use ::graphics::colour::Colour;
 use ::graphics::renderer::Renderer;

@@ -59,6 +59,19 @@ impl Map {
             &draw_point);
     }
 
+    pub fn get_tile(&self, x: i16, y: i16) -> char {
+        let line = &self.tile_data[y as usize];
+        
+        //rust is annoying with finding the char of a string via index, so only way i can think of is to literally iterate over the string
+        for (i, c) in line.chars().enumerate() {
+            if i == x as usize {
+                return c
+            }
+        } 
+        //failure to find the index (which cannot happen) results in returning a . 
+        '.'
+    }
+
     pub fn world_position(&self) -> &Vector2D<i16> {
         &self.world_position
     }

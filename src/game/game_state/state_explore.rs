@@ -107,6 +107,8 @@ impl GameState for StateExplore {
      */
     fn draw(&mut self, renderer: &mut Renderer) {
         self.maps.render_maps(&renderer, &self.player.position());
+
+        renderer.draw_string("debug", &self.maps.get_tile(&self.player.position()).to_string(), &Vector2D::new(0, 0));
         
         //Draw player position
         renderer.draw_string("game", "@", &Vector2D::new(CENTER_X as i16, CENTER_Y as i16));

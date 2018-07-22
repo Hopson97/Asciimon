@@ -34,6 +34,16 @@ impl MapManager {
         }
     }
 
+    pub fn get_tile(&self, position: &Vector2D<i16>) -> char {
+        let map_position = MapManager::player_to_map_position(&position);
+        let map = self.maps.get(&map_position).unwrap();
+
+        let local_x = position.x % MAP_WIDTH;
+        let local_y = position.y % MAP_HEIGHT;
+
+        map.get_tile(local_x, local_y)
+    }
+
     fn draw_map(renderer: &Renderer, map: &Map, player_position: &Vector2D<i16>) {
         //Top left position of where the map is drawn from
         let mut map_x = CENTER_X as i16 - player_position.x + (MAP_WIDTH  - 1) * map.world_position().x;

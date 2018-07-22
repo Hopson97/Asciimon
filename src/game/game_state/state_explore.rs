@@ -45,11 +45,22 @@ impl StateExplore {
         let x_move = clamp(x, -1, 1);
         let y_move = -clamp(y, -1, 1);
 
+        //@TODO: Handle the "DRY" here
         for _ in 0..x.abs() {
+            let p_move = Vector2D::new(x_move, 0);
+            let next_position = p_move + self.player.position().clone();
+            if self.maps.get_tile(&next_position) == '#' {
+                break;
+            }
             self.player.move_position(x_move, 0);
         }
 
         for _ in 0..y.abs() {
+            let p_move = Vector2D::new(0, y_move);
+            let next_position = p_move + self.player.position().clone();
+            if self.maps.get_tile(&next_position) == '#' {
+                break;
+            }
             self.player.move_position(0, y_move);
         }
     }

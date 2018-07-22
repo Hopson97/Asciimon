@@ -54,17 +54,25 @@ impl Map {
         }
     }
 
+
     pub fn draw_line(&self, renderer: &Renderer, line: usize, begin: usize, end: usize, draw_point: &Vector2D<i16>) {
         let mut render_string = String::with_capacity((MAP_WIDTH * 2) as usize);
         let ref_string = &self.tile_data[line];
 
+        //Set colour based on the batch of following chars 
+        //Rust doesn't have static/global objects as far as I know, so I have to implement using a match
         let mut cur_char = ' ';
         for c in ref_string[begin..end].chars() {
             if c != cur_char {
                 cur_char = c;
                 match c {
-                    '.' => render_string.push_str(&Colour::ansi_text_colour_string(100, 255, 25)),
-                    '#' => render_string.push_str(&Colour::ansi_text_colour_string(160, 82, 45)),
+                    ',' => render_string.push_str(&Colour::ansi_text_colour_string  (14, 160, 20)),
+                    '|' => render_string.push_str(&Colour::ansi_text_colour_string  (30, 145, 35)),
+                    '.' => render_string.push_str(&Colour::ansi_text_colour_string  (124, 252, 0)),
+                    '#' => render_string.push_str(&Colour::ansi_text_colour_string  (34, 100, 34)),
+                    '0' => render_string.push_str(&Colour::ansi_text_colour_string  (34, 100, 34)),
+                    'Y' => render_string.push_str(&Colour::ansi_text_colour_string  (160, 82, 45)),
+                    '~' => render_string.push_str(&Colour::ansi_text_colour_string  (32, 178, 230)),
                      _ => {}
                 }
             }

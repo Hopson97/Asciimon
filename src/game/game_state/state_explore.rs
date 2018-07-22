@@ -43,14 +43,15 @@ impl StateExplore {
      * Attempts to the move the player's local position by x/y amount in the x/y direction
      */
     pub fn handle_move_player(&mut self, x_offset: i16, y_offset: i16) {
-        let x_move = clamp(x_offset, -1, 1);
-        let y_move = clamp(y_offset, -1, 1);
+        let x_move =  clamp(x_offset, -1, 1);
+        let y_move = -clamp(y_offset, -1, 1);
 
         //@TODO: Handle the "DRY" here
         for _ in 0..x_offset.abs() {
             let p_move = Vector2D::new(x_move, 0);
             let next_position = p_move + self.player.position().clone();
-            if self.maps.get_tile(&next_position) == '#' {
+            let next_tile = self.maps.get_tile(&next_position);
+            if next_tile == '#' || next_tile == 'Y' || next_tile == '~' {
                 break;
             }
             self.player.move_position(x_move, 0);
@@ -59,7 +60,8 @@ impl StateExplore {
         for _ in 0..y_offset.abs() {
             let p_move = Vector2D::new(0, y_move);
             let next_position = p_move + self.player.position().clone();
-            if self.maps.get_tile(&next_position) == '#' {
+            let next_tile = self.maps.get_tile(&next_position);
+            if next_tile == '#' || next_tile == 'Y' || next_tile == '~' {
                 break;
             }
             self.player.move_position(0, y_move);

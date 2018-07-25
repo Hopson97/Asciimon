@@ -24,7 +24,12 @@ impl MapManager {
         let y = map_position.y;
 
         if !self.maps.contains_key(&map_position) {
-            self.maps.insert(map_position, Map::load(x, y).unwrap());
+            let map = match Map::load(x, y) {
+                None => panic!("Failed to load map {} {}", x, y),
+                Some(map) => map
+            };
+
+            self.maps.insert(map_position, map);
         }
 
         //...load more maps duh
@@ -36,7 +41,10 @@ impl MapManager {
 
     pub fn get_tile(&self, position: &Vector2D<i32>) -> char {
         let map_position = MapManager::player_to_map_position(&position);
-        let map = self.maps.get(&map_position).unwrap();
+        let map = match self.maps.get(&map_position) {
+            None => panic!("Map at {} {} does not exist!", map_position.x, map_position.y),
+            Some(map) => map
+        };
 
         let local_x = position.x % MAP_WIDTH;
         let local_y = position.y % MAP_HEIGHT;

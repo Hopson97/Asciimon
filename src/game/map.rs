@@ -30,13 +30,14 @@ impl Map {
             tile_data: Vec::with_capacity((MAP_HEIGHT) as usize)
         };
 
+
         let mut file_name = String::from("maps/");
         file_name.push_str(x.to_string().as_str());
         file_name.push(' ');
         file_name.push_str(y.to_string().as_str());
 
         if !path_exists(&file_name) {
-            return None
+            panic!("Path for map '{}' does not exist", file_name);
         }
         else {
             let file = File::open(file_name)

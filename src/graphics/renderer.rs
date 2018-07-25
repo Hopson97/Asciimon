@@ -147,7 +147,10 @@ impl Renderer {
     }
 
     pub fn draw_string(&self, section: &str, string: &str, start_position: &Vector2D<i32>) {
-        let sect = self.render_sections.get(section).unwrap();
+        let sect = match self.render_sections.get(section) {
+            None        => panic!("Render section: {} does not exist!", section),
+            Some(sect)  => sect
+        };
 
         if start_position.y < 0 || start_position.y >= sect.size.y {
             return;

@@ -18,8 +18,8 @@ use self::user_interface as ui;
 use std::io::Write;
 use std::io::stdout;
 
-pub const GAME_AREA_X: u8 = 81;
-pub const GAME_AREA_Y: u8 = 45;
+pub const GAME_AREA_X: i32 = 81;
+pub const GAME_AREA_Y: i32 = 45;
 
 pub struct Game {
     renderer: Renderer,

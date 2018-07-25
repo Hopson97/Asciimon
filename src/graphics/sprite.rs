@@ -1,7 +1,7 @@
 use ::util::vector::Vector2D;
 
 pub struct Sprite {
-    pub position: Vector2D<i16>,
+    pub position: Vector2D<i32>,
     lines: Vec<String>
 }
 
@@ -20,7 +20,7 @@ impl Sprite {
         }
     }
 
-    pub fn square(width: u8, height: u8, fill: char) -> Sprite {
+    pub fn square(width: i32, height: i32, fill: char) -> Sprite {
         let mut sprite = Sprite::new();
         for _y in 0..height { 
             sprite.lines.push(String::new());

@@ -12,13 +12,13 @@ use ::game::{GAME_AREA_X, GAME_AREA_Y};
 use ::util::vector::Vector2D;
 use ::util::maths::{clamp};
 
-pub const CENTER_X: u8 = GAME_AREA_X / 2;
-pub const CENTER_Y: u8 = GAME_AREA_Y / 2;
+pub const CENTER_X: i32 = GAME_AREA_X / 2;
+pub const CENTER_Y: i32 = GAME_AREA_Y / 2;
 
 enum Action 
 {
     NoAction,
-    MovePlayer(i16, i16)
+    MovePlayer(i32, i32)
 }
 
 pub struct StateExplore {
@@ -42,7 +42,7 @@ impl StateExplore {
     /**
      * Attempts to the move the player's local position by x/y amount in the x/y direction
      */
-    pub fn handle_move_player(&mut self, x_offset: i16, y_offset: i16) {
+    pub fn handle_move_player(&mut self, x_offset: i32, y_offset: i32) {
         let x_move =  clamp(x_offset, -1, 1);
         let y_move = -clamp(y_offset, -1, 1);
 
@@ -75,8 +75,8 @@ impl GameState for StateExplore {
      */
     fn handle_input(&mut self, input_args: &Vec<&str>)  -> ReturnResult {
         //This is for the player move input, by converting X/Y diretion string to a intergral value
-        fn get_step(n: &str) -> i16 {
-            match n.parse::<i16>() {
+        fn get_step(n: &str) -> i32 {
+            match n.parse::<i32>() {
                 Err(_) => 0,
                 Ok(step) => step
             }
@@ -127,6 +127,6 @@ impl GameState for StateExplore {
 
         //Draw player position
         Renderer::set_text_colour(&Colour::new(0, 153, 175));
-        renderer.draw_string("game", "@", &Vector2D::new(CENTER_X as i16, CENTER_Y as i16));
+        renderer.draw_string("game", "@", &Vector2D::new(CENTER_X, CENTER_Y));
     }
 }

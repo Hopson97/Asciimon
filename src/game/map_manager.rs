@@ -8,7 +8,7 @@ use super::{GAME_AREA_X};
 use super::game_state::state_explore::{CENTER_X, CENTER_Y};
 
 pub struct MapManager {
-    maps: HashMap<Vector2D<i16>, Map>
+    maps: HashMap<Vector2D<i32>, Map>
 } 
 
 impl MapManager {
@@ -18,7 +18,7 @@ impl MapManager {
         }
     }
 
-    pub fn render_maps(&mut self, renderer: &Renderer, player_position: &Vector2D<i16>) {
+    pub fn render_maps(&mut self, renderer: &Renderer, player_position: &Vector2D<i32>) {
         let map_position = MapManager::player_to_map_position(&player_position);
         let x = map_position.x;
         let y = map_position.y;
@@ -34,7 +34,7 @@ impl MapManager {
         }
     }
 
-    pub fn get_tile(&self, position: &Vector2D<i16>) -> char {
+    pub fn get_tile(&self, position: &Vector2D<i32>) -> char {
         let map_position = MapManager::player_to_map_position(&position);
         let map = self.maps.get(&map_position).unwrap();
 
@@ -44,27 +44,27 @@ impl MapManager {
         map.get_tile(local_x, local_y)
     }
 
-    fn draw_map(renderer: &Renderer, map: &Map, player_position: &Vector2D<i16>) {
+    fn draw_map(renderer: &Renderer, map: &Map, player_position: &Vector2D<i32>) {
         //Top left position of where the map is drawn from
-        let mut map_x = CENTER_X as i16 - player_position.x + (MAP_WIDTH  - 1) * map.world_position().x;
-        let     map_y = CENTER_Y as i16 - player_position.y + (MAP_HEIGHT - 1) * map.world_position().y;
+        let mut map_x = CENTER_X - player_position.x + (MAP_WIDTH  - 1) * map.world_position().x;
+        let     map_y = CENTER_Y - player_position.y + (MAP_HEIGHT - 1) * map.world_position().y;
 
         //Don't try draw map if it is outside of the bounds of the game rendering area
-        if map_x > GAME_AREA_X as i16 || map_x + MAP_WIDTH < 0 {
+        if map_x > GAME_AREA_X || map_x + MAP_WIDTH < 0 {
             return;
         }
 
         //String slice of where the map lines are drawn from and to
         let mut begin_slice = 0;
-        let mut end_slice = (MAP_WIDTH - 1) as i16;
+        let mut end_slice = MAP_WIDTH - 1;
 
         if map_x < 0 {
             begin_slice = map_x.abs();
             map_x = 0;
         }
 
-        if map_x + (end_slice - begin_slice)  > GAME_AREA_X as i16 {
-            end_slice = (GAME_AREA_X as i16 - map_x) + begin_slice;
+        if map_x + (end_slice - begin_slice)  > GAME_AREA_X as i32 {
+            end_slice = (GAME_AREA_X as i32 - map_x) + begin_slice;
         }
 
         for y in 0..MAP_HEIGHT {
@@ -77,7 +77,7 @@ impl MapManager {
         }
     }
 
-    fn player_to_map_position(player_position: &Vector2D<i16>) -> Vector2D<i16> {
+    fn player_to_map_position(player_position: &Vector2D<i32>) -> Vector2D<i32> {
         Vector2D::new(player_position.x / MAP_WIDTH, player_position.y / MAP_HEIGHT)
     }
 }

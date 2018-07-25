@@ -8,11 +8,11 @@ use std::io::{BufRead, BufReader};
 
 use std::fs;
 
-pub const MAP_WIDTH: i16 = 100;
-pub const MAP_HEIGHT: i16 = 50;
+pub const MAP_WIDTH: i32 = 100;
+pub const MAP_HEIGHT: i32 = 50;
 
 pub struct Map {
-    world_position: Vector2D<i16>,
+    world_position: Vector2D<i32>,
     tile_data: Vec<String>,
 }
 
@@ -24,7 +24,7 @@ impl Map {
     /**
      * Loads a map from a file for coordinates (x, y)
      */
-    pub fn load(x: i16, y: i16) -> Option<Map> {
+    pub fn load(x: i32, y: i32) -> Option<Map> {
         let mut map = Map {
             world_position: Vector2D::new(x, y),
             tile_data: Vec::with_capacity((MAP_HEIGHT) as usize)
@@ -55,7 +55,7 @@ impl Map {
     }
 
 
-    pub fn draw_line(&self, renderer: &Renderer, line: usize, begin: usize, end: usize, draw_point: &Vector2D<i16>) {
+    pub fn draw_line(&self, renderer: &Renderer, line: usize, begin: usize, end: usize, draw_point: &Vector2D<i32>) {
         let mut render_string = String::with_capacity((MAP_WIDTH * 2) as usize);
         let ref_string = &self.tile_data[line];
 
@@ -85,7 +85,7 @@ impl Map {
             &draw_point);
     }
 
-    pub fn get_tile(&self, x: i16, y: i16) -> char {
+    pub fn get_tile(&self, x: i32, y: i32) -> char {
         let line = &self.tile_data[y as usize];
         
         //rust is annoying with finding the char of a string via index, so only way i can think of is to literally iterate over the string
@@ -98,7 +98,7 @@ impl Map {
         '.'
     }
 
-    pub fn world_position(&self) -> &Vector2D<i16> {
+    pub fn world_position(&self) -> &Vector2D<i32> {
         &self.world_position
     }
 }

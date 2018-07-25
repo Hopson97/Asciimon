@@ -133,9 +133,6 @@ impl Renderer {
         print!("\x1b[{};{}H", y + 1, x + 1);
     }
 
-
-
-
     /*
      * Public drawing interface
      * self is used to ensure these functions are only called on the object itself and not globally

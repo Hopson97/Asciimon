@@ -159,10 +159,10 @@ impl Renderer {
         self.set_cursor_render_section(section, &Vector2D::new(start_position.x, start_position.y));
         print!("{}", string);
     }
-/*
+
     pub fn draw_sprite(&self, section: &str, sprite: &Sprite) {
         let position = &sprite.position;
-        self.set_cursor_render_section(section, &Vector2D::new(position.x as u8, position.y as u8));
+        self.set_cursor_render_section(section, &Vector2D::new(position.x, position.y));
         let data = sprite.render_data();
 
         let mut line_num = 0;
@@ -171,7 +171,7 @@ impl Renderer {
             line_num += 1;
         }
     }
-*/
+
 
     /*
         Misc functions

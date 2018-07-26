@@ -5,7 +5,6 @@ use ::graphics::renderer::Renderer;
 use ::graphics::colour::Colour;
 
 use ::game::player::Player;
-use ::game::user_interface as ui;
 use ::game::map_manager::MapManager;
 use ::game::{GAME_AREA_X, GAME_AREA_Y};
 
@@ -28,14 +27,12 @@ pub struct StateExplore {
 }
 
 impl StateExplore {
-    pub fn new(renderer: &mut Renderer) -> StateExplore {
-        let mut state = StateExplore {
+    pub fn new() -> StateExplore {
+        let state = StateExplore {
             player:         Player::new(),
             last_action:    Action::NoAction,
             maps:           MapManager::new()
         };
-
-        ui::reset_ui(renderer);
         state
     }
 

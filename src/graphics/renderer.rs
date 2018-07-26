@@ -2,9 +2,9 @@ use super::colour::Colour;
 
 use ::util::vector::Vector2D;
 
-use std::collections::HashMap;
 
 use super::sprite::Sprite;
+use std::collections::HashMap;
 
 
 struct RenderSection {
@@ -35,9 +35,10 @@ impl Renderer {
             clear_colour: Colour::new(25, 20, 70),
             render_sections: HashMap::new(),
         };
-        renderer.add_render_section("full",     Vector2D::new(0, 0),            Vector2D::new(x_size,   y_size));
-        renderer.add_render_section("debug",    Vector2D::new(x_size + 2, 0),   Vector2D::new(20,       y_size));
-
+        renderer.add_render_section("full",  Vector2D::new(0, 0),          Vector2D::new(x_size, y_size));
+        renderer.add_render_section("debug", Vector2D::new(x_size + 2, 0), Vector2D::new(20,     y_size));
+        renderer.create_border("full");
+        renderer.clear();
         renderer
     }
     
@@ -45,14 +46,19 @@ impl Renderer {
         self.render_sections.insert(
             name.to_string(), 
             RenderSection::new(start_point, size));
-        self.clear_section(&name, &self.clear_colour);
-        self.create_border(&name);
     }
 
+
+    /*
+        Clears the entire window
+    */
     pub fn clear(&mut self) {
         self.clear_section("full", &self.clear_colour);
     }
 
+    /*
+        Clears just a single section of the screen
+    */
     pub fn clear_section(&self, section: &'static str, colour: &Colour) {
         Renderer::set_bg_colour(&colour);
 
@@ -72,6 +78,9 @@ impl Renderer {
         &self.clear_colour
     }
 
+    /*
+        Utility functions for drawing solid lines
+    */
     fn draw_solid_line_x(&self, colour: &Colour, begin_position: &Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
         Renderer::set_cursor_location(begin_position.x, begin_position.y);
@@ -90,6 +99,9 @@ impl Renderer {
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
+    /*
+        Creates a border around the rendering section area
+    */
     pub fn create_border(&self, section: &str) {
         let sect = self.render_sections.get(section).unwrap();
         let bg_col = Colour::new(20, 20, 20);
@@ -100,19 +112,15 @@ impl Renderer {
         let height = sect.size.y;
 
         //Top
-        self.draw_solid_line_x(&bg_col,
-            &sect.start_point, 
-            width + 2);
-        
+        self.draw_solid_line_x(&bg_col, &sect.start_point, width + 2);
+
+        //Left
+        self.draw_solid_line_y(&bg_col, &sect.start_point, height + 2);
+
         //Bottom
         self.draw_solid_line_x(&bg_col,
             &Vector2D::new(x, y + height + 1), 
             width + 2);
-
-        //Left
-        self.draw_solid_line_y(&bg_col, 
-            &sect.start_point, 
-            height + 2);
 
         //Right
         self.draw_solid_line_y(&bg_col, 

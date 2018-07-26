@@ -2,7 +2,6 @@ mod game_state;
 mod player;
 
 pub mod map;
-pub mod user_interface;
 pub mod map_manager;
 
 use ::graphics::colour::Colour;
@@ -13,9 +12,8 @@ use self::game_state::ReturnResult;
 use self::game_state::GameState;
 use self::game_state::state_explore::StateExplore;
 
-use self::user_interface as ui;
-
 use std::io::Write;
+use std::io::stdin;
 use std::io::stdout;
 
 pub const GAME_AREA_X: i32 = 81;
@@ -36,16 +34,24 @@ impl Game {
             is_running: true,
             needs_redraw: true
         };
-        ui::init(&mut game.renderer);
-        game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(GAME_AREA_X, GAME_AREA_Y));
-        game.renderer.add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
-        game.renderer.add_render_section("input", Vector2D::new(50, 0), Vector2D::new(GAME_AREA_X - 50, 6));
+        //ui::init(&mut game.renderer);
+
+        //Yay for magic numbers
+        game.renderer.add_render_section("game",    Vector2D::new(0, 7),    Vector2D::new(GAME_AREA_X, GAME_AREA_Y));
+        game.renderer.add_render_section("logo",    Vector2D::new(0, 0),    Vector2D::new(50, 6));
+        game.renderer.add_render_section("input",   Vector2D::new(50, 0),   Vector2D::new(GAME_AREA_X - 50, 6));
+
+        game.renderer.create_border("game");
+        game.renderer.create_border("logo");
+        game.renderer.create_border("input");
+
+        Game::draw_logo(&game.renderer);
 
         game.run();
     }
 
     fn run(&mut self) {
-        self.state_stack.push(Box::new(StateExplore::new(&mut self.renderer)));
+        self.state_stack.push(Box::new(StateExplore::new()));
         //Main loop!
         while self.is_running {
             let input_result: ReturnResult;
@@ -65,7 +71,7 @@ impl Game {
                     stdout().flush()
                         .expect("Could not buffer the terminal output!");
 
-                    let input = ui::get_user_input(&self.renderer);
+                    let input = Game::get_user_input(&self.renderer);
                     let input_args: Vec<&str> = input.trim().split(" ").collect();
 
                     if input_args.len() == 1 {
@@ -101,5 +107,31 @@ impl Game {
             }
             ReturnResult::None => {}
         }
+    }
+
+    pub fn get_user_input(renderer: &Renderer) -> String {
+        Renderer::set_text_colour(&Colour::new(255, 255, 255));
+        renderer.clear_section("input", renderer.default_clear_colour());
+        renderer.draw_string("input", "Enter Input Here:", &Vector2D::new(0, 0));
+        renderer.draw_string("input", "> ",                &Vector2D::new(0, 2));
+
+        stdout().flush()
+            .expect("Could not buffer the terminal output!");
+
+        renderer.set_cursor_render_section("input", &Vector2D::new(2, 2));
+        let mut input = String::new();
+        stdin().read_line(&mut input).expect("Failed to get user input");
+        input
+    }
+
+    fn draw_logo(renderer: &Renderer) {
+        Renderer::set_text_colour(&Colour::new(50, 255, 200));
+        renderer.draw_string("logo", "                    _ _                       ",      &Vector2D::new(0, 0));
+        renderer.draw_string("logo", "     /\\            (_|_)                      ",     &Vector2D::new(0, 1));
+        renderer.draw_string("logo", "    /  \\   ___  ___ _ _ _ __ ___   ___  _ __  ",     &Vector2D::new(0, 2));
+        renderer.draw_string("logo", "   / /\\ \\ / __|/ __| | | '_ ` _ \\ / _ \\| '_ \\ ", &Vector2D::new(0, 3));
+        renderer.draw_string("logo", "  / ____ \\ __ \\ (__| | | | | | | | (_) | | | |",    &Vector2D::new(0, 4));
+        renderer.draw_string("logo", " /_/    \\_\\___/\\___|_|_|_| |_| |_|\\___/|_| |_|",  &Vector2D::new(0, 5));
+        Renderer::set_text_colour(&Colour::new(255, 255, 255));
     }
 }

@@ -27,18 +27,6 @@ fn draw_logo(renderer: &Renderer) {
 }
 
 pub fn reset_ui(renderer: &mut Renderer) {
-    let border_colour = Colour::new(25, 25, 25);
-
-    renderer.clear();
-    renderer.draw_solid_line_x(
-        &border_colour, 
-        &Vector2D::new(0, 6), 
-        renderer.get_size().x);
-
-    renderer.draw_solid_line_y(
-        &border_colour,
-        &Vector2D::new(49, 0),
-        6);
     draw_logo(&renderer);
     renderer.clear_section("game", &Colour::new(0, 0, 0));
 }

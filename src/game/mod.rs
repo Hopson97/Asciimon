@@ -38,7 +38,9 @@ impl Game {
         };
         ui::init(&mut game.renderer);
         game.renderer.add_render_section("game", Vector2D::new(0, 7), Vector2D::new(GAME_AREA_X, GAME_AREA_Y));
-        game.renderer.clear_section("game", &Colour::new(0, 0, 0));
+        game.renderer.add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
+        game.renderer.add_render_section("input", Vector2D::new(50, 0), Vector2D::new(GAME_AREA_X - 50, 6));
+
         game.run();
     }
 

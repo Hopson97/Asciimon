@@ -38,35 +38,15 @@ impl Renderer {
         renderer.add_render_section("full",     Vector2D::new(0, 0),            Vector2D::new(x_size,   y_size));
         renderer.add_render_section("debug",    Vector2D::new(x_size + 2, 0),   Vector2D::new(20,       y_size));
 
-        renderer.create_border();
-
-
         renderer
     }
     
-    pub fn add_render_section(&mut self, name: &str, start_point: Vector2D<i32>, size: Vector2D<i32>) {
+    pub fn add_render_section(&mut self, name: &'static str, start_point: Vector2D<i32>, size: Vector2D<i32>) {
         self.render_sections.insert(
             name.to_string(), 
             RenderSection::new(start_point, size));
-    }
-
-    /*
-    *   Functions for crating the user-interface display
-    */
-    pub fn create_border(&mut self) {
-        Renderer::set_bg_colour(&Colour::new(20, 20, 20));
-        for x in 0..self.size.x + 2 {
-            Renderer::set_cursor_location(x, 0);
-            print!(" ");
-            Renderer::set_cursor_location(x, self.size.y + 1);
-            print!(" ");
-        }
-        for y in 0..self.size.y + 2 {
-            Renderer::set_cursor_location(0, y);
-            print!(" ");
-            Renderer::set_cursor_location(self.size.x + 1, y);
-            print!(" ");
-        }
+        self.clear_section(&name, &self.clear_colour);
+        self.create_border(&name);
     }
 
     pub fn clear(&mut self) {
@@ -92,22 +72,52 @@ impl Renderer {
         &self.clear_colour
     }
 
-    pub fn draw_solid_line_x(&self, colour: &Colour, begin_position: &Vector2D<i32>, length: i32) {
+    fn draw_solid_line_x(&self, colour: &Colour, begin_position: &Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
-        Renderer::set_cursor_location(begin_position.x + 1, begin_position.y + 1);
+        Renderer::set_cursor_location(begin_position.x, begin_position.y);
         for _x in begin_position.x..length {
             print!(" ");
         }
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
-    pub fn draw_solid_line_y(&self, colour: &Colour, begin_position: &Vector2D<i32>, height: i32) {
+    fn draw_solid_line_y(&self, colour: &Colour, begin_position: &Vector2D<i32>, height: i32) {
         Renderer::set_bg_colour(colour);
         for y in begin_position.y..height {
-            Renderer::set_cursor_location(begin_position.x + 1, begin_position.y + y + 1);
+            Renderer::set_cursor_location(begin_position.x, begin_position.y + y);
             print!(" ");
         }
         Renderer::set_bg_colour(&self.clear_colour);
+    }
+
+    pub fn create_border(&self, section: &str) {
+        let sect = self.render_sections.get(section).unwrap();
+        let bg_col = Colour::new(20, 20, 20);
+
+        let x = sect.start_point.x;
+        let y = sect.start_point.y;
+        let width = sect.size.x;
+        let height = sect.size.y;
+
+        //Top
+        self.draw_solid_line_x(&bg_col,
+            &sect.start_point, 
+            width + 2);
+        
+        //Bottom
+        self.draw_solid_line_x(&bg_col,
+            &Vector2D::new(x, y + height + 1), 
+            width + 2);
+
+        //Left
+        self.draw_solid_line_y(&bg_col, 
+            &sect.start_point, 
+            height + 2);
+
+        //Right
+        self.draw_solid_line_y(&bg_col, 
+            &Vector2D::new(x + width + 1, y), 
+            height + 2);
     }
 
     /*

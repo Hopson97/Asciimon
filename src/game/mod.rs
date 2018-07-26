@@ -44,8 +44,9 @@ impl Game {
         game.renderer.create_border("game");
         game.renderer.create_border("logo");
         game.renderer.create_border("input");
-
         Game::draw_logo(&game.renderer);
+
+        game.renderer.clear_section("game", &Colour::new(10, 10, 10));
 
         game.run();
     }

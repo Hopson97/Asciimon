@@ -23,18 +23,9 @@ impl Colour {
     }
 
     fn colour_string(id: u8, r: u8, g: u8, b: u8) -> String {
-        let mut ansi = String::new();
-        ansi.push_str("\x1b[");
-        ansi.push_str(id.to_string().as_str());
-        ansi.push_str(";2;");
-        ansi.push_str(r.to_string().as_str());
-        ansi.push_str(";");
-        ansi.push_str(g.to_string().as_str());
-        ansi.push_str(";");
-        ansi.push_str(b.to_string().as_str());
-        ansi.push_str("m");
-
-        ansi
+        String::from(format!(
+            "\x1b[{};2;{};{};{}m", id, r, g, b
+        ))
     }
 }
 

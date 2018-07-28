@@ -86,6 +86,9 @@ impl MapManager {
     }
 
     fn player_to_map_position(player_position: &Vector2D<i32>) -> Vector2D<i32> {
-        Vector2D::new(player_position.x / MAP_WIDTH, player_position.y / MAP_HEIGHT)
+        Vector2D::new(
+            player_position.x / MAP_WIDTH, 
+            player_position.y / MAP_HEIGHT
+        )
     }
 }

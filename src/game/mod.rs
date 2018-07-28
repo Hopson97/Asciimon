@@ -89,8 +89,8 @@ impl Game {
         }
     }
 
-    fn handle_return_result(&mut self, input_result: ReturnResult) {
-        match input_result {
+    fn handle_return_result(&mut self, return_result: ReturnResult) {
+        match return_result {
             ReturnResult::Exit => self.is_running = false,
             ReturnResult::StatePop => {
                 self.state_stack.pop();

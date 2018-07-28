@@ -17,3 +17,6 @@ pub trait GameState {
     fn update(&mut self) -> ReturnResult;
     fn draw(&mut self, renderer: &mut Renderer);
 }
+
+
+

@@ -8,16 +8,12 @@ pub struct Player {
 
 impl Player {
     pub fn new() -> Player {
-        let start_x = 10;
-        let start_y = 10;
-
-        let local_x = 25;
-        let local_y = 10;
+        let local_x = 20;
+        let local_y = 25;
         
         Player {
             position: Vector2D::new(
-                start_x * MAP_WIDTH - start_x + local_x, 
-                MAP_HEIGHT * start_y - start_y + local_y
+                local_x, local_y
             ),
         }
     }

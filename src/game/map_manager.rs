@@ -8,12 +8,14 @@ use super::{GAME_AREA_X};
 use super::game_state::state_explore::{CENTER_X, CENTER_Y};
 
 pub struct MapManager {
+    //error_map: Map,
     maps: HashMap<Vector2D<i32>, Map>
 } 
 
 impl MapManager {
     pub fn new () -> MapManager {
         MapManager {
+            //error_map: Map::load_from_name(String::from("error").unwrap(),
             maps: HashMap::with_capacity(20)
         }
     }
@@ -23,16 +25,20 @@ impl MapManager {
         let x = map_position.x;
         let y = map_position.y;
 
-        if !self.maps.contains_key(&map_position) {
-            let map = match Map::load(x, y) {
-                None => panic!("Failed to load map {} {}", x, y),
-                Some(map) => map
-            };
+        for map_y in (y - 1)..(y + 2) {
+            for map_x in (x - 1)..(x + 2) {
+                let pos = Vector2D::new(map_x, map_y);
 
-            self.maps.insert(map_position, map);
+                if !self.maps.contains_key(&pos) {
+                    let map = match Map::load(map_x, map_y) {
+                        None =>  continue,
+                        Some(map) =>  map
+                    };
+
+                    self.maps.insert(pos, map);
+                }
+            }
         }
-
-        //...load more maps duh
 
         for (_, map) in &self.maps {
             MapManager::draw_map(&renderer, &map, &player_position);

@@ -1,5 +1,5 @@
-mod graphics;
 mod game;
+mod graphics;
 mod util;
 
 use game::Game;

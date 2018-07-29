@@ -1,6 +1,6 @@
 pub mod state_explore;
 
-use ::graphics::renderer::Renderer;
+use graphics::renderer::Renderer;
 
 #[allow(dead_code)]
 pub enum ReturnResult {
@@ -9,7 +9,7 @@ pub enum ReturnResult {
     StatePop,
     Redraw,
 
-    Exit
+    Exit,
 }
 
 pub trait GameState {
@@ -17,6 +17,3 @@ pub trait GameState {
     fn update(&mut self) -> ReturnResult;
     fn draw(&mut self, renderer: &mut Renderer);
 }
-
-
-

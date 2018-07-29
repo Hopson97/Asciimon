@@ -73,7 +73,7 @@ impl Game {
                         .expect("Could not buffer the terminal output!");
 
                     let input = Game::get_user_input(&self.renderer);
-                    let input_args: Vec<&str> = input.trim().split(" ").collect();
+                    let input_args: Vec<&str> = input.trim().split(' ').collect();
 
                     if input_args.len() == 1 {
                         if input_args[0]  == "exit" {

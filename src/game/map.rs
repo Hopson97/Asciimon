@@ -41,7 +41,7 @@ impl Map {
         }
         else {
             let file = File::open(file_name)
-                .expect(&format!("Unable to open file for map {} {}", x, y));
+                .unwrap_or_else(|_| panic!("Unable to open file for map {} {}", x, y));
 
             for line in BufReader::new(file).lines() {
                 

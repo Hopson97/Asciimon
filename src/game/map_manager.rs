@@ -31,12 +31,9 @@ impl MapManager {
 
                 //To do: Improve the cotains key followed by the insert.
                 if !self.maps.contains_key(&pos) {
-                    let map = match Map::load(map_x, map_y) {
-                        None => continue,
-                        Some(map) => map,
-                    };
-
-                    self.maps.insert(pos, map);
+                    if let Some(map) = Map::load(map_x, map_y) {
+                        self.maps.insert(pos, map);
+                    }
                 }
             }
         }

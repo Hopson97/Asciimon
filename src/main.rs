@@ -15,5 +15,6 @@ fn main() {
     clear_terminal();
 
     //Ensure terminal is below the game after exiting
-    print!("\n\n");
+    println!();
+    println!();
 }

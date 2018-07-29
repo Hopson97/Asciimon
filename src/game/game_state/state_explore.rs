@@ -1,5 +1,3 @@
-#![feature(nll)]
-
 use super::GameState;
 use super::ReturnResult;
 
@@ -59,7 +57,7 @@ impl StateExplore {
         }
     }
 
-    pub fn handle_move_player_step(&mut self, steps: &String) {
+    pub fn handle_move_player_step(&mut self, steps: &str) {
         for step in steps.chars() {
             let move_vector = match step {
                 'w' => Vector2D::new(0, -1),

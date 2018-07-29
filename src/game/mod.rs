@@ -82,10 +82,8 @@ impl Game {
                     let input = Game::get_user_input(&self.renderer);
                     let input_args: Vec<&str> = input.trim().split(' ').collect();
 
-                    if input_args.len() == 1 {
-                        if input_args[0] == "exit" {
-                            self.is_running = false;
-                        }
+                    if input_args.len() == 1 && input_args[0] == "exit" {
+                        self.is_running = false;
                     }
                     input_result = current_state.handle_input(&input_args);
                     update_result = current_state.update();

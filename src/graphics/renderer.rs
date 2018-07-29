@@ -186,14 +186,12 @@ impl Renderer {
         self.set_cursor_render_section(section, &Vector2D::new(position.x, position.y));
         let data = sprite.render_data();
 
-        let mut line_num = 0;
-        for line in data {
+        for (line_num, line) in data.iter().enumerate() {
             self.draw_string(
                 section,
                 line,
-                &Vector2D::new(position.x, position.y + line_num),
+                &Vector2D::new(position.x, position.y + line_num as i32),
             );
-            line_num += 1;
         }
     }
 }

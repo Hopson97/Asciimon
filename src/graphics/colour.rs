@@ -30,9 +30,9 @@ impl Mul<f32> for Colour {
 
     fn mul(self, rhs: f32) -> Colour {
         Colour::new(
-            (self.r as f32 * rhs) as u8,
-            (self.g as f32 * rhs) as u8,
-            (self.b as f32 * rhs) as u8,
+            (f32::from(self.r) * rhs) as u8,
+            (f32::from(self.g) * rhs) as u8,
+            (f32::from(self.b) * rhs) as u8,
         )
     }
 }

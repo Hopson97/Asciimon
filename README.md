@@ -1,13 +1,15 @@
 # Asciimon
-Pokemon-inspired game created using Rust for ANSI terminals 
+Pokemon-inspired game created using Rust for ANSI terminals
+
+This is my first project using Rust, so feel free to point out anything "not Rusty" in the code :)
 
 ## Running
 
 ```
+git clone https://github.com/Hopson97/Asciimon.git
+cd Asciimon
 cargo run
 ```
-
-I love Cargo...
 
 ## Videos
 

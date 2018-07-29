@@ -98,22 +98,16 @@ impl GameState for StateExplore {
             }
         }
 
+        
+
         self.next_action = Action::None; //Reset last action so it does not get repeated
 
         if input_args.len() == 1 {
             match input_args[0].chars().next().unwrap() {
-                'w' => {
-                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
-                }
-                'a' => {
-                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
-                }
-                's' => {
-                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
-                }
-                'd' => {
-                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
-                }
+                'w' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                'a' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                's' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                'd' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
                 _ => {}
             };
         } else if input_args.len() == 2 {

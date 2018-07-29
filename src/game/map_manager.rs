@@ -28,6 +28,8 @@ impl MapManager {
         for map_y in (y - 1)..(y + 2) {
             for map_x in (x - 1)..(x + 2) {
                 let pos = Vector2D::new(map_x, map_y);
+
+                //To do: Improve the cotains key followed by the insert.
                 if !self.maps.contains_key(&pos) {
                     let map = match Map::load(map_x, map_y) {
                         None =>  continue,
@@ -39,7 +41,7 @@ impl MapManager {
             }
         }
 
-        for (_, map) in &self.maps {
+        for map in self.maps.values() {
             MapManager::draw_map(&renderer, &map, &player_position);
         }
     }

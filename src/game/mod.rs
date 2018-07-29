@@ -8,13 +8,9 @@ use ::graphics::colour::Colour;
 use ::graphics::renderer::Renderer;
 use ::util::vector::Vector2D;
 
-use self::game_state::ReturnResult;
-use self::game_state::GameState;
-use self::game_state::state_explore::StateExplore;
+use self::game_state::{ReturnResult, GameState, state_explore::StateExplore};
 
-use std::io::Write;
-use std::io::stdin;
-use std::io::stdout;
+use std::io::{Write, stdin, stdout};
 
 pub const GAME_AREA_X: i32 = 81;
 pub const GAME_AREA_Y: i32 = 45;
@@ -73,7 +69,7 @@ impl Game {
                         .expect("Could not buffer the terminal output!");
 
                     let input = Game::get_user_input(&self.renderer);
-                    let input_args: Vec<&str> = input.trim().split(" ").collect();
+                    let input_args: Vec<&str> = input.trim().split(' ').collect();
 
                     if input_args.len() == 1 {
                         if input_args[0]  == "exit" {

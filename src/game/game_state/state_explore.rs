@@ -28,12 +28,11 @@ pub struct StateExplore {
 
 impl StateExplore {
     pub fn new() -> StateExplore {
-        let state = StateExplore {
+        StateExplore {
             player:         Player::new(),
             last_action:    Action::NoAction,
             maps:           MapManager::new()
-        };
-        state
+        }
     }
 
     /**
@@ -101,16 +100,13 @@ impl GameState for StateExplore {
      * Handles the updating of the game for the player
      */
     fn update(&mut self) -> ReturnResult {
-        let mut ret_result = ReturnResult::None;
         match self.last_action {
+            Action::NoAction => ReturnResult::None,
             Action::MovePlayer(x, y) => {
-                ret_result = ReturnResult::Redraw;
                 self.handle_move_player(x, y);
+                ReturnResult::Redraw
             }
-            Action::NoAction => {}
-        }
-
-        ret_result
+    }
     }
 
     /**

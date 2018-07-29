@@ -47,7 +47,7 @@ impl StateExplore {
             let p_move = Vector2D::new(x_move, 0);
             let next_position = p_move + self.player.position().clone();
             let next_tile = self.maps.get_tile(&next_position);
-            if next_tile == '#' || next_tile == 'Y' || next_tile == '~' {
+            if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
                 break;
             }
             self.player.move_position(x_move, 0);
@@ -57,7 +57,7 @@ impl StateExplore {
             let p_move = Vector2D::new(0, y_move);
             let next_position = p_move + self.player.position().clone();
             let next_tile = self.maps.get_tile(&next_position);
-            if next_tile == '#' || next_tile == 'Y' || next_tile == '~' {
+            if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
                 break;
             }
             self.player.move_position(0, y_move);
@@ -116,6 +116,8 @@ impl GameState for StateExplore {
         self.maps.render_maps(&renderer, &self.player.position());
 
         renderer.draw_string("debug", &self.maps.get_tile(&self.player.position()).to_string(), &Vector2D::new(0, 0));
+        renderer.draw_string("debug", &self.player.position().x.to_string(), &Vector2D::new(0, 1));
+        renderer.draw_string("debug", &self.player.position().y.to_string(), &Vector2D::new(5, 1));
         
 
         //Draw player position

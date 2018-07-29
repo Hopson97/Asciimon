@@ -61,8 +61,8 @@ impl MapManager {
 
     fn draw_map(renderer: &Renderer, map: &Map, player_position: &Vector2D<i32>) {
         //Top left position of where the map is drawn from
-        let mut map_x = CENTER_X - player_position.x + (MAP_WIDTH  - 1) * map.world_position().x;
-        let     map_y = CENTER_Y - player_position.y + (MAP_HEIGHT - 1) * map.world_position().y;
+        let mut map_x = CENTER_X - player_position.x + (MAP_WIDTH) * map.world_position().x;
+        let     map_y = CENTER_Y - player_position.y + (MAP_HEIGHT) * map.world_position().y;
 
         //Don't try draw map if it is outside of the bounds of the game rendering area
         if map_x > GAME_AREA_X || map_x + MAP_WIDTH < 0 {

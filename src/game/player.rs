@@ -13,7 +13,7 @@ impl Player {
         
         Player {
             position: Vector2D::new(
-                local_x, local_y
+                0 + local_x, 0 + local_y
             ),
         }
     }

@@ -41,7 +41,7 @@ impl MapManager {
             }
         }
 
-        for (_, map) in &self.maps {
+        for map in self.maps.values() {
             MapManager::draw_map(&renderer, &map, &player_position);
         }
     }

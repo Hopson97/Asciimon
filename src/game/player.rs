@@ -13,7 +13,7 @@ impl Player {
         
         Player {
             position: Vector2D::new(
-                10000 * MAP_WIDTH + local_x, 10000 * MAP_HEIGHT + local_y
+                1000 * MAP_WIDTH + local_x, 1000 * MAP_HEIGHT + local_y
             ),
         }
     }

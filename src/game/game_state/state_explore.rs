@@ -1,5 +1,3 @@
-#![feature(nll)]
-
 use super::GameState;
 use super::ReturnResult;
 
@@ -39,9 +37,7 @@ impl StateExplore {
         }
     }
 
-    /**
-     * Attempts to the move the player's local position by x/y amount in the x/y direction
-     */
+    ///Attempts to the move the player's local position by x/y amount in the x/y direction
     pub fn handle_move_player(&mut self, x_offset: i32, y_offset: i32) {
         let x_move =  clamp(x_offset, -1, 1);
         let y_move = -clamp(y_offset, -1, 1);
@@ -61,6 +57,11 @@ impl StateExplore {
         }
     }
 
+    ///Cycles through a buffer of move commands one by one and steps the plyer
+    /// #Example
+    /// >wwwssdd
+    /// Moves player 3 left, then 2 down, then 2 right.
+    /// Collision will stop player moving in a direction, but will continue to cycle the buffer
     pub fn handle_move_player_step(&mut self, steps: &String) {
         for step in steps.chars() {
             let move_vector = match step {

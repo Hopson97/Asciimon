@@ -23,9 +23,7 @@ impl Colour {
     }
 
     fn colour_string(id: u8, r: u8, g: u8, b: u8) -> String {
-        String::from(format!(
-            "\x1b[{};2;{};{};{}m", id, r, g, b
-        ))
+        format!("\x1b[{};2;{};{};{}m", id, r, g, b)
     }
 }
 

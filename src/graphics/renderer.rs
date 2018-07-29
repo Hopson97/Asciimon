@@ -97,7 +97,7 @@ impl Renderer {
 
     ///Creates a border around the rendering section area
     pub fn create_border(&self, section: &str) {
-        let sect = self.render_sections.get(section).unwrap();
+        let sect = &self.render_sections[section];
         let bg_col = Colour::new(20, 20, 20);
 
         let x = sect.start_point.x;

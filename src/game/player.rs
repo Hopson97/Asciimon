@@ -1,6 +1,5 @@
-
-use ::util::vector::Vector2D;
-use super::map::{MAP_WIDTH, MAP_HEIGHT};
+use super::map::{MAP_HEIGHT, MAP_WIDTH};
+use util::vector::Vector2D;
 
 pub struct Player {
     position: Vector2D<i32>,
@@ -10,7 +9,7 @@ impl Player {
     pub fn new() -> Player {
         let local_x = 20;
         let local_y = 25;
-        
+
         Player {
             position: Vector2D::new(
                 1000 * MAP_WIDTH + local_x, 1000 * MAP_HEIGHT + local_y

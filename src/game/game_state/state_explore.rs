@@ -1,22 +1,21 @@
 use super::GameState;
 use super::ReturnResult;
 
-use ::graphics::renderer::Renderer;
-use ::graphics::colour::Colour;
+use graphics::colour::Colour;
+use graphics::renderer::Renderer;
 
-use ::game::player::Player;
-use ::game::map_manager::MapManager;
-use ::game::{GAME_AREA_X, GAME_AREA_Y};
+use game::map_manager::MapManager;
+use game::player::Player;
+use game::{GAME_AREA_X, GAME_AREA_Y};
 
-use ::util::vector::Vector2D;
-use ::util::maths::{clamp};
+use util::maths::clamp;
+use util::vector::Vector2D;
 
 pub const CENTER_X: i32 = GAME_AREA_X / 2;
 pub const CENTER_Y: i32 = GAME_AREA_Y / 2;
 
 #[derive(Clone)]
-enum Action 
-{
+enum Action {
     None,
     MovePlayer(i32, i32),
     MovePlayerStep(String),
@@ -25,24 +24,23 @@ enum Action
 pub struct StateExplore {
     player: Player,
     next_action: Action,
-    maps: MapManager
+    maps: MapManager,
 }
 
 impl StateExplore {
     pub fn new() -> StateExplore {
         StateExplore {
-            player:         Player::new(),
-            next_action:    Action::None,
-            maps:           MapManager::new()
+            player: Player::new(),
+            next_action: Action::None,
+            maps: MapManager::new(),
         }
     }
 
     ///Attempts to the move the player's local position by x/y amount in the x/y direction
     pub fn handle_move_player(&mut self, x_offset: i32, y_offset: i32) {
-        let x_move =  clamp(x_offset, -1, 1);
+        let x_move = clamp(x_offset, -1, 1);
         let y_move = -clamp(y_offset, -1, 1);
         let move_vector = Vector2D::new(x_move, y_move);
-
 
         for _ in 0..x_offset.abs() {
             if !self.move_player(&move_vector) {
@@ -65,11 +63,11 @@ impl StateExplore {
     pub fn handle_move_player_step(&mut self, steps: &String) {
         for step in steps.chars() {
             let move_vector = match step {
-                'w' => Vector2D::new( 0, -1),
-                'a' => Vector2D::new(-1,  0),
-                's' => Vector2D::new( 0,  1),
-                'd' => Vector2D::new( 1,  0),
-                _   => Vector2D::new( 0,  0),
+                'w' => Vector2D::new(0, -1),
+                'a' => Vector2D::new(-1, 0),
+                's' => Vector2D::new(0, 1),
+                'd' => Vector2D::new(1, 0),
+                _ => Vector2D::new(0, 0),
             };
             self.move_player(&move_vector);
         }
@@ -80,25 +78,23 @@ impl StateExplore {
         let next_tile = self.maps.get_tile(&next_position);
         if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
             false
-        } 
-        else {
+        } else {
             self.player.move_position(move_amount.x, move_amount.y);
             true
         }
     }
-
 }
 
 impl GameState for StateExplore {
     /**
      * Handles user input for the exploring of the world
      */
-    fn handle_input(&mut self, input_args: &[&str])  -> ReturnResult {
+    fn handle_input(&mut self, input_args: &[&str]) -> ReturnResult {
         //This is for the player move input, by converting X/Y diretion string to a intergral value
         fn get_step(n: &str) -> i32 {
             match n.parse::<i32>() {
                 Err(_) => 0,
-                Ok(step) => step
+                Ok(step) => step,
             }
         }
 
@@ -106,14 +102,21 @@ impl GameState for StateExplore {
 
         if input_args.len() == 1 {
             match input_args[0].chars().next().unwrap() {
-                'w' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
-                'a' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
-                's' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
-                'd' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
-                _   => {}
+                'w' => {
+                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
+                }
+                'a' => {
+                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
+                }
+                's' => {
+                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
+                }
+                'd' => {
+                    self.next_action = Action::MovePlayerStep(String::from(input_args[0]));
+                }
+                _ => {}
             };
-        }
-        else if input_args.len() == 2 {
+        } else if input_args.len() == 2 {
             match input_args[0] {
                 "y" => {
                     let step = get_step(input_args[1]);
@@ -143,7 +146,7 @@ impl GameState for StateExplore {
                 self.handle_move_player_step(&steps);
                 ReturnResult::Redraw
             }
-    }
+        }
     }
 
     /**
@@ -152,10 +155,21 @@ impl GameState for StateExplore {
     fn draw(&mut self, renderer: &mut Renderer) {
         self.maps.render_maps(&renderer, &self.player.position());
 
-        renderer.draw_string("debug", &self.maps.get_tile(&self.player.position()).to_string(), &Vector2D::new(0, 0));
-        renderer.draw_string("debug", &self.player.position().x.to_string(), &Vector2D::new(0, 1));
-        renderer.draw_string("debug", &self.player.position().y.to_string(), &Vector2D::new(5, 1));
-        
+        renderer.draw_string(
+            "debug",
+            &self.maps.get_tile(&self.player.position()).to_string(),
+            &Vector2D::new(0, 0),
+        );
+        renderer.draw_string(
+            "debug",
+            &self.player.position().x.to_string(),
+            &Vector2D::new(0, 1),
+        );
+        renderer.draw_string(
+            "debug",
+            &self.player.position().y.to_string(),
+            &Vector2D::new(5, 1),
+        );
 
         //Draw player position
         Renderer::set_text_colour(&Colour::new(0, 153, 175));

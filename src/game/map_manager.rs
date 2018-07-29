@@ -1,22 +1,22 @@
 use std::collections::HashMap;
 
-use ::graphics::renderer::Renderer;
-use ::util::vector::Vector2D;
+use graphics::renderer::Renderer;
+use util::vector::Vector2D;
 
-use super::map::{Map, MAP_HEIGHT, MAP_WIDTH};
-use super::{GAME_AREA_X};
 use super::game_state::state_explore::{CENTER_X, CENTER_Y};
+use super::map::{Map, MAP_HEIGHT, MAP_WIDTH};
+use super::GAME_AREA_X;
 
 pub struct MapManager {
     //error_map: Map,
-    maps: HashMap<Vector2D<i32>, Map>
-} 
+    maps: HashMap<Vector2D<i32>, Map>,
+}
 
 impl MapManager {
-    pub fn new () -> MapManager {
+    pub fn new() -> MapManager {
         MapManager {
             //error_map: Map::load_from_name(String::from("error").unwrap(),
-            maps: HashMap::with_capacity(20)
+            maps: HashMap::with_capacity(20),
         }
     }
 
@@ -31,12 +31,9 @@ impl MapManager {
 
                 //To do: Improve the cotains key followed by the insert.
                 if !self.maps.contains_key(&pos) {
-                    let map = match Map::load(map_x, map_y) {
-                        None =>  continue,
-                        Some(map) =>  map
-                    };
-
-                    self.maps.insert(pos, map);
+                    if let Some(map) = Map::load(map_x, map_y) {
+                        self.maps.insert(pos, map);
+                    }
                 }
             }
         }
@@ -49,8 +46,11 @@ impl MapManager {
     pub fn get_tile(&self, position: &Vector2D<i32>) -> char {
         let map_position = MapManager::player_to_map_position(&position);
         let map = match self.maps.get(&map_position) {
-            None => panic!("Map at {} {} does not exist!", map_position.x, map_position.y),
-            Some(map) => map
+            None => panic!(
+                "Map at {} {} does not exist!",
+                map_position.x, map_position.y
+            ),
+            Some(map) => map,
         };
 
         let local_x = position.x % MAP_WIDTH;
@@ -62,7 +62,7 @@ impl MapManager {
     fn draw_map(renderer: &Renderer, map: &Map, player_position: &Vector2D<i32>) {
         //Top left position of where the map is drawn from
         let mut map_x = CENTER_X - player_position.x + (MAP_WIDTH) * map.world_position().x;
-        let     map_y = CENTER_Y - player_position.y + (MAP_HEIGHT) * map.world_position().y;
+        let map_y = CENTER_Y - player_position.y + (MAP_HEIGHT) * map.world_position().y;
 
         //Don't try draw map if it is outside of the bounds of the game rendering area
         if map_x > GAME_AREA_X || map_x + MAP_WIDTH < 0 {
@@ -78,24 +78,25 @@ impl MapManager {
             map_x = 0;
         }
 
-        if map_x + (end_slice - begin_slice)  > GAME_AREA_X as i32 {
+        if map_x + (end_slice - begin_slice) > GAME_AREA_X as i32 {
             end_slice = (GAME_AREA_X as i32 - map_x) + begin_slice;
         }
 
         for y in 0..MAP_HEIGHT {
             map.draw_line(
-                renderer, 
-                y           as usize, 
-                begin_slice as usize, 
-                end_slice   as usize, 
-                &Vector2D::new(map_x, map_y + y));
+                renderer,
+                y as usize,
+                begin_slice as usize,
+                end_slice as usize,
+                &Vector2D::new(map_x, map_y + y),
+            );
         }
     }
 
     fn player_to_map_position(player_position: &Vector2D<i32>) -> Vector2D<i32> {
         Vector2D::new(
-            player_position.x / MAP_WIDTH, 
-            player_position.y / MAP_HEIGHT
+            player_position.x / MAP_WIDTH,
+            player_position.y / MAP_HEIGHT,
         )
     }
 }

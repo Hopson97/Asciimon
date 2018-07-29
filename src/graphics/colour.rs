@@ -4,14 +4,12 @@ use std::ops::Mul;
 pub struct Colour {
     pub r: u8,
     pub g: u8,
-    pub b: u8
+    pub b: u8,
 }
 
 impl Colour {
     pub fn new(r: u8, g: u8, b: u8) -> Colour {
-        Colour {
-            r, g, b
-        }
+        Colour { r, g, b }
     }
 
     pub fn ansi_text_colour_string(r: u8, g: u8, b: u8) -> String {
@@ -32,8 +30,9 @@ impl Mul<f32> for Colour {
 
     fn mul(self, rhs: f32) -> Colour {
         Colour::new(
-            (self.r as f32 * rhs) as u8, 
-            (self.g as f32 * rhs) as u8, 
-            (self.b as f32 * rhs) as u8)
+            (f32::from(self.r) * rhs) as u8,
+            (f32::from(self.g) * rhs) as u8,
+            (f32::from(self.b) * rhs) as u8,
+        )
     }
 }

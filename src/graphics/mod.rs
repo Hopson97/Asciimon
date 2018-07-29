@@ -1,3 +1,3 @@
-pub mod renderer;
 pub mod colour;
+pub mod renderer;
 pub mod sprite;

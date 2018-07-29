@@ -97,18 +97,23 @@ impl GameState for StateExplore {
                 Ok(step) => step,
             }
         }
+        Renderer::set_cursor_location(120, 50);
+        println!("{}", input_args.len());
 
-        
-
-        self.next_action = Action::None; //Reset last action so it does not get repeated
+       // self.next_action = Action::None; //Reset last action so it does not get repeated
 
         if input_args.len() == 1 {
-            match input_args[0].chars().next().unwrap() {
-                'w' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                'a' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                's' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                'd' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                _ => {}
+            match input_args[0].chars().next() {
+                None => {},
+                Some(c) => {
+                    match c {
+                        'w' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                        'a' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                        's' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                        'd' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                        _ => {}
+                    }
+                }
             };
         } else if input_args.len() == 2 {
             match input_args[0] {
@@ -123,6 +128,7 @@ impl GameState for StateExplore {
                 _ => {}
             };
         }
+
         ReturnResult::None
     }
 

@@ -8,13 +8,9 @@ use ::graphics::colour::Colour;
 use ::graphics::renderer::Renderer;
 use ::util::vector::Vector2D;
 
-use self::game_state::ReturnResult;
-use self::game_state::GameState;
-use self::game_state::state_explore::StateExplore;
+use self::game_state::{ReturnResult, GameState, state_explore::StateExplore};
 
-use std::io::Write;
-use std::io::stdin;
-use std::io::stdout;
+use std::io::{Write, stdin, stdout};
 
 pub const GAME_AREA_X: i32 = 81;
 pub const GAME_AREA_Y: i32 = 45;

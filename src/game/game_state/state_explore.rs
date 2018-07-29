@@ -45,26 +45,19 @@ impl StateExplore {
     pub fn handle_move_player(&mut self, x_offset: i32, y_offset: i32) {
         let x_move =  clamp(x_offset, -1, 1);
         let y_move = -clamp(y_offset, -1, 1);
+        let move_vector = Vector2D::new(x_move, y_move);
 
-        //@TODO: Handle the "DRY" here
+
         for _ in 0..x_offset.abs() {
-            let p_move = Vector2D::new(x_move, 0);
-            let next_position = p_move + self.player.position().clone();
-            let next_tile = self.maps.get_tile(&next_position);
-            if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
+            if !self.move_player(&move_vector) {
                 break;
             }
-            self.player.move_position(x_move, 0);
         }
 
         for _ in 0..y_offset.abs() {
-            let p_move = Vector2D::new(0, y_move);
-            let next_position = p_move + self.player.position().clone();
-            let next_tile = self.maps.get_tile(&next_position);
-            if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
+            if !self.move_player(&move_vector) {
                 break;
             }
-            self.player.move_position(0, y_move);
         }
     }
 
@@ -77,12 +70,19 @@ impl StateExplore {
                 'd' => Vector2D::new( 1,  0),
                 _   => Vector2D::new( 0,  0),
             };
-            let next_position = move_vector.clone() + self.player.position().clone();
-            let next_tile = self.maps.get_tile(&next_position);
-            if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
-                break;
-            }
-            self.player.move_position(move_vector.x, move_vector.y);
+            self.move_player(&move_vector);
+        }
+    }
+
+    fn move_player(&mut self, move_amount: &Vector2D<i32>) -> bool {
+        let next_position = move_amount.clone() + self.player.position().clone();
+        let next_tile = self.maps.get_tile(&next_position);
+        if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
+            false
+        } 
+        else {
+            self.player.move_position(move_amount.x, move_amount.y);
+            true
         }
     }
 

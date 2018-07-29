@@ -1,3 +1,5 @@
+#![feature(nll)]
+
 use super::GameState;
 use super::ReturnResult;
 
@@ -14,15 +16,17 @@ use ::util::maths::{clamp};
 pub const CENTER_X: i32 = GAME_AREA_X / 2;
 pub const CENTER_Y: i32 = GAME_AREA_Y / 2;
 
+#[derive(Clone)]
 enum Action 
 {
-    NoAction,
-    MovePlayer(i32, i32)
+    None,
+    MovePlayer(i32, i32),
+    MovePlayerStep(String),
 }
 
 pub struct StateExplore {
     player: Player,
-    last_action: Action,
+    next_action: Action,
     maps: MapManager
 }
 
@@ -30,7 +34,7 @@ impl StateExplore {
     pub fn new() -> StateExplore {
         StateExplore {
             player:         Player::new(),
-            last_action:    Action::NoAction,
+            next_action:    Action::None,
             maps:           MapManager::new()
         }
     }
@@ -63,6 +67,25 @@ impl StateExplore {
             self.player.move_position(0, y_move);
         }
     }
+
+    pub fn handle_move_player_step(&mut self, steps: &String) {
+        for step in steps.chars() {
+            let move_vector = match step {
+                'w' => Vector2D::new( 0, -1),
+                'a' => Vector2D::new(-1,  0),
+                's' => Vector2D::new( 0,  1),
+                'd' => Vector2D::new( 1,  0),
+                _   => Vector2D::new( 0,  0),
+            };
+            let next_position = move_vector.clone() + self.player.position().clone();
+            let next_tile = self.maps.get_tile(&next_position);
+            if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
+                break;
+            }
+            self.player.move_position(move_vector.x, move_vector.y);
+        }
+    }
+
 }
 
 impl GameState for StateExplore {
@@ -78,17 +101,26 @@ impl GameState for StateExplore {
             }
         }
 
-        self.last_action = Action::NoAction; //Reset last action so it does not get repeated
+        self.next_action = Action::None; //Reset last action so it does not get repeated
 
-        if input_args.len() == 2 {
+        if input_args.len() == 1 {
+            match input_args[0].chars().next().unwrap() {
+                'w' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
+                'a' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
+                's' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
+                'd' => {self.next_action = Action::MovePlayerStep(String::from(input_args[0])); }
+                _   => {}
+            };
+        }
+        else if input_args.len() == 2 {
             match input_args[0] {
                 "y" => {
                     let step = get_step(input_args[1]);
-                    self.last_action = Action::MovePlayer(0, step);
+                    self.next_action = Action::MovePlayer(0, step);
                 }
                 "x" => {
                     let step = get_step(input_args[1]);
-                    self.last_action = Action::MovePlayer(step, 0);
+                    self.next_action = Action::MovePlayer(step, 0);
                 }
                 _ => {}
             };
@@ -100,10 +132,14 @@ impl GameState for StateExplore {
      * Handles the updating of the game for the player
      */
     fn update(&mut self) -> ReturnResult {
-        match self.last_action {
-            Action::NoAction => ReturnResult::None,
+        match self.next_action.clone() {
+            Action::None => ReturnResult::None,
             Action::MovePlayer(x, y) => {
                 self.handle_move_player(x, y);
+                ReturnResult::Redraw
+            }
+            Action::MovePlayerStep(steps) => {
+                self.handle_move_player_step(&steps);
                 ReturnResult::Redraw
             }
     }

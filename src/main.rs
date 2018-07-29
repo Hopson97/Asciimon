@@ -10,7 +10,10 @@ fn clear_terminal() {
 
 fn main() {
     clear_terminal();
+
     Game::run_game();
     clear_terminal();
-    println!("");println!("");
+
+    //Ensure terminal is below the game after exiting
+    print!("\n\n");
 }

@@ -28,12 +28,11 @@ pub struct StateExplore {
 
 impl StateExplore {
     pub fn new() -> StateExplore {
-        let state = StateExplore {
+        StateExplore {
             player:         Player::new(),
             last_action:    Action::NoAction,
             maps:           MapManager::new()
-        };
-        state
+        }
     }
 
     /**
@@ -70,7 +69,7 @@ impl GameState for StateExplore {
     /**
      * Handles user input for the exploring of the world
      */
-    fn handle_input(&mut self, input_args: &Vec<&str>)  -> ReturnResult {
+    fn handle_input(&mut self, input_args: &[&str])  -> ReturnResult {
         //This is for the player move input, by converting X/Y diretion string to a intergral value
         fn get_step(n: &str) -> i32 {
             match n.parse::<i32>() {
@@ -101,16 +100,13 @@ impl GameState for StateExplore {
      * Handles the updating of the game for the player
      */
     fn update(&mut self) -> ReturnResult {
-        let mut ret_result = ReturnResult::None;
         match self.last_action {
+            Action::NoAction => ReturnResult::None,
             Action::MovePlayer(x, y) => {
-                ret_result = ReturnResult::Redraw;
                 self.handle_move_player(x, y);
+                ReturnResult::Redraw
             }
-            Action::NoAction => {}
-        }
-
-        ret_result
+    }
     }
 
     /**

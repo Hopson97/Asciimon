@@ -49,16 +49,12 @@ impl Renderer {
     }
 
 
-    /*
-        Clears the entire window
-    */
+    ///Clears the entire window
     pub fn clear(&mut self) {
         self.clear_section("full", &self.clear_colour);
     }
 
-    /*
-        Clears just a single section of the screen
-    */
+    ///Clears just a single section of the screen
     pub fn clear_section(&self, section: &'static str, colour: &Colour) {
         Renderer::set_bg_colour(&colour);
 
@@ -74,13 +70,12 @@ impl Renderer {
         }
     }
 
+    ///Gets the default clear colour
     pub fn default_clear_colour(&self) -> &Colour {
         &self.clear_colour
     }
 
-    /*
-        Utility functions for drawing solid lines
-    */
+    ///Draws a solid line in the X-plane of the renderer
     fn draw_solid_line_x(&self, colour: &Colour, begin_position: &Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
         Renderer::set_cursor_location(begin_position.x, begin_position.y);
@@ -90,6 +85,7 @@ impl Renderer {
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
+    ///Draws a solid line in the Y-Plane of the renderer
     fn draw_solid_line_y(&self, colour: &Colour, begin_position: &Vector2D<i32>, height: i32) {
         Renderer::set_bg_colour(colour);
         for y in begin_position.y..height {
@@ -99,11 +95,9 @@ impl Renderer {
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
-    /*
-        Creates a border around the rendering section area
-    */
+    ///Creates a border around the rendering section area
     pub fn create_border(&self, section: &str) {
-        let sect = self.render_sections.get(section).unwrap();
+        let sect = &self.render_sections[section];
         let bg_col = Colour::new(20, 20, 20);
 
         let x = sect.start_point.x;
@@ -127,34 +121,36 @@ impl Renderer {
             &Vector2D::new(x + width + 1, y), 
             height + 2);
     }
-
-    /*
-     * Colour functions for changing text colour in the terminal
-     */
+ 
+    /// Set the foreground colour for text printed to the terminal
     pub fn set_text_colour(colour: &Colour) {
         Renderer::set_colour(38, &colour);
     }
     
+    /// Set the background colour for text printed to the terminal
     pub fn set_bg_colour(colour: &Colour) {
         Renderer::set_colour(48, &colour);
     }
 
+    /// Sets either background/foreground colour for text printed to terminal window
+    /// # Examples
+    /// Renderer::set_color(48, /* some colour here */)
+    /// 
+    /// This sets the background colour, as 48 is the identifier for background
     fn set_colour(ansi: u8, colour: &Colour) {
         print!("\x1b[{};2;{};{};{}m", 
             ansi, colour.r, colour.g, colour.b);
     }
 
-    /*
-     * Misc ANSI commands
-     */
+    /// Sets cursor location in the renderer
     pub fn set_cursor_location(x: i32, y: i32) {
         print!("\x1b[{};{}H", y + 1, x + 1);
     }
 
     /*
      * Public drawing interface
-     * self is used to ensure these functions are only called on the object itself and not globally
      */
+    /// Sets the location of the cursor relative to the top-left of a render section
     pub fn set_cursor_render_section(&self, section: &str, position: &Vector2D<i32>) {
         match self.render_sections.get(section) {
             None => panic!(format!("Tried to render to section which doesn't exist: {}", section)),
@@ -164,6 +160,8 @@ impl Renderer {
         }
     }
 
+    /// Draws a string to a render section.
+    /// Note: The function does not handle the length of strings going outside of the render section (for now?)
     pub fn draw_string(&self, section: &str, string: &str, start_position: &Vector2D<i32>) {
         let sect = match self.render_sections.get(section) {
             None        => panic!("Render section: {} does not exist!", section),
@@ -178,6 +176,7 @@ impl Renderer {
         print!("{}", string);
     }
 
+    // Draws a sprite (duh)
     pub fn draw_sprite(&self, section: &str, sprite: &Sprite) {
         let position = &sprite.position;
         self.set_cursor_render_section(section, &Vector2D::new(position.x, position.y));
@@ -188,13 +187,5 @@ impl Renderer {
             self.draw_string(section, line, &Vector2D::new(position.x, position.y + line_num));
             line_num += 1;
         }
-    }
-
-
-    /*
-        Misc functions
-    */
-    pub fn get_size(&self) -> &Vector2D<i32> {
-        &self.size
     }
 }

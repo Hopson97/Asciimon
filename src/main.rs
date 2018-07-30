@@ -1,5 +1,6 @@
-mod game;
+#[macro_use]
 mod graphics;
+mod game;
 mod util;
 
 use game::Game;

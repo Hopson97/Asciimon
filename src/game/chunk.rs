@@ -1,4 +1,3 @@
-use graphics::colour::Colour;
 use graphics::renderer::Renderer;
 
 use util::vector::Vector2D;
@@ -9,6 +8,17 @@ use std::io::{BufRead, BufReader};
 use std::fs;
 
 pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
+
+mod colours {
+    use graphics::colour::Colour;
+    define_colour!(WATER, 32, 178, 230);
+    define_colour!(STONE, 200, 200, 200);
+    define_colour!(BUSH, 14, 160, 20);
+    define_colour!(GRASS, 124, 252, 0);
+    define_colour!(TALL_GRASS, 30, 145, 35);
+    define_colour!(TREE_TRUNK, 160, 82, 45);
+    define_colour!(TREE_LEAVES, 34, 100, 34);
+}
 
 pub struct Chunk {
     pub world_position: Vector2D<i32>,
@@ -65,17 +75,19 @@ impl Chunk {
         for c in ref_string[begin..end].chars() {
             if c != cur_char {
                 cur_char = c;
-                match c {
-                    ',' => render_string.push_str(&Colour::new(14, 160, 20).ansi_text_string()),
-                    '|' => render_string.push_str(&Colour::new(30, 145, 35).ansi_text_string()),
-                    '.' => render_string.push_str(&Colour::new(124, 252, 0).ansi_text_string()),
-                    '#' => render_string.push_str(&Colour::new(34, 100, 34).ansi_text_string()),
-                    '0' => render_string.push_str(&Colour::new(34, 100, 34).ansi_text_string()),
-                    'Y' => render_string.push_str(&Colour::new(160, 82, 45).ansi_text_string()),
-                    '~' => render_string.push_str(&Colour::new(32, 178, 230).ansi_text_string()),
-                    'X' => render_string.push_str(&Colour::new(200, 200, 200).ansi_text_string()),
-                    _ => {}
-                }
+
+                let colour = match c {
+                    '~' => colours::WATER,
+                    'X' => colours::STONE,
+                    ',' => colours::BUSH,
+                    '.' => colours::GRASS,
+                    '|' => colours::TALL_GRASS,
+                    'Y' => colours::TREE_TRUNK,
+                    '#' => colours::TREE_LEAVES,
+                    '0' => colours::TREE_LEAVES,
+                    _ => continue,
+                };
+                render_string.push_str(&colour.ansi_text_string());
             }
             render_string.push(c);
         }

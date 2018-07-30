@@ -94,7 +94,7 @@ impl GameState for StateExplore {
                 Ok(step) => step,
             }
         }
-        Renderer::set_cursor_location(120, 50);
+        Renderer::set_cursor_location(Vector2D::new(120, 50));
         println!("{}", input_args.len());
 
         // self.next_action = Action::None; //Reset last action so it does not get repeated

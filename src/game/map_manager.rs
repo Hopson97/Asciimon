@@ -86,7 +86,7 @@ impl MapManager {
                 y as usize,
                 begin_slice as usize,
                 end_slice as usize,
-                Vector2D::new(map_pos.x, map_pos.y + y),
+                map_pos + Vector2D::new(0, y),
             );
         }
     }

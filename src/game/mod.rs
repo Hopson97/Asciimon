@@ -29,7 +29,7 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(81, 52),
+            renderer: Renderer::new(Vector2D::new(81, 52)),
             state_stack: Vec::new(),
             is_running: true,
             needs_redraw: true,

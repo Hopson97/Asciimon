@@ -1,7 +1,6 @@
 use super::GameState;
 use game::UpdateResult;
 
-use graphics::colour::Colour;
 use graphics::renderer::Renderer;
 
 use game::player::Player;
@@ -11,6 +10,11 @@ use game::GAME_AREA_CENTER;
 use util::maths::clamp;
 use util::vector;
 use util::vector::Vector2D;
+
+mod colours {
+    use graphics::colour::Colour;
+    define_colour!(PLAYER, 0, 153, 175);
+}
 
 pub struct StateExplore {
     player: Player,
@@ -133,7 +137,7 @@ impl GameState for StateExplore {
         );
 
         //Draw player position
-        Renderer::set_text_colour(&Colour::new(0, 153, 175));
+        Renderer::set_text_colour(&colours::PLAYER);
         renderer.draw_string("game", "@", GAME_AREA_CENTER);
     }
 }

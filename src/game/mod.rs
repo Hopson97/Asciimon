@@ -8,7 +8,7 @@ use graphics::colour::Colour;
 use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
-use self::game_state::{state_explore::StateExplore, GameState, ReturnResult};
+use self::game_state::{state_explore::StateExplore, GameState};
 
 use std::io::{stdin, stdout, Write};
 
@@ -27,6 +27,14 @@ pub const LOGO: &str = r"
  / ____ \ __ \ (__| | | | | | | | (_) | | | |
 /_/    \_\___/\___|_|_|_| |_| |_|\___/|_| |_|
 ";
+
+#[allow(dead_code)]
+pub enum UpdateResult {
+    Redraw,
+    StatePush(Box<GameState>),
+    StatePop,
+    Exit,
+}
 
 pub struct Game {
     renderer: Renderer,
@@ -72,29 +80,29 @@ impl Game {
         //Main loop!
         while self.is_running {
             match self.tick() {
-                ReturnResult::Exit => self.is_running = false,
-                ReturnResult::StatePop => {
+                Some(UpdateResult::Redraw) => {
+                    self.renderer.clear_section("debug", &Colour::new(0, 0, 0));
+                    self.renderer.clear_section("game", &Colour::new(0, 0, 0));
+                    self.needs_redraw = true;
+                }
+                Some(UpdateResult::StatePush(state)) => {
+                    self.state_stack.push(state);
+                    self.needs_redraw = true;
+                }
+                Some(UpdateResult::StatePop) => {
                     self.state_stack.pop();
                     if self.state_stack.is_empty() {
                         self.is_running = false;
                     }
                     self.needs_redraw = true;
                 }
-                ReturnResult::StatePush(state) => {
-                    self.state_stack.push(state);
-                    self.needs_redraw = true;
-                }
-                ReturnResult::Redraw => {
-                    self.renderer.clear_section("debug", &Colour::new(0, 0, 0));
-                    self.renderer.clear_section("game", &Colour::new(0, 0, 0));
-                    self.needs_redraw = true;
-                }
-                ReturnResult::None => {}
+                Some(UpdateResult::Exit) => self.is_running = false,
+                None => {}
             }
         }
     }
 
-    fn tick(&mut self) -> ReturnResult {
+    fn tick(&mut self) -> Option<UpdateResult> {
         if let Some(current_state) = self.state_stack.last_mut() {
             //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
             //got on the first loop
@@ -110,15 +118,15 @@ impl Game {
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
-                match input_args.as_slice() {
-                    ["exit"] | ["quit"] => ReturnResult::Exit,
+                match &input_args[..] {
+                    ["exit"] | ["quit"] => Some(UpdateResult::Exit),
                     input => current_state.update(input),
                 }
             } else {
-                return ReturnResult::Exit;
+                return Some(UpdateResult::Exit);
             }
         } else {
-            return ReturnResult::Exit;
+            return Some(UpdateResult::Exit);
         }
     }
 

@@ -1,5 +1,5 @@
 use super::GameState;
-use super::ReturnResult;
+use game::UpdateResult;
 
 use graphics::colour::Colour;
 use graphics::renderer::Renderer;
@@ -77,7 +77,7 @@ impl GameState for StateExplore {
     /**
      * Handles user input for the exploring of the world
      */
-    fn update(&mut self, input_args: &[&str]) -> ReturnResult {
+    fn update(&mut self, input_args: &[&str]) -> Option<UpdateResult> {
         //This is for the player move input, by converting X/Y diretion string to a intergral value
         fn parse_step(n: &str) -> i32 {
             match n.parse::<i32>() {
@@ -91,22 +91,22 @@ impl GameState for StateExplore {
         match input_args {
             [steps] => {
                 self.handle_move_player_step(steps);
-                ReturnResult::Redraw
+                Some(UpdateResult::Redraw)
             }
 
             ["x", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(step, 0);
-                ReturnResult::Redraw
+                Some(UpdateResult::Redraw)
             }
 
             ["y", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(0, step);
-                ReturnResult::Redraw
+                Some(UpdateResult::Redraw)
             }
 
-            _ => ReturnResult::None,
+            _ => None,
         }
     }
 

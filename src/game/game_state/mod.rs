@@ -13,7 +13,6 @@ pub enum ReturnResult {
 }
 
 pub trait GameState {
-    fn handle_input(&mut self, input_args: &[&str]) -> ReturnResult;
-    fn update(&mut self) -> ReturnResult;
+    fn update(&mut self, input_args: &[&str]) -> ReturnResult;
     fn draw(&mut self, renderer: &mut Renderer);
 }

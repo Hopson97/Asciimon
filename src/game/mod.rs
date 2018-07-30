@@ -71,61 +71,58 @@ impl Game {
         self.state_stack.push(Box::new(StateExplore::new()));
         //Main loop!
         while self.is_running {
-            let input_result: ReturnResult;
-            let update_result: ReturnResult;
-
-            //Handle current game state
-            match self.state_stack.last_mut() {
-                None => return,
-                Some(current_state) => {
-                    //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
-                    //got on the first loop
-                    if self.needs_redraw {
-                        current_state.draw(&mut self.renderer);
-                        self.needs_redraw = false;
-                    }
-                    //Ensure what has been drawn is flushed to stdout before getting input/updating
-                    stdout()
-                        .flush()
-                        .expect("Could not buffer the terminal output!");
-
-                    let input = Game::get_user_input(&self.renderer);
-                    let input_args: Vec<&str> = input.trim().split(' ').collect();
-
-                    if input_args.len() == 1 && input_args[0] == "exit" {
+            match self.tick() {
+                ReturnResult::Exit => self.is_running = false,
+                ReturnResult::StatePop => {
+                    self.state_stack.pop();
+                    if self.state_stack.is_empty() {
                         self.is_running = false;
                     }
-                    input_result = current_state.handle_input(&input_args);
-                    update_result = current_state.update();
+                    self.needs_redraw = true;
                 }
+                ReturnResult::StatePush(state) => {
+                    self.state_stack.push(state);
+                    self.needs_redraw = true;
+                }
+                ReturnResult::Redraw => {
+                    self.renderer.clear_section("debug", &Colour::new(0, 0, 0));
+                    self.renderer.clear_section("game", &Colour::new(0, 0, 0));
+                    self.needs_redraw = true;
+                }
+                ReturnResult::None => {}
             }
-            self.handle_return_result(input_result);
-            self.handle_return_result(update_result);
         }
     }
 
-    fn handle_return_result(&mut self, return_result: ReturnResult) {
-        match return_result {
-            ReturnResult::Exit => self.is_running = false,
-            ReturnResult::StatePop => {
-                self.state_stack.pop();
-                if self.state_stack.is_empty() {
-                    self.is_running = false;
+    fn tick(&mut self) -> ReturnResult {
+        if let Some(current_state) = self.state_stack.last_mut() {
+            //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
+            //got on the first loop
+            if self.needs_redraw {
+                current_state.draw(&mut self.renderer);
+                self.needs_redraw = false;
+
+                //Ensure what has been drawn is flushed to stdout before getting input/updating
+                stdout()
+                    .flush()
+                    .expect("Could not buffer the terminal output!");
+            }
+
+            if let Some(input) = Game::get_user_input(&self.renderer) {
+                let input_args: Vec<&str> = input.trim().split(' ').collect();
+                match input_args.as_slice() {
+                    ["exit"] | ["quit"] => ReturnResult::Exit,
+                    input => current_state.update(input),
                 }
+            } else {
+                return ReturnResult::Exit;
             }
-            ReturnResult::StatePush(state) => {
-                self.state_stack.push(state);
-            }
-            ReturnResult::Redraw => {
-                self.renderer.clear_section("debug", &Colour::new(0, 0, 0));
-                self.renderer.clear_section("game", &Colour::new(0, 0, 0));
-                self.needs_redraw = true;
-            }
-            ReturnResult::None => {}
+        } else {
+            return ReturnResult::Exit;
         }
     }
 
-    pub fn get_user_input(renderer: &Renderer) -> String {
+    fn get_user_input(renderer: &Renderer) -> Option<String> {
         Renderer::set_text_colour(&Colour::new(255, 255, 255));
         renderer.clear_section("input", renderer.default_clear_colour());
         renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 0));
@@ -137,10 +134,13 @@ impl Game {
 
         renderer.set_cursor_render_section("input", Vector2D::new(2, 2));
         let mut input = String::new();
-        stdin()
+        match stdin()
             .read_line(&mut input)
-            .expect("Failed to get user input");
-        input
+            .expect("Failed to get user input")
+        {
+            0 => None,
+            _ => Some(input),
+        }
     }
 
     fn draw_logo(renderer: &Renderer) {

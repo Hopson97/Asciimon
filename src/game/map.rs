@@ -11,7 +11,7 @@ use std::fs;
 pub const MAP_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
 pub struct Map {
-    world_position: Vector2D<i32>,
+    pub world_position: Vector2D<i32>,
     tile_data: Vec<String>,
 }
 
@@ -90,9 +90,5 @@ impl Map {
         let line = &self.tile_data[y as usize];
 
         line.as_bytes()[x as usize] as char
-    }
-
-    pub fn world_position(&self) -> &Vector2D<i32> {
-        &self.world_position
     }
 }

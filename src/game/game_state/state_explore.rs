@@ -4,8 +4,8 @@ use game::UpdateResult;
 use graphics::colour::Colour;
 use graphics::renderer::Renderer;
 
-use game::map_manager::MapManager;
 use game::player::Player;
+use game::world::World;
 use game::GAME_AREA_CENTER;
 
 use util::maths::clamp;
@@ -14,14 +14,14 @@ use util::vector::Vector2D;
 
 pub struct StateExplore {
     player: Player,
-    maps: MapManager,
+    world: World,
 }
 
 impl StateExplore {
     pub fn new() -> StateExplore {
         StateExplore {
             player: Player::new(),
-            maps: MapManager::new(),
+            world: World::new(),
         }
     }
 
@@ -63,7 +63,7 @@ impl StateExplore {
 
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position + move_amount;
-        let next_tile = self.maps.get_tile(next_position);
+        let next_tile = self.world.get_tile(next_position);
         if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
             false
         } else {
@@ -114,11 +114,11 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        self.maps.render_maps(&renderer, self.player.position);
+        self.world.render(&renderer, self.player.position);
 
         renderer.draw_string(
             "debug",
-            &self.maps.get_tile(self.player.position).to_string(),
+            &self.world.get_tile(self.player.position).to_string(),
             Vector2D::new(0, 0),
         );
         renderer.draw_string(

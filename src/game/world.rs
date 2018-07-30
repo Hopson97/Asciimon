@@ -6,21 +6,21 @@ use util::vector::Vector2D;
 use super::map::{Map, MAP_SIZE};
 use super::{GAME_AREA_CENTER, GAME_AREA_SIZE};
 
-pub struct MapManager {
+pub struct World {
     //error_map: Map,
     maps: HashMap<Vector2D<i32>, Map>,
 }
 
-impl MapManager {
-    pub fn new() -> MapManager {
-        MapManager {
+impl World {
+    pub fn new() -> World {
+        World {
             //error_map: Map::load_from_name(String::from("error").unwrap(),
             maps: HashMap::with_capacity(20),
         }
     }
 
-    pub fn render_maps(&mut self, renderer: &Renderer, player_position: Vector2D<i32>) {
-        let map_position = MapManager::player_to_map_position(player_position);
+    pub fn render(&mut self, renderer: &Renderer, player_position: Vector2D<i32>) {
+        let map_position = World::player_to_map_position(player_position);
         let x = map_position.x;
         let y = map_position.y;
 
@@ -38,12 +38,12 @@ impl MapManager {
         }
 
         for map in self.maps.values() {
-            MapManager::draw_map(&renderer, &map, player_position);
+            World::render_map(&renderer, &map, player_position);
         }
     }
 
     pub fn get_tile(&self, position: Vector2D<i32>) -> char {
-        let map_position = MapManager::player_to_map_position(position);
+        let map_position = World::player_to_map_position(position);
         let map = match self.maps.get(&map_position) {
             None => panic!(
                 "Map at {} {} does not exist!",
@@ -58,9 +58,9 @@ impl MapManager {
         map.get_tile(local_x, local_y)
     }
 
-    fn draw_map(renderer: &Renderer, map: &Map, player_position: Vector2D<i32>) {
+    fn render_map(renderer: &Renderer, map: &Map, player_position: Vector2D<i32>) {
         //Top left position of where the map is drawn from
-        let mut map_pos = GAME_AREA_CENTER - player_position + *map.world_position() * MAP_SIZE;
+        let mut map_pos = GAME_AREA_CENTER - player_position + map.world_position * MAP_SIZE;
 
         //Don't try draw map if it is outside of the bounds of the game rendering area
         if map_pos.x > GAME_AREA_SIZE.x || map_pos.y + MAP_SIZE.x < 0 {

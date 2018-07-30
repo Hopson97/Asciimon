@@ -6,14 +6,11 @@ use graphics::renderer::Renderer;
 
 use game::map_manager::MapManager;
 use game::player::Player;
-use game::{GAME_AREA_X, GAME_AREA_Y};
+use game::GAME_AREA_CENTER;
 
 use util::maths::clamp;
 use util::vector;
 use util::vector::Vector2D;
-
-pub const CENTER_X: i32 = GAME_AREA_X / 2;
-pub const CENTER_Y: i32 = GAME_AREA_Y / 2;
 
 #[derive(Clone)]
 enum Action {
@@ -75,7 +72,7 @@ impl StateExplore {
 
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position + move_amount;
-        let next_tile = self.maps.get_tile(&next_position);
+        let next_tile = self.maps.get_tile(next_position);
         if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
             false
         } else {
@@ -153,11 +150,11 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        self.maps.render_maps(&renderer, &self.player.position);
+        self.maps.render_maps(&renderer, self.player.position);
 
         renderer.draw_string(
             "debug",
-            &self.maps.get_tile(&self.player.position).to_string(),
+            &self.maps.get_tile(self.player.position).to_string(),
             &Vector2D::new(0, 0),
         );
         renderer.draw_string(
@@ -173,6 +170,6 @@ impl GameState for StateExplore {
 
         //Draw player position
         Renderer::set_text_colour(&Colour::new(0, 153, 175));
-        renderer.draw_string("game", "@", &Vector2D::new(CENTER_X, CENTER_Y));
+        renderer.draw_string("game", "@", &GAME_AREA_CENTER);
     }
 }

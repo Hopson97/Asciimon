@@ -12,8 +12,12 @@ use self::game_state::{state_explore::StateExplore, GameState, ReturnResult};
 
 use std::io::{stdin, stdout, Write};
 
-pub const GAME_AREA_X: i32 = 81;
-pub const GAME_AREA_Y: i32 = 45;
+pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 45 };
+
+pub const GAME_AREA_CENTER: Vector2D<i32> = Vector2D {
+    x: GAME_AREA_SIZE.x / 2,
+    y: GAME_AREA_SIZE.y / 2,
+};
 
 pub struct Game {
     renderer: Renderer,
@@ -33,17 +37,14 @@ impl Game {
         //ui::init(&mut game.renderer);
 
         //Yay for magic numbers
-        game.renderer.add_render_section(
-            "game",
-            Vector2D::new(0, 7),
-            Vector2D::new(GAME_AREA_X, GAME_AREA_Y),
-        );
+        game.renderer
+            .add_render_section("game", Vector2D::new(0, 7), GAME_AREA_SIZE);
         game.renderer
             .add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
         game.renderer.add_render_section(
             "input",
             Vector2D::new(50, 0),
-            Vector2D::new(GAME_AREA_X - 50, 6),
+            Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
         );
 
         game.renderer.create_border("game");
@@ -135,12 +136,36 @@ impl Game {
 
     fn draw_logo(renderer: &Renderer) {
         Renderer::set_text_colour(&Colour::new(50, 255, 200));
-        renderer.draw_string("logo", "                    _ _                       ",      &Vector2D::new(0, 0));
-        renderer.draw_string("logo", "     /\\            (_|_)                      ",     &Vector2D::new(0, 1));
-        renderer.draw_string("logo", "    /  \\   ___  ___ _ _ _ __ ___   ___  _ __  ",     &Vector2D::new(0, 2));
-        renderer.draw_string("logo", "   / /\\ \\ / __|/ __| | | '_ ` _ \\ / _ \\| '_ \\ ", &Vector2D::new(0, 3));
-        renderer.draw_string("logo", "  / ____ \\ __ \\ (__| | | | | | | | (_) | | | |",    &Vector2D::new(0, 4));
-        renderer.draw_string("logo", " /_/    \\_\\___/\\___|_|_|_| |_| |_|\\___/|_| |_|",  &Vector2D::new(0, 5));
+        renderer.draw_string(
+            "logo",
+            "                    _ _                       ",
+            &Vector2D::new(0, 0),
+        );
+        renderer.draw_string(
+            "logo",
+            "     /\\            (_|_)                      ",
+            &Vector2D::new(0, 1),
+        );
+        renderer.draw_string(
+            "logo",
+            "    /  \\   ___  ___ _ _ _ __ ___   ___  _ __  ",
+            &Vector2D::new(0, 2),
+        );
+        renderer.draw_string(
+            "logo",
+            "   / /\\ \\ / __|/ __| | | '_ ` _ \\ / _ \\| '_ \\ ",
+            &Vector2D::new(0, 3),
+        );
+        renderer.draw_string(
+            "logo",
+            "  / ____ \\ __ \\ (__| | | | | | | | (_) | | | |",
+            &Vector2D::new(0, 4),
+        );
+        renderer.draw_string(
+            "logo",
+            " /_/    \\_\\___/\\___|_|_|_| |_| |_|\\___/|_| |_|",
+            &Vector2D::new(0, 5),
+        );
         Renderer::set_text_colour(&Colour::new(255, 255, 255));
     }
 }

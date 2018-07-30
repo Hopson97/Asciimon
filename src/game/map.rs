@@ -8,8 +8,7 @@ use std::io::{BufRead, BufReader};
 
 use std::fs;
 
-pub const MAP_WIDTH: i32 = 100;
-pub const MAP_HEIGHT: i32 = 50;
+pub const MAP_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
 pub struct Map {
     world_position: Vector2D<i32>,
@@ -27,7 +26,7 @@ impl Map {
     pub fn load(x: i32, y: i32) -> Option<Map> {
         let mut map = Map {
             world_position: Vector2D::new(x, y),
-            tile_data: Vec::with_capacity((MAP_HEIGHT) as usize),
+            tile_data: Vec::with_capacity(MAP_SIZE.y as usize),
         };
 
         let mut file_name = String::from("maps/");
@@ -43,7 +42,7 @@ impl Map {
 
             for line in BufReader::new(file).lines() {
                 map.tile_data.push(line.unwrap());
-                if map.tile_data.len() == MAP_HEIGHT as usize {
+                if map.tile_data.len() == MAP_SIZE.y as usize {
                     break;
                 }
             }
@@ -58,9 +57,9 @@ impl Map {
         line: usize,
         begin: usize,
         end: usize,
-        draw_point: &Vector2D<i32>,
+        draw_point: Vector2D<i32>,
     ) {
-        let mut render_string = String::with_capacity((MAP_WIDTH * 2) as usize);
+        let mut render_string = String::with_capacity(MAP_SIZE.x as usize * 2);
         let ref_string = &self.tile_data[line];
 
         //Set colour based on the batch of following chars

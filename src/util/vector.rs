@@ -73,11 +73,27 @@ impl<T: Mul<Output = T> + Copy> Mul<T> for Vector2D<T> {
     }
 }
 
+impl<T: Mul<Output = T>> Mul for Vector2D<T> {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self::Output {
+        Vector2D::new(self.x * other.x, self.y * other.y)
+    }
+}
+
 impl<T: Div<Output = T> + Copy> Div<T> for Vector2D<T> {
     type Output = Self;
 
     fn div(self, other: T) -> Self::Output {
         Vector2D::new(self.x / other, self.y / other)
+    }
+}
+
+impl<T: Div<Output = T>> Div for Vector2D<T> {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self::Output {
+        Vector2D::new(self.x / other.x, self.y / other.y)
     }
 }
 

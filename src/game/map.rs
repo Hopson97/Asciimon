@@ -70,14 +70,14 @@ impl Map {
             if c != cur_char {
                 cur_char = c;
                 match c {
-                    ',' => render_string.push_str(&Colour::ansi_text_colour_string(14, 160, 20)),
-                    '|' => render_string.push_str(&Colour::ansi_text_colour_string(30, 145, 35)),
-                    '.' => render_string.push_str(&Colour::ansi_text_colour_string(124, 252, 0)),
-                    '#' => render_string.push_str(&Colour::ansi_text_colour_string(34, 100, 34)),
-                    '0' => render_string.push_str(&Colour::ansi_text_colour_string(34, 100, 34)),
-                    'Y' => render_string.push_str(&Colour::ansi_text_colour_string(160, 82, 45)),
-                    '~' => render_string.push_str(&Colour::ansi_text_colour_string(32, 178, 230)),
-                    'X' => render_string.push_str(&Colour::ansi_text_colour_string(200, 200, 200)),
+                    ',' => render_string.push_str(&Colour::new(14, 160, 20).ansi_text_string()),
+                    '|' => render_string.push_str(&Colour::new(30, 145, 35).ansi_text_string()),
+                    '.' => render_string.push_str(&Colour::new(124, 252, 0).ansi_text_string()),
+                    '#' => render_string.push_str(&Colour::new(34, 100, 34).ansi_text_string()),
+                    '0' => render_string.push_str(&Colour::new(34, 100, 34).ansi_text_string()),
+                    'Y' => render_string.push_str(&Colour::new(160, 82, 45).ansi_text_string()),
+                    '~' => render_string.push_str(&Colour::new(32, 178, 230).ansi_text_string()),
+                    'X' => render_string.push_str(&Colour::new(200, 200, 200).ansi_text_string()),
                     _ => {}
                 }
             }

@@ -12,16 +12,16 @@ impl Colour {
         Colour { r, g, b }
     }
 
-    pub fn ansi_text_colour_string(r: u8, g: u8, b: u8) -> String {
-        Colour::colour_string(38, r, g, b)
+    pub fn ansi_text_string(&self) -> String {
+        self.ansi_string(38)
     }
 
-    pub fn ansi_bg_colour_string(r: u8, g: u8, b: u8) -> String {
-        Colour::colour_string(48, r, g, b)
+    pub fn ansi_bg_string(&self) -> String {
+        self.ansi_string(48)
     }
 
-    fn colour_string(id: u8, r: u8, g: u8, b: u8) -> String {
-        format!("\x1b[{};2;{};{};{}m", id, r, g, b)
+    fn ansi_string(&self, id: u8) -> String {
+        format!("\x1b[{};2;{};{};{}m", id, self.r, self.g, self.b)
     }
 }
 

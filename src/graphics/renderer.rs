@@ -123,21 +123,12 @@ impl Renderer {
 
     /// Set the foreground colour for text printed to the terminal
     pub fn set_text_colour(colour: &Colour) {
-        Renderer::set_colour(38, &colour);
+        print!("{}", colour.ansi_text_string());
     }
 
     /// Set the background colour for text printed to the terminal
     pub fn set_bg_colour(colour: &Colour) {
-        Renderer::set_colour(48, &colour);
-    }
-
-    /// Sets either background/foreground colour for text printed to terminal window
-    /// # Examples
-    /// Renderer::set_color(48, /* some colour here */)
-    ///
-    /// This sets the background colour, as 48 is the identifier for background
-    fn set_colour(ansi: u8, colour: &Colour) {
-        print!("\x1b[{};2;{};{};{}m", ansi, colour.r, colour.g, colour.b);
+        print!("{}", colour.ansi_bg_string());
     }
 
     /// Sets cursor location in the renderer

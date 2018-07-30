@@ -1,3 +1,4 @@
+use util::vector;
 use util::vector::Vector2D;
 
 pub struct Sprite {
@@ -8,14 +9,14 @@ pub struct Sprite {
 impl Sprite {
     pub fn new() -> Sprite {
         Sprite {
-            position: Vector2D::new(0, 0),
+            position: vector::ZERO,
             lines: Vec::new(),
         }
     }
 
     pub fn with_capacity(capacity: usize) -> Sprite {
         Sprite {
-            position: Vector2D::new(0, 0),
+            position: vector::ZERO,
             lines: Vec::with_capacity(capacity),
         }
     }

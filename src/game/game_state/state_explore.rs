@@ -9,6 +9,7 @@ use game::player::Player;
 use game::{GAME_AREA_X, GAME_AREA_Y};
 
 use util::maths::clamp;
+use util::vector;
 use util::vector::Vector2D;
 
 pub const CENTER_X: i32 = GAME_AREA_X / 2;
@@ -63,11 +64,11 @@ impl StateExplore {
     pub fn handle_move_player_step(&mut self, steps: &String) {
         for step in steps.chars() {
             let move_vector = match step {
-                'w' => Vector2D::new(0, -1),
-                'a' => Vector2D::new(-1, 0),
-                's' => Vector2D::new(0, 1),
-                'd' => Vector2D::new(1, 0),
-                _ => Vector2D::new(0, 0),
+                'w' => vector::UP,
+                'a' => vector::LEFT,
+                's' => vector::DOWN,
+                'd' => vector::RIGHT,
+                _ => vector::ZERO,
             };
             self.move_player(&move_vector);
         }

@@ -1,5 +1,13 @@
 use std::ops::Add;
 
+pub const UP: Vector2D<i32> = Vector2D { x: 0, y: -1 };
+pub const RIGHT: Vector2D<i32> = Vector2D { x: 1, y: 0 };
+pub const DOWN: Vector2D<i32> = Vector2D { x: 0, y: 1 };
+pub const LEFT: Vector2D<i32> = Vector2D { x: -1, y: 0 };
+
+pub const ONE: Vector2D<i32> = Vector2D { x: 1, y: 1 };
+pub const ZERO: Vector2D<i32> = Vector2D { x: 0, y: 0 };
+
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Vector2D<T> {
     pub x: T,

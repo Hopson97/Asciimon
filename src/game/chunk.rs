@@ -29,10 +29,7 @@ impl Chunk {
             tile_data: Vec::with_capacity(CHUNK_SIZE.y as usize),
         };
 
-        let mut file_name = String::from("world/");
-        file_name.push_str(x.to_string().as_str());
-        file_name.push(' ');
-        file_name.push_str(y.to_string().as_str());
+        let file_name = format!("world/{}_{}.chunk", x, y);
 
         if !path_exists(&file_name) {
             None //panic!("Path for chunk '{}' does not exist", file_name);

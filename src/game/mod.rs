@@ -101,18 +101,18 @@ impl Game {
             if self.needs_redraw {
                 current_state.draw(&mut self.renderer);
                 self.needs_redraw = false;
-            }
 
-            //Ensure what has been drawn is flushed to stdout before getting input/updating
-            stdout()
-                .flush()
-                .expect("Could not buffer the terminal output!");
+                //Ensure what has been drawn is flushed to stdout before getting input/updating
+                stdout()
+                    .flush()
+                    .expect("Could not buffer the terminal output!");
+            }
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
                 match input_args.as_slice() {
                     ["exit"] | ["quit"] => ReturnResult::Exit,
-                    input => current_state.update(&input),
+                    input => current_state.update(input),
                 }
             } else {
                 return ReturnResult::Exit;
@@ -122,7 +122,7 @@ impl Game {
         }
     }
 
-    pub fn get_user_input(renderer: &Renderer) -> Option<String> {
+    fn get_user_input(renderer: &Renderer) -> Option<String> {
         Renderer::set_text_colour(&Colour::new(255, 255, 255));
         renderer.clear_section("input", renderer.default_clear_colour());
         renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 0));

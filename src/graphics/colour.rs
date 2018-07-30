@@ -20,8 +20,19 @@ impl Colour {
         self.ansi_string(48)
     }
 
+    #[cfg(not(feature="256colour"))]
     fn ansi_string(&self, id: u8) -> String {
         format!("\x1b[{};2;{};{};{}m", id, self.r, self.g, self.b)
+    }
+
+    #[cfg(feature="256colour")]
+    fn ansi_string(&self, id: u8) -> String {
+        let r = self.r as u16 * 6 / 256;
+        let g = self.g as u16 * 6 / 256;
+        let b = self.b as u16 * 6 / 256;
+        let code = 16 + r * 36 + g * 6 + b;
+        
+        format!("\x1b[{};5;{}m", id, code)
     }
 }
 

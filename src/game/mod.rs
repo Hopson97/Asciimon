@@ -19,6 +19,15 @@ pub const GAME_AREA_CENTER: Vector2D<i32> = Vector2D {
     y: GAME_AREA_SIZE.y / 2,
 };
 
+pub const LOGO: &str = r"
+                   _ _
+    /\            (_|_)
+   /  \   ___  ___ _ _ _ __ ___   ___  _ __
+  / /\ \ / __|/ __| | | '_ ` _ \ / _ \| '_ \
+ / ____ \ __ \ (__| | | | | | | | (_) | | | |
+/_/    \_\___/\___|_|_|_| |_| |_|\___/|_| |_|
+";
+
 pub struct Game {
     renderer: Renderer,
     state_stack: Vec<Box<GameState>>,
@@ -136,36 +145,9 @@ impl Game {
 
     fn draw_logo(renderer: &Renderer) {
         Renderer::set_text_colour(&Colour::new(50, 255, 200));
-        renderer.draw_string(
-            "logo",
-            "                    _ _                       ",
-            Vector2D::new(0, 0),
-        );
-        renderer.draw_string(
-            "logo",
-            "     /\\            (_|_)                      ",
-            Vector2D::new(0, 1),
-        );
-        renderer.draw_string(
-            "logo",
-            "    /  \\   ___  ___ _ _ _ __ ___   ___  _ __  ",
-            Vector2D::new(0, 2),
-        );
-        renderer.draw_string(
-            "logo",
-            "   / /\\ \\ / __|/ __| | | '_ ` _ \\ / _ \\| '_ \\ ",
-            Vector2D::new(0, 3),
-        );
-        renderer.draw_string(
-            "logo",
-            "  / ____ \\ __ \\ (__| | | | | | | | (_) | | | |",
-            Vector2D::new(0, 4),
-        );
-        renderer.draw_string(
-            "logo",
-            " /_/    \\_\\___/\\___|_|_|_| |_| |_|\\___/|_| |_|",
-            Vector2D::new(0, 5),
-        );
+        for (line_num, line) in LOGO.lines().enumerate() {
+            renderer.draw_string("logo", line, Vector2D::new(1, line_num as i32));
+        }
         Renderer::set_text_colour(&Colour::new(255, 255, 255));
     }
 }

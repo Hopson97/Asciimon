@@ -6,13 +6,11 @@ use graphics::renderer::Renderer;
 
 use game::map_manager::MapManager;
 use game::player::Player;
-use game::{GAME_AREA_X, GAME_AREA_Y};
+use game::GAME_AREA_CENTER;
 
 use util::maths::clamp;
+use util::vector;
 use util::vector::Vector2D;
-
-pub const CENTER_X: i32 = GAME_AREA_X / 2;
-pub const CENTER_Y: i32 = GAME_AREA_Y / 2;
 
 #[derive(Clone)]
 enum Action {
@@ -43,13 +41,13 @@ impl StateExplore {
         let move_vector = Vector2D::new(x_move, y_move);
 
         for _ in 0..x_offset.abs() {
-            if !self.move_player(&move_vector) {
+            if !self.move_player(move_vector) {
                 break;
             }
         }
 
         for _ in 0..y_offset.abs() {
-            if !self.move_player(&move_vector) {
+            if !self.move_player(move_vector) {
                 break;
             }
         }
@@ -62,24 +60,23 @@ impl StateExplore {
     /// Collision will stop player moving in a direction, but will continue to cycle the buffer
     pub fn handle_move_player_step(&mut self, steps: &String) {
         for step in steps.chars() {
-            let move_vector = match step {
-                'w' => Vector2D::new(0, -1),
-                'a' => Vector2D::new(-1, 0),
-                's' => Vector2D::new(0, 1),
-                'd' => Vector2D::new(1, 0),
-                _ => Vector2D::new(0, 0),
-            };
-            self.move_player(&move_vector);
+            self.move_player(match step {
+                'w' => vector::UP,
+                'a' => vector::LEFT,
+                's' => vector::DOWN,
+                'd' => vector::RIGHT,
+                _ => continue,
+            });
         }
     }
 
-    fn move_player(&mut self, move_amount: &Vector2D<i32>) -> bool {
-        let next_position = move_amount.clone() + self.player.position().clone();
-        let next_tile = self.maps.get_tile(&next_position);
+    fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
+        let next_position = self.player.position + move_amount;
+        let next_tile = self.maps.get_tile(next_position);
         if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
             false
         } else {
-            self.player.move_position(move_amount.x, move_amount.y);
+            self.player.move_position(move_amount);
             true
         }
     }
@@ -97,23 +94,21 @@ impl GameState for StateExplore {
                 Ok(step) => step,
             }
         }
-        Renderer::set_cursor_location(120, 50);
+        Renderer::set_cursor_location(Vector2D::new(120, 50));
         println!("{}", input_args.len());
 
-       // self.next_action = Action::None; //Reset last action so it does not get repeated
+        // self.next_action = Action::None; //Reset last action so it does not get repeated
 
         if input_args.len() == 1 {
             match input_args[0].chars().next() {
-                None => {},
-                Some(c) => {
-                    match c {
-                        'w' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        'a' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        's' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        'd' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        _ => {}
-                    }
-                }
+                None => {}
+                Some(c) => match c {
+                    'w' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    'a' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    's' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    'd' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    _ => {}
+                },
             };
         } else if input_args.len() == 2 {
             match input_args[0] {
@@ -153,26 +148,26 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        self.maps.render_maps(&renderer, &self.player.position());
+        self.maps.render_maps(&renderer, self.player.position);
 
         renderer.draw_string(
             "debug",
-            &self.maps.get_tile(&self.player.position()).to_string(),
-            &Vector2D::new(0, 0),
+            &self.maps.get_tile(self.player.position).to_string(),
+            Vector2D::new(0, 0),
         );
         renderer.draw_string(
             "debug",
-            &self.player.position().x.to_string(),
-            &Vector2D::new(0, 1),
+            &self.player.position.x.to_string(),
+            Vector2D::new(0, 1),
         );
         renderer.draw_string(
             "debug",
-            &self.player.position().y.to_string(),
-            &Vector2D::new(5, 1),
+            &self.player.position.y.to_string(),
+            Vector2D::new(5, 1),
         );
 
         //Draw player position
         Renderer::set_text_colour(&Colour::new(0, 153, 175));
-        renderer.draw_string("game", "@", &Vector2D::new(CENTER_X, CENTER_Y));
+        renderer.draw_string("game", "@", GAME_AREA_CENTER);
     }
 }

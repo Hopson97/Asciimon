@@ -11,9 +11,6 @@ macro_rules! define_colour {
     };
 }
 
-define_colour!(BLACK, 0, 0, 0);
-define_colour!(WHITE, 255, 255, 255);
-
 #[derive(Clone, Debug)]
 pub struct Colour {
     pub r: u8,

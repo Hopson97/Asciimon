@@ -83,7 +83,7 @@ impl Map {
             render_string.push(c);
         }
 
-        renderer.draw_string("game", &render_string, &draw_point);
+        renderer.draw_string("game", &render_string, draw_point);
     }
 
     pub fn get_tile(&self, x: i32, y: i32) -> char {

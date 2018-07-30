@@ -119,14 +119,14 @@ impl Game {
     pub fn get_user_input(renderer: &Renderer) -> String {
         Renderer::set_text_colour(&Colour::new(255, 255, 255));
         renderer.clear_section("input", renderer.default_clear_colour());
-        renderer.draw_string("input", "Enter Input Here:", &Vector2D::new(0, 0));
-        renderer.draw_string("input", "> ", &Vector2D::new(0, 2));
+        renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 0));
+        renderer.draw_string("input", "> ", Vector2D::new(0, 2));
 
         stdout()
             .flush()
             .expect("Could not buffer the terminal output!");
 
-        renderer.set_cursor_render_section("input", &Vector2D::new(2, 2));
+        renderer.set_cursor_render_section("input", Vector2D::new(2, 2));
         let mut input = String::new();
         stdin()
             .read_line(&mut input)
@@ -139,32 +139,32 @@ impl Game {
         renderer.draw_string(
             "logo",
             "                    _ _                       ",
-            &Vector2D::new(0, 0),
+            Vector2D::new(0, 0),
         );
         renderer.draw_string(
             "logo",
             "     /\\            (_|_)                      ",
-            &Vector2D::new(0, 1),
+            Vector2D::new(0, 1),
         );
         renderer.draw_string(
             "logo",
             "    /  \\   ___  ___ _ _ _ __ ___   ___  _ __  ",
-            &Vector2D::new(0, 2),
+            Vector2D::new(0, 2),
         );
         renderer.draw_string(
             "logo",
             "   / /\\ \\ / __|/ __| | | '_ ` _ \\ / _ \\| '_ \\ ",
-            &Vector2D::new(0, 3),
+            Vector2D::new(0, 3),
         );
         renderer.draw_string(
             "logo",
             "  / ____ \\ __ \\ (__| | | | | | | | (_) | | | |",
-            &Vector2D::new(0, 4),
+            Vector2D::new(0, 4),
         );
         renderer.draw_string(
             "logo",
             " /_/    \\_\\___/\\___|_|_|_| |_| |_|\\___/|_| |_|",
-            &Vector2D::new(0, 5),
+            Vector2D::new(0, 5),
         );
         Renderer::set_text_colour(&Colour::new(255, 255, 255));
     }

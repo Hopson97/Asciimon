@@ -97,20 +97,18 @@ impl GameState for StateExplore {
         Renderer::set_cursor_location(120, 50);
         println!("{}", input_args.len());
 
-       // self.next_action = Action::None; //Reset last action so it does not get repeated
+        // self.next_action = Action::None; //Reset last action so it does not get repeated
 
         if input_args.len() == 1 {
             match input_args[0].chars().next() {
-                None => {},
-                Some(c) => {
-                    match c {
-                        'w' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        'a' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        's' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        'd' =>  self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
-                        _ => {}
-                    }
-                }
+                None => {}
+                Some(c) => match c {
+                    'w' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    'a' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    's' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    'd' => self.next_action = Action::MovePlayerStep(String::from(input_args[0])),
+                    _ => {}
+                },
             };
         } else if input_args.len() == 2 {
             match input_args[0] {
@@ -155,21 +153,21 @@ impl GameState for StateExplore {
         renderer.draw_string(
             "debug",
             &self.maps.get_tile(self.player.position).to_string(),
-            &Vector2D::new(0, 0),
+            Vector2D::new(0, 0),
         );
         renderer.draw_string(
             "debug",
             &self.player.position.x.to_string(),
-            &Vector2D::new(0, 1),
+            Vector2D::new(0, 1),
         );
         renderer.draw_string(
             "debug",
             &self.player.position.y.to_string(),
-            &Vector2D::new(5, 1),
+            Vector2D::new(5, 1),
         );
 
         //Draw player position
         Renderer::set_text_colour(&Colour::new(0, 153, 175));
-        renderer.draw_string("game", "@", &GAME_AREA_CENTER);
+        renderer.draw_string("game", "@", GAME_AREA_CENTER);
     }
 }

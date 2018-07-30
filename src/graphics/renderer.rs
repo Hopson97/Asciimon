@@ -6,6 +6,12 @@ use util::vector::Vector2D;
 use super::sprite::Sprite;
 use std::collections::HashMap;
 
+mod colours {
+    use graphics::colour::Colour;
+    define_colour!(CLEAR_COLOUR, 25, 20, 70);
+    define_colour!(BORDER, 20, 20, 20);
+}
+
 struct RenderSection {
     start_point: Vector2D<i32>,
     size: Vector2D<i32>,
@@ -27,7 +33,7 @@ impl Renderer {
     pub fn new(size: Vector2D<i32>) -> Renderer {
         let mut renderer = Renderer {
             size,
-            clear_colour: Colour::new(25, 20, 70),
+            clear_colour: colours::CLEAR_COLOUR,
             render_sections: HashMap::new(),
         };
         renderer.add_render_section("full", Vector2D::new(0, 0), size);
@@ -102,7 +108,7 @@ impl Renderer {
     ///Creates a border around the rendering section area
     pub fn create_border(&self, section: &str) {
         let sect = &self.render_sections[section];
-        let bg_col = Colour::new(20, 20, 20);
+        let bg_col = colours::BORDER;
 
         let x = sect.start_point.x;
         let y = sect.start_point.y;

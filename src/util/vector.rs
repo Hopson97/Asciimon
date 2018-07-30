@@ -1,5 +1,5 @@
 use std::fmt;
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::*;
 
 pub const UP: Vector2D<i32> = Vector2D { x: 0, y: -1 };
 pub const RIGHT: Vector2D<i32> = Vector2D { x: 1, y: 0 };
@@ -86,5 +86,33 @@ impl<T: Neg<Output = T>> Neg for Vector2D<T> {
 
     fn neg(self) -> Self::Output {
         Vector2D::new(-self.x, -self.y)
+    }
+}
+
+impl<T: AddAssign> AddAssign for Vector2D<T> {
+    fn add_assign(&mut self, other: Self) {
+        self.x += other.x;
+        self.y += other.y;
+    }
+}
+
+impl<T: SubAssign> SubAssign for Vector2D<T> {
+    fn sub_assign(&mut self, other: Self) {
+        self.x -= other.x;
+        self.y -= other.y;
+    }
+}
+
+impl<T: MulAssign + Copy> MulAssign<T> for Vector2D<T> {
+    fn mul_assign(&mut self, other: T) {
+        self.x *= other;
+        self.y *= other;
+    }
+}
+
+impl<T: DivAssign + Copy> DivAssign<T> for Vector2D<T> {
+    fn div_assign(&mut self, other: T) {
+        self.x /= other;
+        self.y /= other;
     }
 }

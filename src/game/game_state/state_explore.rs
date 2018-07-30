@@ -44,13 +44,13 @@ impl StateExplore {
         let move_vector = Vector2D::new(x_move, y_move);
 
         for _ in 0..x_offset.abs() {
-            if !self.move_player(&move_vector) {
+            if !self.move_player(move_vector) {
                 break;
             }
         }
 
         for _ in 0..y_offset.abs() {
-            if !self.move_player(&move_vector) {
+            if !self.move_player(move_vector) {
                 break;
             }
         }
@@ -63,24 +63,23 @@ impl StateExplore {
     /// Collision will stop player moving in a direction, but will continue to cycle the buffer
     pub fn handle_move_player_step(&mut self, steps: &String) {
         for step in steps.chars() {
-            let move_vector = match step {
+            self.move_player(match step {
                 'w' => vector::UP,
                 'a' => vector::LEFT,
                 's' => vector::DOWN,
                 'd' => vector::RIGHT,
-                _ => vector::ZERO,
-            };
-            self.move_player(&move_vector);
+                _ => continue,
+            });
         }
     }
 
-    fn move_player(&mut self, move_amount: &Vector2D<i32>) -> bool {
-        let next_position = move_amount.clone() + self.player.position().clone();
+    fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
+        let next_position = self.player.position + move_amount;
         let next_tile = self.maps.get_tile(&next_position);
         if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
             false
         } else {
-            self.player.move_position(move_amount.x, move_amount.y);
+            self.player.move_position(move_amount);
             true
         }
     }
@@ -154,21 +153,21 @@ impl GameState for StateExplore {
      * Draws the player and the overworld etc
      */
     fn draw(&mut self, renderer: &mut Renderer) {
-        self.maps.render_maps(&renderer, &self.player.position());
+        self.maps.render_maps(&renderer, &self.player.position);
 
         renderer.draw_string(
             "debug",
-            &self.maps.get_tile(&self.player.position()).to_string(),
+            &self.maps.get_tile(&self.player.position).to_string(),
             &Vector2D::new(0, 0),
         );
         renderer.draw_string(
             "debug",
-            &self.player.position().x.to_string(),
+            &self.player.position.x.to_string(),
             &Vector2D::new(0, 1),
         );
         renderer.draw_string(
             "debug",
-            &self.player.position().y.to_string(),
+            &self.player.position.y.to_string(),
             &Vector2D::new(5, 1),
         );
 

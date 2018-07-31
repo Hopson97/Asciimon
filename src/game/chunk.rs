@@ -8,10 +8,10 @@ use std::io::{BufRead, BufReader};
 
 use std::fs;
 
-pub const MAP_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
+pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
-pub struct Map {
-    world_position: Vector2D<i32>,
+pub struct Chunk {
+    pub world_position: Vector2D<i32>,
     tile_data: Vec<String>,
 }
 
@@ -19,35 +19,32 @@ fn path_exists(path: &str) -> bool {
     fs::metadata(path).is_ok()
 }
 
-impl Map {
+impl Chunk {
     /**
-     * Loads a map from a file for coordinates (x, y)
+     * Loads a chunk from a file for coordinates (x, y)
      */
-    pub fn load(x: i32, y: i32) -> Option<Map> {
-        let mut map = Map {
+    pub fn load(x: i32, y: i32) -> Option<Chunk> {
+        let mut chunk = Chunk {
             world_position: Vector2D::new(x, y),
-            tile_data: Vec::with_capacity(MAP_SIZE.y as usize),
+            tile_data: Vec::with_capacity(CHUNK_SIZE.y as usize),
         };
 
-        let mut file_name = String::from("maps/");
-        file_name.push_str(x.to_string().as_str());
-        file_name.push(' ');
-        file_name.push_str(y.to_string().as_str());
+        let file_name = format!("world/{}_{}.chunk", x, y);
 
         if !path_exists(&file_name) {
-            None //panic!("Path for map '{}' does not exist", file_name);
+            None //panic!("Path for chunk '{}' does not exist", file_name);
         } else {
             let file = File::open(file_name)
-                .unwrap_or_else(|_| panic!("Unable to open file for map {} {}", x, y));
+                .unwrap_or_else(|_| panic!("Unable to open file for chunk {} {}", x, y));
 
             for line in BufReader::new(file).lines() {
-                map.tile_data.push(line.unwrap());
-                if map.tile_data.len() == MAP_SIZE.y as usize {
+                chunk.tile_data.push(line.unwrap());
+                if chunk.tile_data.len() == CHUNK_SIZE.y as usize {
                     break;
                 }
             }
 
-            Some(map)
+            Some(chunk)
         }
     }
 
@@ -59,7 +56,7 @@ impl Map {
         end: usize,
         draw_point: Vector2D<i32>,
     ) {
-        let mut render_string = String::with_capacity(MAP_SIZE.x as usize * 2);
+        let mut render_string = String::with_capacity(CHUNK_SIZE.x as usize * 2);
         let ref_string = &self.tile_data[line];
 
         //Set colour based on the batch of following chars
@@ -90,9 +87,5 @@ impl Map {
         let line = &self.tile_data[y as usize];
 
         line.as_bytes()[x as usize] as char
-    }
-
-    pub fn world_position(&self) -> &Vector2D<i32> {
-        &self.world_position
     }
 }

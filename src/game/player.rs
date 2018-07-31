@@ -1,4 +1,4 @@
-use super::map::MAP_SIZE;
+use super::chunk::CHUNK_SIZE;
 use util::vector::Vector2D;
 
 pub struct Player {
@@ -10,7 +10,7 @@ impl Player {
         let local_pos = Vector2D::new(20, 25);
 
         Player {
-            position: MAP_SIZE * 1000 + local_pos,
+            position: CHUNK_SIZE * 1000 + local_pos,
         }
     }
 

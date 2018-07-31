@@ -4,7 +4,8 @@ use graphics::renderer::Renderer;
 use util::maths;
 use util::vector::Vector2D;
 
-use super::chunk::{Chunk, CHUNK_SIZE};
+mod chunk;
+use self::chunk::{Chunk, CHUNK_SIZE};
 
 pub struct World {
     //error_chunk: Chunk,

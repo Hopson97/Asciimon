@@ -71,10 +71,12 @@ impl Renderer {
                 return;
             }
             Some(render_section) => {
-                for y in 0..render_section.size.y {
-                    for x in 0..render_section.size.x {
-                        self.draw_string(section, " ", Vector2D::new(x, y));
-                    }
+                for y in 0..=render_section.size.y {
+                    self.draw_string(
+                        section,
+                        &" ".repeat(render_section.size.x as usize),
+                        Vector2D::new(0, y),
+                    );
                 }
             }
         }

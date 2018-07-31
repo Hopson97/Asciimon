@@ -45,8 +45,7 @@ impl World {
         self.chunks.get(&chunk_position).map_or(' ', |chunk| {
             let local_x = maths::repeat(position.x, 0, CHUNK_SIZE.x);
             let local_y = maths::repeat(position.y, 0, CHUNK_SIZE.y);
-
-            chunk.get_tile(local_x, local_y)
+            chunk.get_tile(local_x as usize, local_y as usize)
         })
     }
 

@@ -136,7 +136,7 @@ impl Chunk {
         renderer.draw_string("game", &render_string, draw_point);
     }
 
-    pub fn get_tile(&self, x: i32, y: i32) -> char {
-        self.data[y as usize][x as usize]
+    pub fn get_tile(&self, x: usize, y: usize) -> char {
+        self.data[y][x]
     }
 }

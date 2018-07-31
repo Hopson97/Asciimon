@@ -4,7 +4,6 @@ mod player;
 pub mod chunk;
 pub mod world;
 
-use graphics::colour::Colour;
 use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
@@ -13,11 +12,17 @@ use self::game_state::{state_explore::StateExplore, GameState};
 use std::io::{stdin, stdout, Write};
 
 pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 45 };
-
 pub const GAME_AREA_CENTER: Vector2D<i32> = Vector2D {
     x: GAME_AREA_SIZE.x / 2,
     y: GAME_AREA_SIZE.y / 2,
 };
+
+mod colours {
+    use graphics::colour::Colour;
+    define_colour!(LOGO, 50, 255, 200);
+    define_colour!(TEXT, 255, 255, 255);
+    define_colour!(GAME_BACKGROUND, 0, 0, 0);
+}
 
 pub const LOGO: &str = r"
                    _ _
@@ -70,7 +75,7 @@ impl Game {
         Game::draw_logo(&game.renderer);
 
         game.renderer
-            .clear_section("game", &Colour::new(10, 10, 10));
+            .clear_section("game", &colours::GAME_BACKGROUND);
 
         game.run();
     }
@@ -80,11 +85,7 @@ impl Game {
         //Main loop!
         while self.is_running {
             match self.tick() {
-                Some(UpdateResult::Redraw) => {
-                    self.renderer.clear_section("debug", &Colour::new(0, 0, 0));
-                    self.renderer.clear_section("game", &Colour::new(0, 0, 0));
-                    self.needs_redraw = true;
-                }
+                Some(UpdateResult::Redraw) => self.needs_redraw = true,
                 Some(UpdateResult::StatePush(state)) => {
                     self.state_stack.push(state);
                     self.needs_redraw = true;
@@ -107,6 +108,11 @@ impl Game {
             //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
             //got on the first loop
             if self.needs_redraw {
+                self.renderer
+                    .clear_section("game", &colours::GAME_BACKGROUND);
+                self.renderer
+                    .clear_section("debug", &colours::GAME_BACKGROUND);
+
                 current_state.draw(&mut self.renderer);
                 self.needs_redraw = false;
 
@@ -131,7 +137,7 @@ impl Game {
     }
 
     fn get_user_input(renderer: &Renderer) -> Option<String> {
-        Renderer::set_text_colour(&Colour::new(255, 255, 255));
+        Renderer::set_text_colour(&colours::TEXT);
         renderer.clear_section("input", renderer.default_clear_colour());
         renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 0));
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
@@ -152,10 +158,10 @@ impl Game {
     }
 
     fn draw_logo(renderer: &Renderer) {
-        Renderer::set_text_colour(&Colour::new(50, 255, 200));
+        Renderer::set_text_colour(&colours::LOGO);
         for (line_num, line) in LOGO.lines().enumerate() {
-            renderer.draw_string("logo", line, Vector2D::new(1, line_num as i32));
+            renderer.draw_string("logo", line, Vector2D::new(1, line_num as i32 - 1));
         }
-        Renderer::set_text_colour(&Colour::new(255, 255, 255));
+        Renderer::set_text_colour(&colours::TEXT);
     }
 }

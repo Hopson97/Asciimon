@@ -33,19 +33,19 @@ impl Chunk {
     /**
      * Loads a chunk from a file for coordinates (x, y)
      */
-    pub fn load(x: i32, y: i32) -> Option<Chunk> {
+    pub fn load(pos: Vector2D<i32>) -> Option<Chunk> {
         let mut chunk = Chunk {
-            world_position: Vector2D::new(x, y),
+            world_position: pos,
             tile_data: Vec::with_capacity(CHUNK_SIZE.y as usize),
         };
 
-        let file_name = format!("world/{}_{}.chunk", x, y);
+        let file_name = format!("world/{}_{}.chunk", pos.x, pos.y);
 
         if !path_exists(&file_name) {
             None //panic!("Path for chunk '{}' does not exist", file_name);
         } else {
             let file = File::open(file_name)
-                .unwrap_or_else(|_| panic!("Unable to open file for chunk {} {}", x, y));
+                .unwrap_or_else(|_| panic!("Unable to open file for chunk {} {}", pos.x, pos.y));
 
             for line in BufReader::new(file).lines() {
                 chunk.tile_data.push(line.unwrap());

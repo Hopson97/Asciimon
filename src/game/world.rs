@@ -22,23 +22,22 @@ impl World {
 
     pub fn render(&mut self, renderer: &Renderer, player_position: Vector2D<i32>) {
         let player_chunk_pos = World::player_to_chunk_position(player_position);
-        let Vector2D { x, y } = player_chunk_pos;
 
-        for chunk_y in (y - 1)..=(y + 1) {
-            for chunk_x in (x - 1)..=(x + 1) {
-                let pos = Vector2D::new(chunk_x, chunk_y);
+        for y in -1..=1 {
+            for x in -1..=1 {
+                let chunk_pos = player_chunk_pos + Vector2D::new(x, y);
 
                 //To do: Improve the cotains key followed by the insert.
-                if !self.chunks.contains_key(&pos) {
-                    if let Some(chunk) = Chunk::load(chunk_x, chunk_y) {
-                        self.chunks.insert(pos, chunk);
+                if !self.chunks.contains_key(&chunk_pos) {
+                    if let Some(chunk) = Chunk::load(chunk_pos) {
+                        self.chunks.insert(chunk_pos, chunk);
                     }
                 }
-            }
-        }
 
-        for chunk in self.chunks.values() {
-            World::render_chunk(&renderer, &chunk, player_position);
+                if let Some(chunk) = self.chunks.get(&chunk_pos) {
+                    World::render_chunk(renderer, chunk, player_position);
+                }
+            }
         }
     }
 

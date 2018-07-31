@@ -43,18 +43,12 @@ impl World {
 
     pub fn get_tile(&self, position: Vector2D<i32>) -> char {
         let chunk_position = World::player_to_chunk_position(position);
-        let chunk = match self.chunks.get(&chunk_position) {
-            None => panic!(
-                "Chunk at {} {} does not exist!",
-                chunk_position.x, chunk_position.y
-            ),
-            Some(chunk) => chunk,
-        };
+        self.chunks.get(&chunk_position).map_or(' ', |chunk| {
+            let local_x = position.x % CHUNK_SIZE.x;
+            let local_y = position.y % CHUNK_SIZE.y;
 
-        let local_x = position.x % CHUNK_SIZE.x;
-        let local_y = position.y % CHUNK_SIZE.y;
-
-        chunk.get_tile(local_x, local_y)
+            chunk.get_tile(local_x, local_y)
+        })
     }
 
     fn render_chunk(renderer: &Renderer, chunk: &Chunk, player_position: Vector2D<i32>) {

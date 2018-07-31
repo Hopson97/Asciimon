@@ -22,7 +22,7 @@ mod colours {
 
 pub struct Chunk {
     pub world_position: Vector2D<i32>,
-    tile_data: Vec<String>,
+    data: Vec<Vec<char>>,
 }
 
 fn path_exists(path: &str) -> bool {
@@ -36,7 +36,7 @@ impl Chunk {
     pub fn load(pos: Vector2D<i32>) -> Option<Chunk> {
         let mut chunk = Chunk {
             world_position: pos,
-            tile_data: Vec::with_capacity(CHUNK_SIZE.y as usize),
+            data: Vec::with_capacity(CHUNK_SIZE.y as usize),
         };
 
         let file_name = format!("world/{}_{}.chunk", pos.x, pos.y);
@@ -48,8 +48,8 @@ impl Chunk {
                 .unwrap_or_else(|_| panic!("Unable to open file for chunk {} {}", pos.x, pos.y));
 
             for line in BufReader::new(file).lines() {
-                chunk.tile_data.push(line.unwrap());
-                if chunk.tile_data.len() == CHUNK_SIZE.y as usize {
+                chunk.data.push(line.unwrap().chars().collect());
+                if chunk.data.len() == CHUNK_SIZE.y as usize {
                     break;
                 }
             }
@@ -67,14 +67,12 @@ impl Chunk {
         draw_point: Vector2D<i32>,
     ) {
         let mut render_string = String::with_capacity(CHUNK_SIZE.x as usize * 2);
-        let ref_string = &self.tile_data[line];
 
-        //Set colour based on the batch of following chars
-        //Rust doesn't have static/global objects as far as I know, so I have to implement using a match
-        let mut cur_char = ' ';
-        for c in ref_string[begin..=end].chars() {
-            if c != cur_char {
-                cur_char = c;
+        // Set colour based on the batch of following chars
+        let mut prev_char = ' ';
+        for c in &self.data[line][begin..=end] {
+            if *c != prev_char {
+                prev_char = *c;
 
                 let colour = match c {
                     '~' => colours::WATER,
@@ -89,15 +87,14 @@ impl Chunk {
                 };
                 render_string.push_str(&colour.ansi_text_string());
             }
-            render_string.push(c);
+
+            render_string.push(*c);
         }
 
         renderer.draw_string("game", &render_string, draw_point);
     }
 
     pub fn get_tile(&self, x: i32, y: i32) -> char {
-        let line = &self.tile_data[y as usize];
-
-        line.as_bytes()[x as usize] as char
+        self.data[y as usize][x as usize]
     }
 }

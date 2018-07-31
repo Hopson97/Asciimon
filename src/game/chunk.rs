@@ -2,6 +2,8 @@ use graphics::renderer::Renderer;
 
 use util::vector::Vector2D;
 
+use game::{GAME_AREA_CENTER, GAME_AREA_SIZE};
+
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -58,7 +60,40 @@ impl Chunk {
         }
     }
 
-    pub fn draw_line(
+    pub fn render(&self, renderer: &Renderer, player_position: Vector2D<i32>) {
+        //Top left position of where the chunk is drawn from
+        let mut chunk_pos = GAME_AREA_CENTER - player_position + self.world_position * CHUNK_SIZE;
+
+        //Don't try draw chunk if it is outside of the bounds of the game rendering area
+        if chunk_pos.x > GAME_AREA_SIZE.x || chunk_pos.y + CHUNK_SIZE.x < 0 {
+            return;
+        }
+
+        //String slice of where the chunk lines are drawn from and to
+        let mut begin_slice = 0;
+        let mut end_slice = CHUNK_SIZE.x - 1;
+
+        if chunk_pos.x < 0 {
+            begin_slice = chunk_pos.x.abs();
+            chunk_pos.x = 0;
+        }
+
+        if chunk_pos.x + (end_slice - begin_slice) > GAME_AREA_SIZE.x as i32 {
+            end_slice = (GAME_AREA_SIZE.x as i32 - chunk_pos.x) + begin_slice;
+        }
+
+        for y in 0..CHUNK_SIZE.y {
+            self.draw_line(
+                renderer,
+                y as usize,
+                begin_slice as usize,
+                end_slice as usize,
+                chunk_pos + Vector2D::new(0, y),
+            );
+        }
+    }
+
+    fn draw_line(
         &self,
         renderer: &Renderer,
         line: usize,

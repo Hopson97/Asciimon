@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use graphics::renderer::Renderer;
+use util::maths;
 use util::vector::Vector2D;
 
 use super::chunk::{Chunk, CHUNK_SIZE};
@@ -44,8 +45,8 @@ impl World {
     pub fn get_tile(&self, position: Vector2D<i32>) -> char {
         let chunk_position = World::player_to_chunk_position(position);
         self.chunks.get(&chunk_position).map_or(' ', |chunk| {
-            let local_x = position.x % CHUNK_SIZE.x;
-            let local_y = position.y % CHUNK_SIZE.y;
+            let local_x = maths::repeat(position.x, 0, CHUNK_SIZE.x);
+            let local_y = maths::repeat(position.y, 0, CHUNK_SIZE.y);
 
             chunk.get_tile(local_x, local_y)
         })
@@ -85,6 +86,10 @@ impl World {
     }
 
     fn player_to_chunk_position(player_position: Vector2D<i32>) -> Vector2D<i32> {
-        player_position / CHUNK_SIZE
+        let Vector2D { x, y } = player_position / CHUNK_SIZE;
+        Vector2D::new(
+            if player_position.x < 0 { x - 1 } else { x },
+            if player_position.y < 0 { y - 1 } else { y },
+        )
     }
 }

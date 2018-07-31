@@ -72,7 +72,7 @@ impl Chunk {
         //Set colour based on the batch of following chars
         //Rust doesn't have static/global objects as far as I know, so I have to implement using a match
         let mut cur_char = ' ';
-        for c in ref_string[begin..end].chars() {
+        for c in ref_string[begin..=end].chars() {
             if c != cur_char {
                 cur_char = c;
 

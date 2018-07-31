@@ -65,22 +65,27 @@ impl Chunk {
         //Top left position of where the chunk is drawn from
         let mut chunk_pos = GAME_AREA_CENTER - player_position + self.world_position * CHUNK_SIZE;
 
-        //Don't try draw chunk if it is outside of the bounds of the game rendering area
-        if chunk_pos.x > GAME_AREA_SIZE.x || chunk_pos.y + CHUNK_SIZE.x < 0 {
+        // Don't try draw chunk if it is outside of the bounds of the game rendering area
+        // (this code may look weird, but it works)
+        if chunk_pos.x + CHUNK_SIZE.x <= 0
+            || chunk_pos.x >= GAME_AREA_SIZE.x
+            || chunk_pos.y + CHUNK_SIZE.y <= 0
+            || chunk_pos.y >= GAME_AREA_SIZE.y
+        {
             return;
         }
 
         //String slice of where the chunk lines are drawn from and to
         let mut begin_slice = 0;
-        let mut end_slice = CHUNK_SIZE.x - 1;
+        let mut end_slice = CHUNK_SIZE.x;
 
         if chunk_pos.x < 0 {
             begin_slice = chunk_pos.x.abs();
             chunk_pos.x = 0;
         }
 
-        if chunk_pos.x + (end_slice - begin_slice) > GAME_AREA_SIZE.x as i32 {
-            end_slice = (GAME_AREA_SIZE.x as i32 - chunk_pos.x) + begin_slice;
+        if chunk_pos.x + (end_slice - begin_slice) >= GAME_AREA_SIZE.x {
+            end_slice = (GAME_AREA_SIZE.x - chunk_pos.x) + begin_slice;
         }
 
         for y in 0..CHUNK_SIZE.y {
@@ -106,7 +111,7 @@ impl Chunk {
 
         // Set colour based on the batch of following chars
         let mut prev_char = ' ';
-        for c in &self.data[line][begin..=end] {
+        for c in &self.data[line][begin..end] {
             if *c != prev_char {
                 prev_char = *c;
 

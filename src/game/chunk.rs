@@ -14,6 +14,7 @@ pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 mod colours {
     use graphics::colour::Colour;
     define_colour!(WATER, 32, 178, 230);
+    define_colour!(SAND, 232, 210, 99);
     define_colour!(STONE, 200, 200, 200);
     define_colour!(BUSH, 14, 160, 20);
     define_colour!(GRASS, 124, 252, 0);
@@ -111,6 +112,7 @@ impl Chunk {
 
                 let colour = match c {
                     '~' => colours::WATER,
+                    '\'' => colours::SAND,
                     'X' => colours::STONE,
                     ',' => colours::BUSH,
                     '.' => colours::GRASS,

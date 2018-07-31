@@ -20,12 +20,11 @@ impl World {
     }
 
     pub fn render(&mut self, renderer: &Renderer, player_position: Vector2D<i32>) {
-        let chunk_position = World::player_to_chunk_position(player_position);
-        let x = chunk_position.x;
-        let y = chunk_position.y;
+        let player_chunk_pos = World::player_to_chunk_position(player_position);
+        let Vector2D { x, y } = player_chunk_pos;
 
-        for chunk_y in (y - 1)..(y + 2) {
-            for chunk_x in (x - 1)..(x + 2) {
+        for chunk_y in (y - 1)..=(y + 1) {
+            for chunk_x in (x - 1)..=(x + 1) {
                 let pos = Vector2D::new(chunk_x, chunk_y);
 
                 //To do: Improve the cotains key followed by the insert.

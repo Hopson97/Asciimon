@@ -1,4 +1,3 @@
-use super::chunk::CHUNK_SIZE;
 use util::vector::Vector2D;
 
 pub struct Player {
@@ -7,10 +6,8 @@ pub struct Player {
 
 impl Player {
     pub fn new() -> Player {
-        let local_pos = Vector2D::new(20, 25);
-
         Player {
-            position: CHUNK_SIZE * 1000 + local_pos,
+            position: Vector2D::new(20, 25),
         }
     }
 

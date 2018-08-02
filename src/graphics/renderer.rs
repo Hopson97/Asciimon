@@ -76,7 +76,7 @@ impl Panel {
     pub fn draw_line_h(&self, colour: &Colour, begin_position: Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
         Renderer::set_cursor_location(begin_position);
-        for _x in begin_position.x..length {
+        for _x in 0..length {
             print!(" ");
         }
         Renderer::set_bg_colour(&colours::CLEAR_COLOUR);
@@ -85,7 +85,7 @@ impl Panel {
     /// Draws a solid vertical line
     pub fn draw_line_v(&self, colour: &Colour, begin_position: Vector2D<i32>, height: i32) {
         Renderer::set_bg_colour(colour);
-        for y in begin_position.y..height {
+        for y in 0..height {
             Renderer::set_cursor_location(begin_position + Vector2D::new(0, y));
             print!(" ");
         }
@@ -105,14 +105,16 @@ impl Renderer {
             panels: HashMap::new(),
         };
 
-        renderer.add_panel("full", Panel::new(vector::ZERO, size));
-        renderer.panel("full").border();
-        renderer.panel("full").clear(&colours::CLEAR_COLOUR);
+        let main_panel = Panel::new(vector::ZERO, size);
+        main_panel.clear(&colours::CLEAR_COLOUR);
+        main_panel.border();
 
-        renderer.add_panel(
-            "debug",
-            Panel::new(Vector2D::new(size.x + 2, 0), Vector2D::new(20, size.y)),
-        );
+        let debug_panel = Panel::new(Vector2D::new(size.x + 2, 0), Vector2D::new(20, size.y));
+        debug_panel.clear(&colours::CLEAR_COLOUR);
+        debug_panel.border();
+
+        renderer.add_panel("main", main_panel);
+        renderer.add_panel("debug", debug_panel);
 
         renderer
     }

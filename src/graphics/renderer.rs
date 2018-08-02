@@ -41,10 +41,12 @@ impl Panel {
         self.draw_line_h(&bg_col, self.start_point, w + 2);
         // left
         self.draw_line_v(&bg_col, self.start_point, h + 2);
+        self.draw_line_v(&bg_col, self.start_point + Vector2D::new(1, 0), h + 2);
         // bottom
         self.draw_line_h(&bg_col, self.start_point + Vector2D::new(0, h + 1), w + 2);
         // right
-        self.draw_line_v(&bg_col, self.start_point + Vector2D::new(w + 1, 0), h + 2);
+        self.draw_line_v(&bg_col, self.start_point + Vector2D::new(w + 2, 0), h + 2);
+        self.draw_line_v(&bg_col, self.start_point + Vector2D::new(w + 3, 0), h + 2);
     }
 
     /// Draws a string to a render panel.
@@ -69,7 +71,7 @@ impl Panel {
     }
 
     pub fn set_cursor(&self, position: Vector2D<i32>) {
-        Renderer::set_cursor_location(self.start_point + position + vector::ONE);
+        Renderer::set_cursor_location(self.start_point + position + Vector2D::new(2, 1));
     }
 
     /// Draws a solid horizontal line

@@ -39,11 +39,11 @@ pub const GAME_AREA_POSITION: Vector2D<i32> = Vector2D {
 };
 
 pub const INPUT_FIELD_SIZE: Vector2D<i32> = Vector2D {
-    x: SCREEN_SIZE.x - LOGO_SIZE.x - 1,
+    x: SCREEN_SIZE.x - LOGO_SIZE.x - 2,
     y: LOGO_SIZE.y,
 };
 pub const INPUT_FIELD_POSITION: Vector2D<i32> = Vector2D {
-    x: LOGO_SIZE.x + 1,
+    x: LOGO_SIZE.x + 2,
     y: 0,
 };
 

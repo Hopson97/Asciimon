@@ -12,10 +12,48 @@ use self::game_state::{state_explore::StateExplore, GameState};
 
 use std::io::{stdin, stdout, Write};
 
-pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 45 };
+pub const SCREEN_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 52 };
+
+pub const LOGO_POSITION: Vector2D<i32> = Vector2D { x: 0, y: 0 };
+pub const LOGO_SIZE: Vector2D<i32> = Vector2D { x: 45, y: 6 };
+pub const LOGO: &str = r"
+                   _ _
+    /\            (_|_)
+   /  \   ___  ___ _ _ _ __ ___   ___  _ __
+  / /\ \ / __|/ __| | | '_ ` _ \ / _ \| '_ \
+ / ____ \ __ \ (__| | | | | | | | (_) | | | |
+/_/    \_\___/\___|_|_|_| |_| |_|\___/|_| |_|
+";
+
+pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D {
+    x: SCREEN_SIZE.x,
+    y: SCREEN_SIZE.y - LOGO_SIZE.y - 1,
+};
 pub const GAME_AREA_CENTRE: Vector2D<i32> = Vector2D {
     x: GAME_AREA_SIZE.x / 2,
     y: GAME_AREA_SIZE.y / 2,
+};
+pub const GAME_AREA_POSITION: Vector2D<i32> = Vector2D {
+    x: 0,
+    y: LOGO_SIZE.y + 1,
+};
+
+pub const INPUT_FIELD_SIZE: Vector2D<i32> = Vector2D {
+    x: SCREEN_SIZE.x - LOGO_SIZE.x - 1,
+    y: LOGO_SIZE.y,
+};
+pub const INPUT_FIELD_POSITION: Vector2D<i32> = Vector2D {
+    x: LOGO_SIZE.x + 1,
+    y: 0,
+};
+
+pub const CONSOLE_SIZE: Vector2D<i32> = Vector2D {
+    x: 32,
+    y: SCREEN_SIZE.y,
+};
+pub const CONSOLE_POSITION: Vector2D<i32> = Vector2D {
+    x: SCREEN_SIZE.x + 1,
+    y: 0,
 };
 
 mod colours {
@@ -25,15 +63,6 @@ mod colours {
     define_colour!(GAME_BACKGROUND, 0, 0, 0);
     define_colour!(UI_BACKGROUND, 50, 50, 50);
 }
-
-pub const LOGO: &str = r"
-                   _ _
-    /\            (_|_)
-   /  \   ___  ___ _ _ _ __ ___   ___  _ __
-  / /\ \ / __|/ __| | | '_ ` _ \ / _ \| '_ \
- / ____ \ __ \ (__| | | | | | | | (_) | | | |
-/_/    \_\___/\___|_|_|_| |_| |_|\___/|_| |_|
-";
 
 #[allow(dead_code)]
 pub enum UpdateResult {
@@ -53,33 +82,25 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(Vector2D::new(GAME_AREA_SIZE.x + CONSOLE_WIDTH, 52)),
+            renderer: Renderer::new(SCREEN_SIZE),
             state_stack: Vec::new(),
             is_running: true,
             console: Console::new(),
         };
-        let render_height = game.renderer.size().y;
-
-        //Yay for magic numbers
-        game.renderer
-            .add_render_section("game", Vector2D::new(0, 7), GAME_AREA_SIZE);
 
         game.renderer
-            .add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
+            .add_render_section("logo", LOGO_POSITION, LOGO_SIZE);
+        game.renderer
+            .add_render_section("input", INPUT_FIELD_POSITION, INPUT_FIELD_SIZE);
+        game.renderer
+            .add_render_section("game", GAME_AREA_POSITION, GAME_AREA_SIZE);
+        game.renderer
+            .add_render_section("console", CONSOLE_POSITION, CONSOLE_SIZE);
 
-        game.renderer.add_render_section(
-            "input",
-            Vector2D::new(50, 0),
-            Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
-        );
-
-        game.renderer.add_render_section(
-            "console",
-            Vector2D::new(GAME_AREA_SIZE.x + 1, 0),
-            Vector2D::new(CONSOLE_WIDTH, render_height),
-        );
-
-        Game::draw_logo(&game.renderer);
+        game.renderer.create_border("logo");
+        game.renderer.create_border("input");
+        game.renderer.create_border("game");
+        game.draw_logo();
 
         game.renderer
             .clear_section("game", &colours::GAME_BACKGROUND);
@@ -171,11 +192,14 @@ impl Game {
         }
     }
 
-    fn draw_logo(renderer: &Renderer) {
-        renderer.clear_section("logo", &colours::GAME_BACKGROUND);
+    fn draw_logo(&self) {
+        self.renderer
+            .clear_section("logo", &colours::GAME_BACKGROUND);
+
         Renderer::set_text_colour(&colours::LOGO);
         for (line_num, line) in LOGO.lines().enumerate() {
-            renderer.draw_string("logo", line, Vector2D::new(1, line_num as i32 - 1));
+            self.renderer
+                .draw_string("logo", line, Vector2D::new(0, line_num as i32 - 1));
         }
         Renderer::set_text_colour(&colours::TEXT);
     }

@@ -13,9 +13,12 @@ fn main() {
     clear_terminal();
 
     Game::run_game();
-    clear_terminal();
+    // clear_terminal();
 
     //Ensure terminal is below the game after exiting
+    println!();
+    println!();
+    println!();
     println!();
     println!();
 }

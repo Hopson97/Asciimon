@@ -36,9 +36,11 @@ impl Renderer {
             clear_colour: colours::CLEAR_COLOUR,
             render_sections: HashMap::new(),
         };
-        renderer.add_render_section("full", Vector2D::new(0, 0), size);
+
+        renderer.add_render_section("full", vector::ZERO, size);
         renderer.create_border("full");
-        renderer.clear();
+        renderer.clear_section("full", &renderer.clear_colour);
+
         renderer
     }
 
@@ -51,11 +53,6 @@ impl Renderer {
         self.render_sections
             .insert(name.to_string(), RenderSection::new(start_point, size));
         self.create_border(name);
-    }
-
-    ///Clears the entire window
-    pub fn clear(&mut self) {
-        self.clear_section("full", &self.clear_colour);
     }
 
     ///Clears just a single section of the screen

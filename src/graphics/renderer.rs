@@ -6,7 +6,7 @@ use util::vector::Vector2D;
 use super::sprite::Sprite;
 use std::collections::HashMap;
 
-mod colours {
+pub mod colours {
     use graphics::colour::Colour;
     define_colour!(CLEAR_COLOUR, 25, 20, 70);
     define_colour!(BORDER, 20, 20, 20);
@@ -25,7 +25,6 @@ impl Panel {
 
 pub struct Renderer {
     size: Vector2D<i32>,
-    clear_colour: Colour,
     panels: HashMap<String, Panel>,
 }
 
@@ -33,13 +32,12 @@ impl Renderer {
     pub fn new(size: Vector2D<i32>) -> Renderer {
         let mut renderer = Renderer {
             size,
-            clear_colour: colours::CLEAR_COLOUR,
             panels: HashMap::new(),
         };
 
         renderer.add_panel("full", Panel::new(vector::ZERO, size));
         renderer.create_border("full");
-        renderer.clear_panel("full", &renderer.clear_colour);
+        renderer.clear_panel("full", &colours::CLEAR_COLOUR);
 
         renderer
     }
@@ -66,10 +64,13 @@ impl Renderer {
         }
     }
 
+<<<<<<< master
     pub fn size(&self) -> Vector2D<i32> {
         self.size
     }
 
+=======
+>>>>>>> remove default_clear_colour method from Renderer
     ///Draws a solid line in the X-plane of the renderer
     fn draw_solid_line_x(&self, colour: &Colour, begin_position: Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
@@ -77,7 +78,7 @@ impl Renderer {
         for _x in begin_position.x..length {
             print!(" ");
         }
-        Renderer::set_bg_colour(&self.clear_colour);
+        Renderer::set_bg_colour(&colours::CLEAR_COLOUR);
     }
 
     ///Draws a solid line in the Y-Plane of the renderer
@@ -87,7 +88,7 @@ impl Renderer {
             Renderer::set_cursor_location(begin_position + Vector2D::new(0, y));
             print!(" ");
         }
-        Renderer::set_bg_colour(&self.clear_colour);
+        Renderer::set_bg_colour(&colours::CLEAR_COLOUR);
     }
 
     ///Creates a border around the panel area

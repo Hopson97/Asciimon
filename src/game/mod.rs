@@ -4,6 +4,7 @@ mod player;
 pub mod console;
 pub mod world;
 
+use graphics::renderer;
 use graphics::renderer::{Panel, Renderer};
 use util::vector::Vector2D;
 

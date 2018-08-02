@@ -12,21 +12,21 @@ mod colours {
     define_colour!(BORDER, 20, 20, 20);
 }
 
-struct RenderSection {
+pub struct Panel {
     start_point: Vector2D<i32>,
     size: Vector2D<i32>,
+}
+
+impl Panel {
+    pub fn new(start_point: Vector2D<i32>, size: Vector2D<i32>) -> Panel {
+        Panel { start_point, size }
+    }
 }
 
 pub struct Renderer {
     size: Vector2D<i32>,
     clear_colour: Colour,
-    render_sections: HashMap<String, RenderSection>,
-}
-
-impl RenderSection {
-    pub fn new(start_point: Vector2D<i32>, size: Vector2D<i32>) -> RenderSection {
-        RenderSection { start_point, size }
-    }
+    panels: HashMap<String, Panel>,
 }
 
 impl Renderer {
@@ -34,44 +34,35 @@ impl Renderer {
         let mut renderer = Renderer {
             size,
             clear_colour: colours::CLEAR_COLOUR,
-            render_sections: HashMap::new(),
+            panels: HashMap::new(),
         };
 
-        renderer.add_render_section("full", vector::ZERO, size);
+        renderer.add_panel("full", Panel::new(vector::ZERO, size));
         renderer.create_border("full");
-        renderer.clear_section("full", &renderer.clear_colour);
+        renderer.clear_panel("full", &renderer.clear_colour);
 
         renderer
     }
 
-    pub fn add_render_section(
-        &mut self,
-        name: &'static str,
-        start_point: Vector2D<i32>,
-        size: Vector2D<i32>,
-    ) {
-        self.render_sections
-            .insert(name.to_string(), RenderSection::new(start_point, size));
-        self.create_border(name);
+    pub fn panel(&self, name: &str) -> &Panel {
+        &self.panels[name]
     }
 
-    ///Clears just a single section of the screen
-    pub fn clear_section(&self, section: &'static str, colour: &Colour) {
+    pub fn add_panel(&mut self, name: &str, panel: Panel) {
+        self.panels.insert(name.to_string(), panel);
+    }
+
+    ///Clears just a single panel
+    pub fn clear_panel(&self, panel_name: &str, colour: &Colour) {
         Renderer::set_bg_colour(&colour);
 
-        match self.render_sections.get(section) {
-            None => {
-                return;
-            }
-            Some(render_section) => {
-                for y in 0..=render_section.size.y {
-                    self.draw_string(
-                        section,
-                        &" ".repeat(render_section.size.x as usize),
-                        Vector2D::new(0, y),
-                    );
-                }
-            }
+        let panel = self.panel(panel_name);
+        for y in 0..panel.size.y {
+            self.draw_string(
+                panel_name,
+                &" ".repeat(panel.size.x as usize),
+                Vector2D::new(0, y),
+            );
         }
     }
 
@@ -99,27 +90,27 @@ impl Renderer {
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
-    ///Creates a border around the rendering section area
-    pub fn create_border(&self, section: &str) {
-        let sect = &self.render_sections[section];
+    ///Creates a border around the panel area
+    pub fn create_border(&self, panel: &str) {
+        let panel = &self.panels[panel];
         let bg_col = colours::BORDER;
 
-        let x = sect.start_point.x;
-        let y = sect.start_point.y;
-        let width = sect.size.x;
-        let height = sect.size.y;
+        let Panel {
+            start_point: Vector2D { x, y },
+            size: Vector2D { x: w, y: h },
+        } = panel;
 
         //Top
-        self.draw_solid_line_x(&bg_col, sect.start_point, width + 2);
+        self.draw_solid_line_x(&bg_col, panel.start_point, w + 2);
 
         //Left
-        self.draw_solid_line_y(&bg_col, sect.start_point, height + 2);
+        self.draw_solid_line_y(&bg_col, panel.start_point, h + 2);
 
         //Bottom
-        self.draw_solid_line_x(&bg_col, Vector2D::new(x, y + height + 1), width + 2);
+        self.draw_solid_line_x(&bg_col, Vector2D::new(*x, y + h + 1), w + 2);
 
         //Right
-        self.draw_solid_line_y(&bg_col, Vector2D::new(x + width + 1, y), height + 2);
+        self.draw_solid_line_y(&bg_col, Vector2D::new(x + w + 1, *y), h + 2);
     }
 
     /// Set the foreground colour for text printed to the terminal
@@ -140,43 +131,33 @@ impl Renderer {
     /*
      * Public drawing interface
      */
-    /// Sets the location of the cursor relative to the top-left of a render section
-    pub fn set_cursor_render_section(&self, section: &str, position: Vector2D<i32>) {
-        match self.render_sections.get(section) {
-            None => panic!(format!(
-                "Tried to render to section which doesn't exist: {}",
-                section
-            )),
-            Some(section) => {
-                Renderer::set_cursor_location(section.start_point + position + vector::ONE);
-            }
-        }
+    /// Sets the location of the cursor relative to the top-left of a render panel
+    pub fn set_cursor_render_panel(&self, panel_name: &str, position: Vector2D<i32>) {
+        let panel = self.panel(panel_name);
+        Renderer::set_cursor_location(panel.start_point + position + vector::ONE);
     }
 
-    /// Draws a string to a render section.
-    /// Note: The function does not handle the length of strings going outside of the render section (for now?)
-    pub fn draw_string(&self, section: &str, string: &str, start_position: Vector2D<i32>) {
-        let sect = match self.render_sections.get(section) {
-            None => panic!("Render section: {} does not exist!", section),
-            Some(sect) => sect,
-        };
+    /// Draws a string to a render panel.
+    /// Note: The function does not handle the length of strings going outside of the render panel (for now?)
+    pub fn draw_string(&self, panel_name: &str, string: &str, start_position: Vector2D<i32>) {
+        let panel = self.panel(panel_name);
 
-        if start_position.y < 0 || start_position.y >= sect.size.y {
+        if start_position.y < 0 || start_position.y >= panel.size.y {
             return;
         }
 
-        self.set_cursor_render_section(section, start_position);
+        self.set_cursor_render_panel(panel_name, start_position);
         print!("{}", string);
     }
 
     // Draws a sprite (duh)
-    pub fn draw_sprite(&self, section: &str, sprite: &Sprite) {
-        self.set_cursor_render_section(section, sprite.position);
+    pub fn draw_sprite(&self, panel: &str, sprite: &Sprite) {
+        self.set_cursor_render_panel(panel, sprite.position);
         let data = sprite.render_data();
 
         for (line_num, line) in data.iter().enumerate() {
             self.draw_string(
-                section,
+                panel,
                 line,
                 sprite.position + Vector2D::new(0, line_num as i32),
             );

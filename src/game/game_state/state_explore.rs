@@ -152,9 +152,11 @@ impl GameState for StateExplore {
 
     ///Draws the player and the overworld etc
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
-        self.world.render(&renderer, self.player.position);
+        let game_panel = renderer.panel("game");
+        self.world.render(game_panel, self.player.position);
+
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);
-        renderer.draw_string("game", "@", GAME_AREA_CENTRE);
+        game_panel.draw_string("@", GAME_AREA_CENTRE);
     }
 }

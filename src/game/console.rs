@@ -1,5 +1,5 @@
 use graphics::colour::Colour;
-use graphics::renderer::Renderer;
+use graphics::renderer::{Panel, Renderer};
 
 use std::collections::vec_deque::VecDeque;
 
@@ -37,15 +37,11 @@ impl ConsoleOutputSection {
         self.text.push(line.to_string());
     }
 
-    pub fn draw(&self, index: usize, renderer: &Renderer) {
+    pub fn draw(&self, index: usize, panel: &Panel) {
         Renderer::set_text_colour(&self.colour);
 
         for (line_num, line) in self.text.iter().enumerate() {
-            renderer.draw_string(
-                "console",
-                &line,
-                Vector2D::new(0, (index + line_num) as i32),
-            );
+            panel.draw_string(&line, Vector2D::new(0, (index + line_num) as i32));
         }
     }
 
@@ -98,12 +94,12 @@ impl Console {
     }
 
     ///Draw all the render sections that can fit, starting with the newest at the top
-    pub fn draw(&self, renderer: &mut Renderer) {
-        renderer.clear_panel("console", &colours::BACKGROUND);
+    pub fn draw(&self, panel: &Panel) {
+        panel.clear(&colours::BACKGROUND);
 
         let mut y = 0;
         for (index, line) in self.output_sections.iter().enumerate() {
-            line.draw(index + y, &renderer);
+            line.draw(index + y, &panel);
             if line.num_texts() > 0 {
                 y += line.num_texts() - 1;
             }

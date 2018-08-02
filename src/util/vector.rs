@@ -31,6 +31,7 @@ impl<T: fmt::Display> fmt::Display for Vector2D<T> {
     }
 }
 
+// vector + vector
 impl<T: Add<Output = T>> Add for Vector2D<T> {
     type Output = Self;
 
@@ -39,7 +40,7 @@ impl<T: Add<Output = T>> Add for Vector2D<T> {
     }
 }
 
-//-
+// vector - vector
 impl<T: Sub<Output = T>> Sub for Vector2D<T> {
     type Output = Self;
 
@@ -48,7 +49,7 @@ impl<T: Sub<Output = T>> Sub for Vector2D<T> {
     }
 }
 
-//*
+// vector * scalar
 impl<T: Mul<Output = T> + Copy> Mul<T> for Vector2D<T> {
     type Output = Self;
 
@@ -57,7 +58,7 @@ impl<T: Mul<Output = T> + Copy> Mul<T> for Vector2D<T> {
     }
 }
 
-//*
+// vector * vector
 impl<T: Mul<Output = T>> Mul for Vector2D<T> {
     type Output = Self;
 
@@ -66,7 +67,25 @@ impl<T: Mul<Output = T>> Mul for Vector2D<T> {
     }
 }
 
-//+=
+// vector / scalar
+impl<T: Div<Output = T> + Copy> Div<T> for Vector2D<T> {
+    type Output = Self;
+
+    fn div(self, other: T) -> Self::Output {
+        Vector2D::new(self.x / other, self.y / other)
+    }
+}
+
+// vector / vector
+impl<T: Div<Output = T>> Div for Vector2D<T> {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self::Output {
+        Vector2D::new(self.x / other.x, self.y / other.y)
+    }
+}
+
+// vector += vector
 impl<T: AddAssign> AddAssign for Vector2D<T> {
     fn add_assign(&mut self, other: Self) {
         self.x += other.x;
@@ -74,7 +93,7 @@ impl<T: AddAssign> AddAssign for Vector2D<T> {
     }
 }
 
-//-=
+// vector -= vector
 impl<T: SubAssign> SubAssign for Vector2D<T> {
     fn sub_assign(&mut self, other: Self) {
         self.x -= other.x;

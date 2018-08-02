@@ -4,7 +4,6 @@ mod player;
 pub mod console;
 pub mod world;
 
-use graphics::renderer;
 use graphics::renderer::{Panel, Renderer};
 use util::vector::Vector2D;
 
@@ -98,13 +97,13 @@ impl Game {
         game.renderer
             .add_panel("console", Panel::new(CONSOLE_POSITION, CONSOLE_SIZE));
 
-        game.renderer.create_border("logo");
-        game.renderer.create_border("input");
-        game.renderer.create_border("game");
-        game.renderer.create_border("console");
+        game.renderer.panel("logo").border();
+        game.renderer.panel("input").border();
+        game.renderer.panel("game").border();
+        game.renderer.panel("console").border();
         game.draw_logo();
 
-        game.renderer.clear_panel("game", &colours::GAME_BACKGROUND);
+        game.renderer.panel("game").clear(&colours::GAME_BACKGROUND);
 
         game.run();
     }
@@ -134,11 +133,11 @@ impl Game {
         if let Some(current_state) = self.state_stack.last_mut() {
             //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
             //got on the first loop
-            self.renderer.clear_panel("game", &colours::GAME_BACKGROUND);
+            self.renderer.panel("game").clear(&colours::GAME_BACKGROUND);
             current_state.draw(&mut self.renderer, &mut self.console);
 
-            self.console.draw(&mut self.renderer);
-            self.renderer.create_border("input");
+            self.console.draw(self.renderer.panel("console"));
+            self.renderer.panel("input").border();
 
             //Ensure what has been drawn is flushed to stdout before getting input/updating
             stdout()
@@ -169,20 +168,18 @@ impl Game {
 
     fn get_user_input(renderer: &Renderer) -> Option<String> {
         Renderer::set_text_colour(&colours::TEXT);
-        renderer.clear_panel("input", &colours::GAME_BACKGROUND);
-        renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 1));
-        renderer.draw_string(
-            "input",
-            "Enter 'help' for instructions.",
-            Vector2D::new(0, 0),
-        );
-        renderer.draw_string("input", "> ", Vector2D::new(0, 2));
+
+        let input_panel = renderer.panel("input");
+        input_panel.clear(&colours::GAME_BACKGROUND);
+        input_panel.draw_string("Enter Input Here:", Vector2D::new(0, 1));
+        input_panel.draw_string("Enter 'help' for instructions.", Vector2D::new(0, 0));
+        input_panel.draw_string("> ", Vector2D::new(0, 2));
 
         stdout()
             .flush()
             .expect("Could not buffer the terminal output!");
 
-        renderer.set_cursor_render_panel("input", Vector2D::new(2, 2));
+        input_panel.set_cursor(Vector2D::new(2, 2));
         let mut input = String::new();
         match stdin()
             .read_line(&mut input)
@@ -194,13 +191,15 @@ impl Game {
     }
 
     fn draw_logo(&self) {
-        self.renderer.clear_panel("logo", &colours::GAME_BACKGROUND);
-
         Renderer::set_text_colour(&colours::LOGO);
+
+        let logo_panel = self.renderer.panel("logo");
+        logo_panel.clear(&colours::GAME_BACKGROUND);
+
         for (line_num, line) in LOGO.lines().enumerate() {
-            self.renderer
-                .draw_string("logo", line, Vector2D::new(0, line_num as i32 - 1));
+            logo_panel.draw_string(line, Vector2D::new(0, line_num as i32 - 1));
         }
+
         Renderer::set_text_colour(&colours::TEXT);
     }
 }

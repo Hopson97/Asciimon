@@ -1,4 +1,4 @@
-use graphics::renderer::Renderer;
+use graphics::renderer::Panel;
 
 use util::vector::Vector2D;
 
@@ -62,7 +62,7 @@ impl Chunk {
         }
     }
 
-    pub fn render(&self, renderer: &Renderer, centre_position: Vector2D<i32>) {
+    pub fn render(&self, panel: &Panel, centre_position: Vector2D<i32>) {
         //Top left position of where the chunk is drawn from
         let mut chunk_pos = GAME_AREA_CENTRE - centre_position + self.world_position * CHUNK_SIZE;
 
@@ -90,7 +90,7 @@ impl Chunk {
 
         for y in 0..CHUNK_SIZE.y {
             self.draw_line(
-                renderer,
+                panel,
                 y as usize,
                 begin_slice as usize,
                 end_slice as usize,
@@ -102,7 +102,7 @@ impl Chunk {
     ///Draws a single line of the map,
     fn draw_line(
         &self,
-        renderer: &Renderer,
+        panel: &Panel,
         line: usize,
         begin: usize,
         end: usize,
@@ -133,7 +133,7 @@ impl Chunk {
             render_string.push(*c);
         }
 
-        renderer.draw_string("game", &render_string, draw_point);
+        panel.draw_string(&render_string, draw_point);
     }
 
     pub fn get_tile(&self, x: usize, y: usize) -> char {

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use graphics::renderer::Renderer;
+use graphics::renderer::Panel;
 use util::vector::Vector2D;
 
 mod chunk;
@@ -19,7 +19,7 @@ impl World {
         }
     }
 
-    pub fn render(&mut self, renderer: &Renderer, centre_position: Vector2D<i32>) {
+    pub fn render(&mut self, panel: &Panel, centre_position: Vector2D<i32>) {
         let player_chunk_pos = World::player_to_chunk_position(centre_position);
 
         for y in -1..=1 {
@@ -34,7 +34,7 @@ impl World {
                 }
 
                 if let Some(chunk) = self.chunks.get(&chunk_pos) {
-                    chunk.render(renderer, centre_position);
+                    chunk.render(panel, centre_position);
                 }
             }
         }
@@ -50,9 +50,6 @@ impl World {
     }
 
     fn player_to_chunk_position(player_position: Vector2D<i32>) -> Vector2D<i32> {
-        Vector2D::new(
-            player_position.x / CHUNK_SIZE.x,
-            player_position.y / CHUNK_SIZE.y,
-        )
+        player_position / CHUNK_SIZE
     }
 }

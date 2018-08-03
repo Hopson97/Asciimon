@@ -11,8 +11,7 @@ use self::game_state::{state_explore::StateExplore, GameState};
 use std::io::{stdin, stdout, Write};
 
 pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 45 };
-        let mut chunk_pos = GAME_AREA_CENTREs - centre_position + self.world_position * CHUNK_SIZE;
-pub const GAME_AREA_CENTER: Vector2D<i32> = Vector2D {
+pub const GAME_AREA_CENTRE: Vector2D<i32> = Vector2D {
     x: GAME_AREA_SIZE.x / 2,
     y: GAME_AREA_SIZE.y / 2,
 };

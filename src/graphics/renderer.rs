@@ -37,11 +37,6 @@ impl Renderer {
             render_sections: HashMap::new(),
         };
         renderer.add_render_section("full", Vector2D::new(0, 0), size);
-        renderer.add_render_section(
-            "debug",
-            Vector2D::new(size.x + 2, 0),
-            Vector2D::new(20, size.y),
-        );
         renderer.create_border("full");
         renderer.clear();
         renderer

@@ -17,7 +17,7 @@ mod colours {
     define_colour!(SAND, 232, 210, 99);
     define_colour!(STONE, 200, 200, 200);
     define_colour!(GRASS, 124, 252, 0);
-    define_colour!(TALL_GRASS, 30, 145, 35);
+    define_colour!(TALL_GRASS, 10, 130, 10);
     define_colour!(TREE_TRUNK, 160, 82, 45);
     define_colour!(TREE_LEAVES, 34, 100, 34);
 }

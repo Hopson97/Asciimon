@@ -2,11 +2,13 @@ mod game_state;
 mod player;
 
 pub mod world;
+pub mod console;
 
 use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
 use self::game_state::{state_explore::StateExplore, GameState};
+use self::console::Console;
 
 use std::io::{stdin, stdout, Write};
 
@@ -45,15 +47,17 @@ pub struct Game {
     state_stack: Vec<Box<GameState>>,
     is_running: bool,
     needs_redraw: bool,
+    console: Console
 }
 
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(Vector2D::new(81, 52)),
+            renderer: Renderer::new(Vector2D::new(113, 52)),
             state_stack: Vec::new(),
             is_running: true,
             needs_redraw: true,
+            console: Console::new()
         };
         //ui::init(&mut game.renderer);
 
@@ -63,14 +67,16 @@ impl Game {
         game.renderer
             .add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
         game.renderer.add_render_section(
-            "input",
-            Vector2D::new(50, 0),
-            Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
+            "input",  Vector2D::new(50, 0), Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
+        );
+        game.renderer.add_render_section(
+            "console", Vector2D::new(GAME_AREA_SIZE.x + 1, 0), Vector2D::new(32, 52)
         );
 
         game.renderer.create_border("game");
         game.renderer.create_border("logo");
         game.renderer.create_border("input");
+        game.renderer.create_border("console");
         Game::draw_logo(&game.renderer);
 
         game.renderer
@@ -109,10 +115,8 @@ impl Game {
             if self.needs_redraw {
                 self.renderer
                     .clear_section("game", &colours::GAME_BACKGROUND);
-                self.renderer
-                    .clear_section("debug", &colours::GAME_BACKGROUND);
 
-                current_state.draw(&mut self.renderer);
+                current_state.draw(&mut self.renderer, &mut self.console);
                 self.needs_redraw = false;
 
                 //Ensure what has been drawn is flushed to stdout before getting input/updating
@@ -120,13 +124,15 @@ impl Game {
                     .flush()
                     .expect("Could not buffer the terminal output!");
             }
+            self.console.draw(&mut self.renderer);
+            self.renderer.create_border("input");
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
 
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
-                    input => current_state.tick(input),
+                    input => current_state.tick(input, &mut self.console),
                 }
             } else {
                 return Some(UpdateResult::Exit);

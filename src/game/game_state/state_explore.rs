@@ -3,6 +3,7 @@ use game::UpdateResult;
 
 use graphics::renderer::Renderer;
 
+use game::console::Console;
 use game::player::Player;
 use game::world::World;
 use game::GAME_AREA_CENTRE;
@@ -26,7 +27,6 @@ impl StateExplore {
         StateExplore {
             player: Player::new(),
             world: World::new(),
-
         }
     }
 
@@ -79,10 +79,7 @@ impl StateExplore {
 }
 
 impl GameState for StateExplore {
-    /**
-     * Handles user input for the exploring of the world
-     */
-    fn tick(&mut self, input_args: &[&str]) -> Option<UpdateResult> {
+    fn tick(&mut self, input_args: &[&str], console: &mut Console) -> Option<UpdateResult> {
         //This is for the player move input, by converting X/Y diretion string to a integral value
         fn parse_step(n: &str) -> i32 {
             match n.parse::<i32>() {
@@ -96,18 +93,21 @@ impl GameState for StateExplore {
         match input_args {
             [steps] => {
                 self.handle_move_player_step(steps);
+                console.write(format!("Player moved to {}, {}", self.player.position.x, self.player.position.y));
                 Some(UpdateResult::Redraw)
             }
 
             ["x", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(step, 0);
+                console.write(format!("Player moved to {}, {}", self.player.position.x, self.player.position.y));
                 Some(UpdateResult::Redraw)
             }
 
             ["y", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(0, step);
+                console.write(format!("Player moved to {}, {}", self.player.position.x, self.player.position.y));
                 Some(UpdateResult::Redraw)
             }
 
@@ -116,7 +116,7 @@ impl GameState for StateExplore {
     }
 
     ///Draws the player and the overworld etc
-    fn draw(&mut self, renderer: &mut Renderer) {
+    fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
         self.world.render(&renderer, self.player.position);
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);

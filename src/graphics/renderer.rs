@@ -50,6 +50,7 @@ impl Renderer {
     ) {
         self.render_sections
             .insert(name.to_string(), RenderSection::new(start_point, size));
+        self.create_border(name);
     }
 
     ///Clears the entire window

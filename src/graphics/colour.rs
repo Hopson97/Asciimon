@@ -1,5 +1,13 @@
 use std::ops::Mul;
 
+#[derive(Clone, Debug)]
+pub struct Colour {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+}
+
+
 #[macro_export]
 macro_rules! define_colour {
     ($name:ident, $r:expr, $g:expr, $b:expr) => {
@@ -9,13 +17,6 @@ macro_rules! define_colour {
             b: $b,
         };
     };
-}
-
-#[derive(Clone, Debug)]
-pub struct Colour {
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
 }
 
 impl Colour {

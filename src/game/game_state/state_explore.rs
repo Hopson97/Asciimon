@@ -2,6 +2,7 @@ use super::GameState;
 use game::UpdateResult;
 
 use graphics::renderer::Renderer;
+use graphics::colour::Colour;
 
 use game::console::Console;
 use game::player::Player;
@@ -93,22 +94,19 @@ impl GameState for StateExplore {
         match input_args {
             [steps] => {
                 self.handle_move_player_step(steps);
-                console.write(format!("Player moved to {}, {}", self.player.position.x, self.player.position.y));
-                Some(UpdateResult::Redraw)
+                None
             }
 
             ["x", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(step, 0);
-                console.write(format!("Player moved to {}, {}", self.player.position.x, self.player.position.y));
-                Some(UpdateResult::Redraw)
+                None
             }
 
             ["y", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(0, step);
-                console.write(format!("Player moved to {}, {}", self.player.position.x, self.player.position.y));
-                Some(UpdateResult::Redraw)
+                None
             }
 
             _ => None,

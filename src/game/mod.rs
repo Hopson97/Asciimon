@@ -23,6 +23,7 @@ mod colours {
     define_colour!(LOGO, 50, 255, 200);
     define_colour!(TEXT, 255, 255, 255);
     define_colour!(GAME_BACKGROUND, 0, 0, 0);
+    define_colour!(UI_BACKGROUND, 50, 50, 50);
 }
 
 pub const LOGO: &str = r"
@@ -36,7 +37,6 @@ pub const LOGO: &str = r"
 
 #[allow(dead_code)]
 pub enum UpdateResult {
-    Redraw,
     StatePush(Box<GameState>),
     StatePop,
     Exit,
@@ -56,7 +56,6 @@ impl Game {
             renderer: Renderer::new(Vector2D::new(113, 52)),
             state_stack: Vec::new(),
             is_running: true,
-            needs_redraw: true,
             console: Console::new()
         };
         //ui::init(&mut game.renderer);
@@ -64,19 +63,18 @@ impl Game {
         //Yay for magic numbers
         game.renderer
             .add_render_section("game", Vector2D::new(0, 7), GAME_AREA_SIZE);
+
         game.renderer
             .add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
+
         game.renderer.add_render_section(
             "input",  Vector2D::new(50, 0), Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
         );
+
         game.renderer.add_render_section(
             "console", Vector2D::new(GAME_AREA_SIZE.x + 1, 0), Vector2D::new(32, 52)
         );
 
-        game.renderer.create_border("game");
-        game.renderer.create_border("logo");
-        game.renderer.create_border("input");
-        game.renderer.create_border("console");
         Game::draw_logo(&game.renderer);
 
         game.renderer
@@ -90,17 +88,14 @@ impl Game {
         //Main loop!
         while self.is_running {
             match self.tick() {
-                Some(UpdateResult::Redraw) => self.needs_redraw = true,
                 Some(UpdateResult::StatePush(state)) => {
                     self.state_stack.push(state);
-                    self.needs_redraw = true;
                 }
                 Some(UpdateResult::StatePop) => {
                     self.state_stack.pop();
                     if self.state_stack.is_empty() {
                         self.is_running = false;
                     }
-                    self.needs_redraw = true;
                 }
                 Some(UpdateResult::Exit) => self.is_running = false,
                 None => {}
@@ -112,18 +107,15 @@ impl Game {
         if let Some(current_state) = self.state_stack.last_mut() {
             //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
             //got on the first loop
-            if self.needs_redraw {
-                self.renderer
-                    .clear_section("game", &colours::GAME_BACKGROUND);
+            self.renderer
+                .clear_section("game", &colours::GAME_BACKGROUND);      
+            current_state.draw(&mut self.renderer, &mut self.console);
+            self.needs_redraw = false;      
+            //Ensure what has been drawn is flushed to stdout before getting input/updating
+            stdout()
+                .flush()
+                .expect("Could not buffer the terminal output!");
 
-                current_state.draw(&mut self.renderer, &mut self.console);
-                self.needs_redraw = false;
-
-                //Ensure what has been drawn is flushed to stdout before getting input/updating
-                stdout()
-                    .flush()
-                    .expect("Could not buffer the terminal output!");
-            }
             self.console.draw(&mut self.renderer);
             self.renderer.create_border("input");
 
@@ -144,7 +136,7 @@ impl Game {
 
     fn get_user_input(renderer: &Renderer) -> Option<String> {
         Renderer::set_text_colour(&colours::TEXT);
-        renderer.clear_section("input", renderer.default_clear_colour());
+        renderer.clear_section("input", &colours::GAME_BACKGROUND);
         renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 0));
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
 
@@ -164,6 +156,7 @@ impl Game {
     }
 
     fn draw_logo(renderer: &Renderer) {
+        renderer.clear_section("logo", &colours::GAME_BACKGROUND);
         Renderer::set_text_colour(&colours::LOGO);
         for (line_num, line) in LOGO.lines().enumerate() {
             renderer.draw_string("logo", line, Vector2D::new(1, line_num as i32 - 1));

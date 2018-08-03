@@ -11,6 +11,7 @@ use self::game_state::{state_explore::StateExplore, GameState};
 use std::io::{stdin, stdout, Write};
 
 pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 45 };
+        let mut chunk_pos = GAME_AREA_CENTREs - centre_position + self.world_position * CHUNK_SIZE;
 pub const GAME_AREA_CENTER: Vector2D<i32> = Vector2D {
     x: GAME_AREA_SIZE.x / 2,
     y: GAME_AREA_SIZE.y / 2,
@@ -123,9 +124,10 @@ impl Game {
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
+
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
-                    input => current_state.update(input),
+                    input => current_state.tick(input),
                 }
             } else {
                 return Some(UpdateResult::Exit);

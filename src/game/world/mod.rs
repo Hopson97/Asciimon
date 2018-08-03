@@ -19,8 +19,8 @@ impl World {
         }
     }
 
-    pub fn render(&mut self, renderer: &Renderer, player_position: Vector2D<i32>) {
-        let player_chunk_pos = World::player_to_chunk_position(player_position);
+    pub fn render(&mut self, renderer: &Renderer, centre_position: Vector2D<i32>) {
+        let player_chunk_pos = World::player_to_chunk_position(centre_position);
 
         for y in -1..=1 {
             for x in -1..=1 {
@@ -34,17 +34,17 @@ impl World {
                 }
 
                 if let Some(chunk) = self.chunks.get(&chunk_pos) {
-                    chunk.render(renderer, player_position);
+                    chunk.render(renderer, centre_position);
                 }
             }
         }
     }
 
-    pub fn get_tile(&self, position: Vector2D<i32>) -> char {
-        let chunk_position = World::player_to_chunk_position(position);
+    pub fn get_tile(&self, world_position: Vector2D<i32>) -> char {
+        let chunk_position = World::player_to_chunk_position(world_position);
         self.chunks.get(&chunk_position).map_or(' ', |chunk| {
-            let local_x = position.x % CHUNK_SIZE.x;
-            let local_y = position.y % CHUNK_SIZE.y;
+            let local_x = world_position.x % CHUNK_SIZE.x;
+            let local_y = world_position.y % CHUNK_SIZE.y;
             chunk.get_tile(local_x as usize, local_y as usize)
         })
     }

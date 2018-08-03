@@ -2,7 +2,7 @@ use graphics::renderer::Renderer;
 
 use util::vector::Vector2D;
 
-use game::{GAME_AREA_CENTER, GAME_AREA_SIZE};
+use game::{GAME_AREA_CENTRE, GAME_AREA_SIZE};
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -60,9 +60,9 @@ impl Chunk {
         }
     }
 
-    pub fn render(&self, renderer: &Renderer, player_position: Vector2D<i32>) {
+    pub fn render(&self, renderer: &Renderer, centre_position: Vector2D<i32>) {
         //Top left position of where the chunk is drawn from
-        let mut chunk_pos = GAME_AREA_CENTER - player_position + self.world_position * CHUNK_SIZE;
+        let mut chunk_pos = GAME_AREA_CENTRE - centre_position + self.world_position * CHUNK_SIZE;
 
         // Don't try draw chunk if it is outside of the bounds of the game rendering area
         // (this code may look weird, but it works)

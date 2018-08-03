@@ -5,7 +5,7 @@ use graphics::renderer::Renderer;
 
 use game::player::Player;
 use game::world::World;
-use game::GAME_AREA_CENTER;
+use game::GAME_AREA_CENTRE;
 
 use util::maths::clamp;
 use util::vector;
@@ -26,6 +26,7 @@ impl StateExplore {
         StateExplore {
             player: Player::new(),
             world: World::new(),
+
         }
     }
 
@@ -81,8 +82,8 @@ impl GameState for StateExplore {
     /**
      * Handles user input for the exploring of the world
      */
-    fn update(&mut self, input_args: &[&str]) -> Option<UpdateResult> {
-        //This is for the player move input, by converting X/Y diretion string to a intergral value
+    fn tick(&mut self, input_args: &[&str]) -> Option<UpdateResult> {
+        //This is for the player move input, by converting X/Y diretion string to a integral value
         fn parse_step(n: &str) -> i32 {
             match n.parse::<i32>() {
                 Err(_) => 0,
@@ -114,30 +115,11 @@ impl GameState for StateExplore {
         }
     }
 
-    /**
-     * Draws the player and the overworld etc
-     */
+    ///Draws the player and the overworld etc
     fn draw(&mut self, renderer: &mut Renderer) {
         self.world.render(&renderer, self.player.position);
-
-        renderer.draw_string(
-            "debug",
-            &self.world.get_tile(self.player.position).to_string(),
-            Vector2D::new(0, 0),
-        );
-        renderer.draw_string(
-            "debug",
-            &self.player.position.x.to_string(),
-            Vector2D::new(0, 1),
-        );
-        renderer.draw_string(
-            "debug",
-            &self.player.position.y.to_string(),
-            Vector2D::new(5, 1),
-        );
-
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);
-        renderer.draw_string("game", "@", GAME_AREA_CENTER);
+        renderer.draw_string("game", "@", GAME_AREA_CENTRE);
     }
 }

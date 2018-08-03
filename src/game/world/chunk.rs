@@ -16,7 +16,6 @@ mod colours {
     define_colour!(WATER, 32, 178, 230);
     define_colour!(SAND, 232, 210, 99);
     define_colour!(STONE, 200, 200, 200);
-    define_colour!(BUSH, 14, 160, 20);
     define_colour!(GRASS, 124, 252, 0);
     define_colour!(TALL_GRASS, 30, 145, 35);
     define_colour!(TREE_TRUNK, 160, 82, 45);
@@ -119,11 +118,10 @@ impl Chunk {
                     '~' => colours::WATER,
                     '\'' => colours::SAND,
                     'X' => colours::STONE,
-                    ',' => colours::BUSH,
+                    ',' => colours::TALL_GRASS,
                     '.' => colours::GRASS,
                     '|' => colours::TALL_GRASS,
                     'Y' => colours::TREE_TRUNK,
-                    '#' => colours::TREE_LEAVES,
                     '0' => colours::TREE_LEAVES,
                     _ => continue,
                 };

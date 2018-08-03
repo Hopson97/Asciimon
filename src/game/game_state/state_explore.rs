@@ -67,12 +67,12 @@ impl StateExplore {
 
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position + move_amount;
-        let next_tile = self.world.get_tile(next_position);
-        if next_tile == '0' || next_tile == 'Y' || next_tile == '~' {
-            false
-        } else {
-            self.player.move_position(move_amount);
-            true
+        match self.world.get_tile(next_position) {
+            '.' | ',' | '|' | '\'' => {
+                self.player.move_position(move_amount);
+                true
+            }
+            _ => false,
         }
     }
 }

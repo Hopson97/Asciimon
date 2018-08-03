@@ -1,7 +1,6 @@
 mod game_state;
 mod player;
 
-pub mod chunk;
 pub mod world;
 
 use graphics::renderer::Renderer;

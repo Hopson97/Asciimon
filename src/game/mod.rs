@@ -46,7 +46,6 @@ pub struct Game {
     renderer: Renderer,
     state_stack: Vec<Box<GameState>>,
     is_running: bool,
-    needs_redraw: bool,
     console: Console
 }
 
@@ -109,8 +108,7 @@ impl Game {
             //got on the first loop
             self.renderer
                 .clear_section("game", &colours::GAME_BACKGROUND);      
-            current_state.draw(&mut self.renderer, &mut self.console);
-            self.needs_redraw = false;      
+            current_state.draw(&mut self.renderer, &mut self.console);    
             //Ensure what has been drawn is flushed to stdout before getting input/updating
             stdout()
                 .flush()

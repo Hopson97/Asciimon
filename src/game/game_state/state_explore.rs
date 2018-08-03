@@ -2,7 +2,6 @@ use super::GameState;
 use game::UpdateResult;
 
 use graphics::renderer::Renderer;
-use graphics::colour::Colour;
 
 use game::console::Console;
 use game::player::Player;

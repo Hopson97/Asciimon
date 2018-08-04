@@ -14,6 +14,7 @@ mod colours {
 
 pub const CONSOLE_WIDTH: i32 = 32;
 
+///A single section of text to be rendered to the console
 struct ConsoleOutputSection {
     text: Vec<String>,
     colour: Colour,
@@ -86,14 +87,15 @@ impl Console {
             current_line.push_str(&format!("{} ", word));
         }
         output_section.add_line(&current_line);
-        self.output_sections.push_back(output_section);
+        self.output_sections.push_front(output_section);
     }
 
+    ///Draw all the render sections that can fit, starting with the newest at the top
     pub fn draw(&self, renderer: &mut Renderer) {
         renderer.clear_section("console", &colours::BACKGROUND);
 
         let mut y = 0;
-        for (index, line) in self.output_sections.iter().rev().enumerate() {
+        for (index, line) in self.output_sections.iter().enumerate() {
             line.draw(index + y, &renderer);
             y += line.num_texts() - 1;
         }

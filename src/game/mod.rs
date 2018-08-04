@@ -7,7 +7,7 @@ pub mod world;
 use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
-use self::console::Console;
+use self::console::{Console, CONSOLE_WIDTH};
 use self::game_state::{state_explore::StateExplore, GameState};
 
 use std::io::{stdin, stdout, Write};
@@ -57,7 +57,7 @@ impl Game {
             is_running: true,
             console: Console::new(),
         };
-        //ui::init(&mut game.renderer);
+        let render_height = game.renderer.size().y;
 
         //Yay for magic numbers
         game.renderer
@@ -75,7 +75,7 @@ impl Game {
         game.renderer.add_render_section(
             "console",
             Vector2D::new(GAME_AREA_SIZE.x + 1, 0),
-            Vector2D::new(32, 52),
+            Vector2D::new(CONSOLE_WIDTH, render_height),
         );
 
         Game::draw_logo(&game.renderer);

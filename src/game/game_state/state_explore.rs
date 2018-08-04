@@ -67,7 +67,7 @@ impl StateExplore {
             });
         }
     }
-
+                    
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position + move_amount;
         match self.world.get_tile(next_position) {
@@ -90,6 +90,8 @@ impl GameState for StateExplore {
             }
         }
 
+        console.write("Hello and welcome to the Asciimon centre. Would you like to heal your Asciimon?".to_string());
+
         match input_args {
             [""] => {
                 let steps = self.last_move.clone();
@@ -109,6 +111,10 @@ impl GameState for StateExplore {
             }
             _ => {}
         };
+        
+        println!("players current positon: {} {}", 
+        self.player.position.x, self.player.position.y);
+
         None
     }
 

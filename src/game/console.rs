@@ -49,19 +49,7 @@ impl Console {
     }
 
     pub fn write(&mut self, text: String) {
-        let words: Vec<&str> = text.split(" ").collect();
-        let mut len = 0;
-        let mut current_line_str = String::with_capacity(CONSOLE_WIDTH as usize);
-        current_line_str.push_str("> ");
-
-        for word in &words {
-            len += word.len();
-            if len >= (CONSOLE_WIDTH - 2) as usize {
-                 
-            } else {
-                current_line_str.push_str(word);
-            }
-        }
+        self.write_with_colour(text, colours::DEFAULT_TEXT);
 
 
 
@@ -80,6 +68,20 @@ impl Console {
     }
 
     pub fn write_with_colour(&mut self, text: String, colour: Colour) {
+        let words: Vec<&str> = text.split(" ").collect();
+        let mut output_sect = ConsoleOutputSection::new(colour);
+        let mut len = 0;
+        let mut current_line_str = String::with_capacity(CONSOLE_WIDTH as usize);
+        current_line_str.push_str("> ");
+
+        for word in &words {
+            len += word.len();
+            if len >= (CONSOLE_WIDTH - 2) as usize {
+                 
+            } else {
+                current_line_str.push_str(word);
+            }
+        }
         //self.lines.push_back(Line::new(text, colour));
     }
 

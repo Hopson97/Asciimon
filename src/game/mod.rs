@@ -89,24 +89,26 @@ impl Game {
             console: Console::new(),
         };
 
-        game.renderer
-            .add_panel("logo", Panel::new(LOGO_POSITION, LOGO_SIZE));
-        game.renderer
-            .add_panel("input", Panel::new(INPUT_FIELD_POSITION, INPUT_FIELD_SIZE));
-        game.renderer
-            .add_panel("game", Panel::new(GAME_AREA_POSITION, GAME_AREA_SIZE));
-        game.renderer
-            .add_panel("console", Panel::new(CONSOLE_POSITION, CONSOLE_SIZE));
+        let logo_panel = Panel::new(LOGO_POSITION, LOGO_SIZE);
+        game.add_panel("logo", logo_panel);
 
-        game.renderer.panel("logo").border();
-        game.renderer.panel("input").border();
-        game.renderer.panel("game").border();
-        game.renderer.panel("console").border();
+        let input_panel = Panel::new(INPUT_FIELD_POSITION, INPUT_FIELD_SIZE);
+        game.add_panel("input", input_panel);
+
+        let game_panel = Panel::new(GAME_AREA_POSITION, GAME_AREA_SIZE);
+        game.add_panel("game", game_panel);
+
+        let console_panel = Panel::new(CONSOLE_POSITION, CONSOLE_SIZE);
+        game.add_panel("console", console_panel);
+
         game.draw_logo();
 
-        game.renderer.panel("game").clear(&colours::GAME_BACKGROUND);
-
         game.run();
+    }
+
+    fn add_panel(&mut self, name: &str, panel: Panel) {
+        panel.border();
+        self.renderer.add_panel(name, panel);
     }
 
     fn run(&mut self) {

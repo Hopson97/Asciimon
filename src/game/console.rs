@@ -1,5 +1,6 @@
 use graphics::colour::Colour;
-use graphics::renderer::{Panel, Renderer};
+use graphics::panel::Panel;
+use graphics::renderer::Renderer;
 
 use std::collections::vec_deque::VecDeque;
 

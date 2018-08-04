@@ -60,37 +60,42 @@ impl Console {
         }
     }
 
+    ///Writes a string to the console interface
     pub fn write(&mut self, text: &str) {
         self.write_with_colour(text, colours::DEFAULT_TEXT);
     }
 
+    ///Writes a string to console interface... With colour!
     pub fn write_with_colour(&mut self, text: &str, colour: Colour) {
         let words: Vec<&str> = text.split(' ').collect();
-        let mut output_sect = ConsoleOutputSection::new(colour);
-        let mut current_line_str = String::with_capacity(CONSOLE_WIDTH as usize);
+        let mut output_section = ConsoleOutputSection::new(colour);
+        let mut current_line = String::with_capacity(CONSOLE_WIDTH as usize);
 
-        current_line_str.push_str("> ");
+        current_line.push_str("> ");
         let mut length = 2;
 
+        //Make long strings go onto a new line
         for word in &words {
             length += word.len() + 1; //+ 1 for the space after the char
             if length >= CONSOLE_WIDTH as usize {
-                output_sect.add_line(&current_line_str);
-                current_line_str.clear();
-                current_line_str.push_str("  "); //to clear past the "> " of the first string
+                output_section.add_line(&current_line);
+                current_line.clear();
+                current_line.push_str("  "); //to clear past the "> " of the first string
                 length = word.len() + 3;  
             } 
-            current_line_str.push_str(&format!("{} ", word));
+            current_line.push_str(&format!("{} ", word));
         }
-        output_sect.add_line(&current_line_str);
-        self.output_sections.push_back(output_sect);
+        output_section.add_line(&current_line);
+        self.output_sections.push_back(output_section);
     }
 
     pub fn draw(&self, renderer: &mut Renderer) {
         renderer.clear_section("console", &colours::BACKGROUND);
 
+        let mut y = 0;
         for (index, line) in self.output_sections.iter().rev().enumerate() {
-            line.draw(index, &renderer);
+            line.draw(index + y, &renderer);
+            y += line.num_texts() - 1;
         }
     }
 }

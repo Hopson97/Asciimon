@@ -51,8 +51,8 @@ impl World {
 
     fn player_to_chunk_position(player_position: Vector2D<i32>) -> Vector2D<i32> {
         Vector2D::new(
-            player_position.x / CHUNK_SIZE.x, 
-            player_position.y / CHUNK_SIZE.y
+            player_position.x / CHUNK_SIZE.x,
+            player_position.y / CHUNK_SIZE.y,
         )
     }
 }

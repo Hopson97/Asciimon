@@ -20,6 +20,7 @@ mod colours {
 pub struct StateExplore {
     player: Player,
     world: World,
+    last_move: String,
 }
 
 impl StateExplore {
@@ -27,6 +28,7 @@ impl StateExplore {
         StateExplore {
             player: Player::new(),
             world: World::new(),
+            last_move: String::new(),
         }
     }
 
@@ -87,29 +89,27 @@ impl GameState for StateExplore {
                 Ok(step) => step,
             }
         }
-        Renderer::set_cursor_location(Vector2D::new(120, 50));
-        println!("{}", input_args.len());
 
         match input_args {
+            [""] => {
+                let steps = self.last_move.clone();
+                self.handle_move_player_step(&steps);
+            }
             [steps] => {
                 self.handle_move_player_step(steps);
-                None
+                self.last_move = steps.to_string();
             }
-
             ["x", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(step, 0);
-                None
             }
-
             ["y", step] => {
                 let step = parse_step(step);
                 self.handle_move_player(0, step);
-                None
             }
-
-            _ => None,
-        }
+            _ => {}
+        };
+        None
     }
 
     ///Draws the player and the overworld etc

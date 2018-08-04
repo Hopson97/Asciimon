@@ -74,7 +74,6 @@ impl<T: AddAssign> AddAssign for Vector2D<T> {
     }
 }
 
-
 //-=
 impl<T: SubAssign> SubAssign for Vector2D<T> {
     fn sub_assign(&mut self, other: Self) {

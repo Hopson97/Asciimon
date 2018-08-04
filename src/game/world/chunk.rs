@@ -22,6 +22,8 @@ mod colours {
     define_colour!(TREE_LEAVES, 34, 100, 34);
 }
 
+///Represents a section (of the map) of the world.
+/// Contains data about tiles make it up, and what position said tiles are in
 pub struct Chunk {
     pub world_position: Vector2D<i32>,
     data: Vec<Vec<char>>,
@@ -41,7 +43,7 @@ impl Chunk {
             data: Vec::with_capacity(CHUNK_SIZE.y as usize),
         };
 
-        let file_name = format!("world/{}_{}.chunk", pos.x, pos.y);
+        let file_name = format!("data/world/{}_{}.chunk", pos.x, pos.y);
 
         if !path_exists(&file_name) {
             None //panic!("Path for chunk '{}' does not exist", file_name);
@@ -65,7 +67,6 @@ impl Chunk {
         let mut chunk_pos = GAME_AREA_CENTRE - centre_position + self.world_position * CHUNK_SIZE;
 
         // Don't try draw chunk if it is outside of the bounds of the game rendering area
-        // (this code may look weird, but it works)
         if chunk_pos.x + CHUNK_SIZE.x <= 0
             || chunk_pos.x >= GAME_AREA_SIZE.x
             || chunk_pos.y + CHUNK_SIZE.y <= 0
@@ -98,6 +99,7 @@ impl Chunk {
         }
     }
 
+    ///Draws a single line of the map,
     fn draw_line(
         &self,
         renderer: &Renderer,

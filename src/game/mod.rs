@@ -1,14 +1,14 @@
 mod game_state;
 mod player;
 
-pub mod world;
 pub mod console;
+pub mod world;
 
 use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
-use self::game_state::{state_explore::StateExplore, GameState};
 use self::console::Console;
+use self::game_state::{state_explore::StateExplore, GameState};
 
 use std::io::{stdin, stdout, Write};
 
@@ -46,7 +46,7 @@ pub struct Game {
     renderer: Renderer,
     state_stack: Vec<Box<GameState>>,
     is_running: bool,
-    console: Console
+    console: Console,
 }
 
 impl Game {
@@ -55,7 +55,7 @@ impl Game {
             renderer: Renderer::new(Vector2D::new(113, 52)),
             state_stack: Vec::new(),
             is_running: true,
-            console: Console::new()
+            console: Console::new(),
         };
         //ui::init(&mut game.renderer);
 
@@ -67,11 +67,15 @@ impl Game {
             .add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
 
         game.renderer.add_render_section(
-            "input",  Vector2D::new(50, 0), Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
+            "input",
+            Vector2D::new(50, 0),
+            Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
         );
 
         game.renderer.add_render_section(
-            "console", Vector2D::new(GAME_AREA_SIZE.x + 1, 0), Vector2D::new(32, 52)
+            "console",
+            Vector2D::new(GAME_AREA_SIZE.x + 1, 0),
+            Vector2D::new(32, 52),
         );
 
         Game::draw_logo(&game.renderer);
@@ -107,8 +111,8 @@ impl Game {
             //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
             //got on the first loop
             self.renderer
-                .clear_section("game", &colours::GAME_BACKGROUND);      
-            current_state.draw(&mut self.renderer, &mut self.console);    
+                .clear_section("game", &colours::GAME_BACKGROUND);
+            current_state.draw(&mut self.renderer, &mut self.console);
             //Ensure what has been drawn is flushed to stdout before getting input/updating
             stdout()
                 .flush()

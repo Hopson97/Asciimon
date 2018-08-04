@@ -18,7 +18,6 @@ struct RenderSection {
 }
 
 pub struct Renderer {
-    size: Vector2D<i32>,
     clear_colour: Colour,
     render_sections: HashMap<String, RenderSection>,
 }
@@ -32,7 +31,6 @@ impl RenderSection {
 impl Renderer {
     pub fn new(size: Vector2D<i32>) -> Renderer {
         let mut renderer = Renderer {
-            size,
             clear_colour: colours::CLEAR_COLOUR,
             render_sections: HashMap::new(),
         };

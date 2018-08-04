@@ -1,5 +1,5 @@
-use graphics::renderer::Renderer;
 use graphics::colour::Colour;
+use graphics::renderer::Renderer;
 
 use std::collections::vec_deque::VecDeque;
 
@@ -14,34 +14,34 @@ mod colours {
 
 struct Line {
     text: String,
-    colour: Colour
+    colour: Colour,
 }
 
 pub struct Console {
-    lines: VecDeque<Line>
+    lines: VecDeque<Line>,
 }
 
 impl Line {
     pub fn new(text: String, colour: Colour) -> Line {
         Line {
             text: text,
-            colour: colour
+            colour: colour,
         }
     }
 
-    pub fn text(&self) -> &String { 
-        &self.text 
+    pub fn text(&self) -> &String {
+        &self.text
     }
 
-    pub fn colour(&self) -> &Colour { 
-        &self.colour 
+    pub fn colour(&self) -> &Colour {
+        &self.colour
     }
 }
 
 impl Console {
-    pub fn new() -> Console{
+    pub fn new() -> Console {
         Console {
-            lines: VecDeque::with_capacity(53)
+            lines: VecDeque::with_capacity(53),
         }
     }
 
@@ -59,9 +59,10 @@ impl Console {
         for (line_num, line) in self.lines.iter().rev().enumerate() {
             Renderer::set_text_colour(&line.colour());
             renderer.draw_string(
-                "console", 
-                &format!("> {}", &line.text()), 
-                Vector2D::new(0, line_num as i32));
+                "console",
+                &format!("> {}", &line.text()),
+                Vector2D::new(0, line_num as i32),
+            );
         }
     }
 }

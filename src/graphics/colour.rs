@@ -7,7 +7,6 @@ pub struct Colour {
     pub b: u8,
 }
 
-
 #[macro_export]
 macro_rules! define_colour {
     ($name:ident, $r:expr, $g:expr, $b:expr) => {

@@ -90,8 +90,6 @@ impl GameState for StateExplore {
             }
         }
 
-        console.write("Hello and welcome to the Asciimon centre. Would you like to heal your Asciimon?".to_string());
-
         match input_args {
             [""] => {
                 let steps = self.last_move.clone();
@@ -111,15 +109,13 @@ impl GameState for StateExplore {
             }
             _ => {}
         };
-        
-        println!("players current positon: {} {}", 
-        self.player.position.x, self.player.position.y);
 
         None
     }
 
     ///Draws the player and the overworld etc
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
+        console.write("Hello and welcome to the Asciimon centre. Would you like to heal your Asciimon? [y/n]".to_string());
         self.world.render(&renderer, self.player.position);
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);

@@ -15,10 +15,11 @@ mod colours {
 pub const CONSOLE_WIDTH: i32 = 32;
 
 struct ConsoleOutputSection {
-    text: String,
+    text: Vec<String>,
     colour: Colour,
 }
 
+///This is the "console" that displays on the right-side of the user interface
 pub struct Console {
     output_sections: VecDeque<ConsoleOutputSection>,
 }
@@ -26,18 +27,29 @@ pub struct Console {
 impl ConsoleOutputSection {
     pub fn new(colour: Colour) -> ConsoleOutputSection {
         ConsoleOutputSection {
-            text: String::with_capacity(CONSOLE_WIDTH as usize),
+            text: Vec::with_capacity(3),
             colour: colour,
         }
     }
 
-
-    pub fn text(&self) -> &String {
-        &self.text
+    pub fn add_line(&mut self, line: &str) {
+        self.text.push(line.to_string());
     }
 
-    pub fn colour(&self) -> &Colour {
-        &self.colour
+    pub fn draw(&self, index: usize, renderer: &Renderer) {
+        Renderer::set_text_colour(&self.colour);
+
+        for (line_num, line) in self.text.iter().enumerate() {
+            renderer.draw_string(
+                "console",
+                &line,
+                Vector2D::new(0, (index + line_num) as i32),
+            );
+        }
+    }
+
+    pub fn num_texts(&self) -> usize {
+        self.text.len()
     }
 }
 
@@ -50,51 +62,35 @@ impl Console {
 
     pub fn write(&mut self, text: String) {
         self.write_with_colour(text, colours::DEFAULT_TEXT);
-
-
-
-        /*
-        if text.len() as i32 > CONSOLE_WIDTH {
-            let line = &text[0..CONSOLE_WIDTH as usize];
-            let line1 = &text[CONSOLE_WIDTH as usize..text.len() - 1];
-
-            self.lines.push_back(Line::new(line.to_string(), colours::DEFAULT_TEXT));
-            self.lines.push_back(Line::new(line1.to_string(), colours::DEFAULT_TEXT));
-
-        }
-        else {
-             self.lines.push_back(Line::new(text, colours::DEFAULT_TEXT));
-        }*/
     }
 
     pub fn write_with_colour(&mut self, text: String, colour: Colour) {
         let words: Vec<&str> = text.split(" ").collect();
         let mut output_sect = ConsoleOutputSection::new(colour);
-        let mut len = 0;
         let mut current_line_str = String::with_capacity(CONSOLE_WIDTH as usize);
+
         current_line_str.push_str("> ");
+        let mut length = 2;
 
         for word in &words {
-            len += word.len();
-            if len >= (CONSOLE_WIDTH - 2) as usize {
-                 
-            } else {
-                current_line_str.push_str(word);
-            }
+            length += word.len() + 1; //+ 1 for the space after the char
+            if length >= CONSOLE_WIDTH as usize {
+                output_sect.add_line(&current_line_str);
+                current_line_str.clear();
+                current_line_str.push_str("  "); //to clear past the "> " of the first string
+                length = word.len() + 3;  
+            } 
+            current_line_str.push_str(&format!("{} ", word));
         }
-        //self.lines.push_back(Line::new(text, colour));
+        output_sect.add_line(&current_line_str);
+        self.output_sections.push_back(output_sect);
     }
 
     pub fn draw(&self, renderer: &mut Renderer) {
         renderer.clear_section("console", &colours::BACKGROUND);
 
-        for (line_num, line) in self.output_sections.iter().rev().enumerate() {
-            Renderer::set_text_colour(&line.colour());
-            renderer.draw_string(
-                "console",
-                &format!("> {}", &line.text()),
-                Vector2D::new(0, line_num as i32),
-            );
+        for (index, line) in self.output_sections.iter().rev().enumerate() {
+            line.draw(index, &renderer);
         }
     }
 }

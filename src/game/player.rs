@@ -7,7 +7,7 @@ pub struct Player {
 impl Player {
     pub fn new() -> Player {
         Player {
-            position: Vector2D::new(50, 25),
+            position: Vector2D::new(20, 25),
         }
     }
 

@@ -1,4 +1,4 @@
-use graphics::renderer::Panel;
+use graphics::panel::Panel;
 
 use util::vector::Vector2D;
 

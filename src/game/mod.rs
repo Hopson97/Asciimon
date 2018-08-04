@@ -4,7 +4,8 @@ mod player;
 pub mod console;
 pub mod world;
 
-use graphics::renderer::{Panel, Renderer};
+use graphics::panel::Panel;
+use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
 use self::console::{Console, CONSOLE_WIDTH};

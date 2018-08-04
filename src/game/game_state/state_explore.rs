@@ -115,9 +115,6 @@ impl GameState for StateExplore {
 
     ///Draws the player and the overworld etc
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
-        console.write(
-            "Hello and welcome to the Asciimon centre. Would you like to heal your Asciimon? [y/n]",
-        );
         self.world.render(&renderer, self.player.position);
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);

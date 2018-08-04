@@ -75,9 +75,10 @@ impl Console {
         current_line.push_str("> ");
         let mut length = 2;
 
-        //Make long strings go onto a new line
         for word in &words {
             length += word.len() + 1; //+ 1 for the space after the char
+
+            //Prevents string going over edge of the render section
             if length >= CONSOLE_WIDTH as usize {
                 output_section.add_line(&current_line);
                 current_line.clear();

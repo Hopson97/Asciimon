@@ -78,11 +78,6 @@ impl Renderer {
         }
     }
 
-    ///Gets the default clear colour
-    pub fn default_clear_colour(&self) -> &Colour {
-        &self.clear_colour
-    }
-
     pub fn size(&self) -> Vector2D<i32> {
         self.size
     }

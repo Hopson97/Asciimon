@@ -67,7 +67,7 @@ impl StateExplore {
             });
         }
     }
-                    
+
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position + move_amount;
         match self.world.get_tile(next_position) {
@@ -115,7 +115,9 @@ impl GameState for StateExplore {
 
     ///Draws the player and the overworld etc
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
-        console.write("Hello and welcome to the Asciimon centre. Would you like to heal your Asciimon? [y/n]".to_string());
+        console.write(
+            "Hello and welcome to the Asciimon centre. Would you like to heal your Asciimon? [y/n]",
+        );
         self.world.render(&renderer, self.player.position);
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);

@@ -28,7 +28,7 @@ impl ConsoleOutputSection {
     pub fn new(colour: Colour) -> ConsoleOutputSection {
         ConsoleOutputSection {
             text: Vec::with_capacity(3),
-            colour: colour,
+            colour,
         }
     }
 
@@ -60,12 +60,12 @@ impl Console {
         }
     }
 
-    pub fn write(&mut self, text: String) {
+    pub fn write(&mut self, text: &str) {
         self.write_with_colour(text, colours::DEFAULT_TEXT);
     }
 
-    pub fn write_with_colour(&mut self, text: String, colour: Colour) {
-        let words: Vec<&str> = text.split(" ").collect();
+    pub fn write_with_colour(&mut self, text: &str, colour: Colour) {
+        let words: Vec<&str> = text.split(' ').collect();
         let mut output_sect = ConsoleOutputSection::new(colour);
         let mut current_line_str = String::with_capacity(CONSOLE_WIDTH as usize);
 

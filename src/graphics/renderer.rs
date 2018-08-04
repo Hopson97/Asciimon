@@ -32,7 +32,7 @@ impl RenderSection {
 impl Renderer {
     pub fn new(size: Vector2D<i32>) -> Renderer {
         let mut renderer = Renderer {
-            size: size,
+            size,
             clear_colour: colours::CLEAR_COLOUR,
             render_sections: HashMap::new(),
         };

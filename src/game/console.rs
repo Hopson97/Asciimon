@@ -14,18 +14,18 @@ mod colours {
 
 pub const CONSOLE_WIDTH: i32 = 32;
 
-struct Line {
+struct ConsoleOutputSection {
     text: String,
     colour: Colour,
 }
 
 pub struct Console {
-    lines: VecDeque<Line>,
+    output_sections: VecDeque<ConsoleOutputSection>,
 }
 
-impl Line {
-    pub fn new(colour: Colour) -> Line {
-        Line {
+impl ConsoleOutputSection {
+    pub fn new(colour: Colour) -> ConsoleOutputSection {
+        ConsoleOutputSection {
             text: String::with_capacity(CONSOLE_WIDTH as usize),
             colour: colour,
         }
@@ -44,7 +44,7 @@ impl Line {
 impl Console {
     pub fn new() -> Console {
         Console {
-            lines: VecDeque::with_capacity(53),
+            output_sections: VecDeque::with_capacity(53),
         }
     }
 
@@ -86,7 +86,7 @@ impl Console {
     pub fn draw(&self, renderer: &mut Renderer) {
         renderer.clear_section("console", &colours::BACKGROUND);
 
-        for (line_num, line) in self.lines.iter().rev().enumerate() {
+        for (line_num, line) in self.output_sections.iter().rev().enumerate() {
             Renderer::set_text_colour(&line.colour());
             renderer.draw_string(
                 "console",

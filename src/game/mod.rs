@@ -12,11 +12,11 @@ use self::game_state::{state_explore::StateExplore, GameState};
 
 use std::io::{stdin, stdout, Write};
 
-pub const SCREEN_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 52 };
+pub const SCREEN_SIZE: Vector2D<u32> = Vector2D { x: 81, y: 52 };
 
-pub const LOGO_POSITION: Vector2D<i32> = Vector2D { x: 0, y: 0 };
-pub const LOGO_SIZE: Vector2D<i32> = Vector2D { x: 45, y: 6 };
-pub const LOGO: &str = r"
+pub const LOGO_POSITION: Vector2D<u32> = Vector2D { x: 0, y: 0 };
+pub const LOGO_SIZE: Vector2D<u32> = Vector2D { x: 45, y: 6 };
+pub const LOGO: &str = r"\
                    _ _
     /\            (_|_)
    /  \   ___  ___ _ _ _ __ ___   ___  _ __
@@ -25,34 +25,34 @@ pub const LOGO: &str = r"
 /_/    \_\___/\___|_|_|_| |_| |_|\___/|_| |_|
 ";
 
-pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D {
+pub const GAME_AREA_SIZE: Vector2D<u32> = Vector2D {
     x: SCREEN_SIZE.x,
     y: SCREEN_SIZE.y - LOGO_SIZE.y - 1,
 };
-pub const GAME_AREA_CENTRE: Vector2D<i32> = Vector2D {
+pub const GAME_AREA_CENTRE: Vector2D<u32> = Vector2D {
     x: GAME_AREA_SIZE.x / 2,
     y: GAME_AREA_SIZE.y / 2,
 };
-pub const GAME_AREA_POSITION: Vector2D<i32> = Vector2D {
+pub const GAME_AREA_POSITION: Vector2D<u32> = Vector2D {
     x: 0,
     y: LOGO_SIZE.y + 1,
 };
 
-pub const INPUT_FIELD_SIZE: Vector2D<i32> = Vector2D {
+pub const INPUT_FIELD_SIZE: Vector2D<u32> = Vector2D {
     x: SCREEN_SIZE.x - LOGO_SIZE.x - 2,
     y: LOGO_SIZE.y,
 };
-pub const INPUT_FIELD_POSITION: Vector2D<i32> = Vector2D {
+pub const INPUT_FIELD_POSITION: Vector2D<u32> = Vector2D {
     x: LOGO_SIZE.x + 2,
     y: 0,
 };
 
-pub const CONSOLE_SIZE: Vector2D<i32> = Vector2D {
+pub const CONSOLE_SIZE: Vector2D<u32> = Vector2D {
     x: 32,
     y: SCREEN_SIZE.y,
 };
-pub const CONSOLE_POSITION: Vector2D<i32> = Vector2D {
-    x: SCREEN_SIZE.x + 1,
+pub const CONSOLE_POSITION: Vector2D<u32> = Vector2D {
+    x: SCREEN_SIZE.x + 2,
     y: 0,
 };
 
@@ -196,8 +196,8 @@ impl Game {
         let logo_panel = self.renderer.panel("logo");
         logo_panel.clear(&colours::GAME_BACKGROUND);
 
-        for (line_num, line) in LOGO.lines().enumerate() {
-            logo_panel.draw_string(line, Vector2D::new(0, line_num as i32 - 1));
+        for (line_num, line) in LOGO.lines().skip(1).enumerate() {
+            logo_panel.draw_string(line, Vector2D::new(0, line_num as u32));
         }
 
         Renderer::set_text_colour(&colours::TEXT);

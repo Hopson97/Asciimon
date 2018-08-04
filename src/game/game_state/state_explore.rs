@@ -36,7 +36,7 @@ impl StateExplore {
     ///Attempts to the move the player's local position by x/y amount in the x/y direction
     pub fn handle_move_player(&mut self, x_offset: i32, y_offset: i32) {
         let x_move = clamp(x_offset, -1, 1);
-        let y_move = -clamp(y_offset, -1, 1);
+        let y_move = clamp(y_offset, -1, 1);
         let move_vector = Vector2D::new(x_move, y_move);
 
         for _ in 0..x_offset.abs() {
@@ -69,11 +69,16 @@ impl StateExplore {
         }
     }
 
-    fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
-        let next_position = self.player.position + move_amount;
+    fn move_player(&mut self, movement: Vector2D<i32>) -> bool {
+        let player_pos = self.player.position;
+        if (player_pos.x == 0 && movement.x < 0) || (player_pos.y == 0 && movement.y < 0) {
+            return false;
+        }
+
+        let next_position = self.player.position.add_direction(movement);
         match self.world.get_tile(next_position) {
             '.' | ',' | '|' | '\'' => {
-                self.player.move_position(move_amount);
+                self.player.move_position(movement);
                 true
             }
             _ => false,

@@ -13,12 +13,12 @@ pub mod colours {
 }
 
 pub struct Panel {
-    start_point: Vector2D<i32>,
-    size: Vector2D<i32>,
+    start_point: Vector2D<u32>,
+    size: Vector2D<u32>,
 }
 
 impl Panel {
-    pub fn new(start_point: Vector2D<i32>, size: Vector2D<i32>) -> Panel {
+    pub fn new(start_point: Vector2D<u32>, size: Vector2D<u32>) -> Panel {
         Panel { start_point, size }
     }
 
@@ -51,9 +51,9 @@ impl Panel {
 
     /// Draws a string to a render panel.
     /// Note: The function does not handle the length of strings going outside of the render panel (for now?)
-    pub fn draw_string(&self, string: &str, start_position: Vector2D<i32>) {
-        if start_position.y < 0 || start_position.y >= self.size.y {
-            return;
+    pub fn draw_string(&self, string: &str, start_position: Vector2D<u32>) {
+        if start_position.y >= self.size.y {
+            panic!();
         }
 
         self.set_cursor(start_position);
@@ -66,16 +66,16 @@ impl Panel {
         let data = sprite.render_data();
 
         for (line_num, line) in data.iter().enumerate() {
-            self.draw_string(line, sprite.position + Vector2D::new(0, line_num as i32));
+            self.draw_string(line, sprite.position + Vector2D::new(0, line_num as u32));
         }
     }
 
-    pub fn set_cursor(&self, position: Vector2D<i32>) {
+    pub fn set_cursor(&self, position: Vector2D<u32>) {
         Renderer::set_cursor_location(self.start_point + position + Vector2D::new(2, 1));
     }
 
     /// Draws a solid horizontal line
-    pub fn draw_line_h(&self, colour: &Colour, begin_position: Vector2D<i32>, length: i32) {
+    pub fn draw_line_h(&self, colour: &Colour, begin_position: Vector2D<u32>, length: u32) {
         Renderer::set_bg_colour(colour);
         Renderer::set_cursor_location(begin_position);
         for _x in 0..length {
@@ -85,7 +85,7 @@ impl Panel {
     }
 
     /// Draws a solid vertical line
-    pub fn draw_line_v(&self, colour: &Colour, begin_position: Vector2D<i32>, height: i32) {
+    pub fn draw_line_v(&self, colour: &Colour, begin_position: Vector2D<u32>, height: u32) {
         Renderer::set_bg_colour(colour);
         for y in 0..height {
             Renderer::set_cursor_location(begin_position + Vector2D::new(0, y));
@@ -96,12 +96,12 @@ impl Panel {
 }
 
 pub struct Renderer {
-    size: Vector2D<i32>,
+    size: Vector2D<u32>,
     panels: HashMap<String, Panel>,
 }
 
 impl Renderer {
-    pub fn new(size: Vector2D<i32>) -> Renderer {
+    pub fn new(size: Vector2D<u32>) -> Renderer {
         let mut renderer = Renderer {
             size,
             panels: HashMap::new(),
@@ -140,7 +140,7 @@ impl Renderer {
     }
 
     /// Sets cursor location in the renderer
-    pub fn set_cursor_location(pos: Vector2D<i32>) {
+    pub fn set_cursor_location(pos: Vector2D<u32>) {
         print!("\x1b[{};{}H", pos.y + 1, pos.x + 1);
     }
 }

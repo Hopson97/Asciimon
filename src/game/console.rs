@@ -41,7 +41,7 @@ impl ConsoleOutputSection {
         Renderer::set_text_colour(&self.colour);
 
         for (line_num, line) in self.text.iter().enumerate() {
-            panel.draw_string(&line, Vector2D::new(0, (index + line_num) as i32));
+            panel.draw_string(&line, Vector2D::new(0, (index + line_num) as u32));
         }
     }
 

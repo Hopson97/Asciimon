@@ -9,7 +9,7 @@ use std::io::{BufRead, BufReader};
 
 use std::fs;
 
-pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
+pub const CHUNK_SIZE: Vector2D<u32> = Vector2D { x: 100, y: 50 };
 
 mod colours {
     use graphics::colour::Colour;
@@ -25,7 +25,7 @@ mod colours {
 ///Represents a section (of the map) of the world.
 /// Contains data about tiles make it up, and what position said tiles are in
 pub struct Chunk {
-    pub world_position: Vector2D<i32>,
+    pub world_position: Vector2D<u32>,
     data: Vec<Vec<char>>,
 }
 
@@ -37,7 +37,7 @@ impl Chunk {
     /**
      * Loads a chunk from a file for coordinates (x, y)
      */
-    pub fn load(pos: Vector2D<i32>) -> Option<Chunk> {
+    pub fn load(pos: Vector2D<u32>) -> Option<Chunk> {
         let mut chunk = Chunk {
             world_position: pos,
             data: Vec::with_capacity(CHUNK_SIZE.y as usize),
@@ -62,57 +62,53 @@ impl Chunk {
         }
     }
 
-    pub fn render(&self, panel: &Panel, centre_position: Vector2D<i32>) {
-        //Top left position of where the chunk is drawn from
-        let mut chunk_pos = GAME_AREA_CENTRE - centre_position + self.world_position * CHUNK_SIZE;
+    pub fn render(&self, panel: &Panel, centre_position: Vector2D<u32>) {
+        // Top left position of where the chunk is drawn from
+        let chunk_pos = (GAME_AREA_CENTRE + self.world_position * CHUNK_SIZE).to_i32()
+            - centre_position.to_i32();
 
         // Don't try draw chunk if it is outside of the bounds of the game rendering area
-        if chunk_pos.x + CHUNK_SIZE.x <= 0
-            || chunk_pos.x >= GAME_AREA_SIZE.x
-            || chunk_pos.y + CHUNK_SIZE.y <= 0
-            || chunk_pos.y >= GAME_AREA_SIZE.y
+        // (this code may look weird, but it works)
+        if chunk_pos.x + CHUNK_SIZE.x as i32 <= 0
+            || chunk_pos.x >= GAME_AREA_SIZE.x as i32
+            || chunk_pos.y + CHUNK_SIZE.y as i32 <= 0
+            || chunk_pos.y >= GAME_AREA_SIZE.y as i32
         {
             return;
         }
 
-        //String slice of where the chunk lines are drawn from and to
-        let mut begin_slice = 0;
-        let mut end_slice = CHUNK_SIZE.x;
+        // Calculate dimensions and offset of the visible part of the chunk
 
-        if chunk_pos.x < 0 {
-            begin_slice = chunk_pos.x.abs();
-            chunk_pos.x = 0;
+        let offset: Vector2D<u32> = chunk_pos.map(|n| if n > 0 { n as u32 } else { 0 });
+        let slice_start: Vector2D<u32> = chunk_pos.map(|n| if n < 0 { n.abs() as u32 } else { 0 });
+
+        let mut slice_end: Vector2D<u32> = CHUNK_SIZE;
+        if offset.x + (CHUNK_SIZE.x - slice_start.x) >= GAME_AREA_SIZE.x {
+            slice_end.x = (GAME_AREA_SIZE.x - offset.x) + slice_start.x
+        }
+        if offset.y + (CHUNK_SIZE.y - slice_start.y) >= GAME_AREA_SIZE.y {
+            slice_end.y = (GAME_AREA_SIZE.y - offset.y) + slice_start.y
         }
 
-        if chunk_pos.x + (end_slice - begin_slice) >= GAME_AREA_SIZE.x {
-            end_slice = (GAME_AREA_SIZE.x - chunk_pos.x) + begin_slice;
-        }
+        for y in slice_start.y..slice_end.y {
+            let row = &self.data[y as usize];
+            let row_slice = &row[slice_start.x as usize..slice_end.x as usize];
 
-        for y in 0..CHUNK_SIZE.y {
-            self.draw_line(
+            self.draw_row(
                 panel,
-                y as usize,
-                begin_slice as usize,
-                end_slice as usize,
-                chunk_pos + Vector2D::new(0, y),
+                row_slice,
+                offset + Vector2D::new(0, y - slice_start.y),
             );
         }
     }
 
-    ///Draws a single line of the map,
-    fn draw_line(
-        &self,
-        panel: &Panel,
-        line: usize,
-        begin: usize,
-        end: usize,
-        draw_point: Vector2D<i32>,
-    ) {
+    /// Draws a single row of the map
+    fn draw_row(&self, panel: &Panel, line: &[char], draw_point: Vector2D<u32>) {
         let mut render_string = String::with_capacity(CHUNK_SIZE.x as usize * 2);
 
         // Set colour based on the batch of following chars
         let mut prev_char = ' ';
-        for c in &self.data[line][begin..end] {
+        for c in line {
             if *c != prev_char {
                 prev_char = *c;
 
@@ -136,7 +132,7 @@ impl Chunk {
         panel.draw_string(&render_string, draw_point);
     }
 
-    pub fn get_tile(&self, x: usize, y: usize) -> char {
-        self.data[y][x]
+    pub fn get_tile(&self, x: u32, y: u32) -> char {
+        self.data[y as usize][x as usize]
     }
 }

@@ -18,7 +18,6 @@ struct RenderSection {
 
 pub struct Renderer {
     size: Vector2D<i32>,
-    clear_colour: Colour,
     render_sections: HashMap<String, RenderSection>,
 }
 
@@ -32,12 +31,11 @@ impl Renderer {
     pub fn new(size: Vector2D<i32>) -> Renderer {
         let mut renderer = Renderer {
             size,
-            clear_colour: colours::CLEAR_COLOUR,
             render_sections: HashMap::new(),
         };
         renderer.add_render_section("full", Vector2D::new(0, 0), size);
         renderer.create_border("full");
-        renderer.clear();
+        renderer.clear_section("full", &colours::CLEAR_COLOUR);
         renderer
     }
 
@@ -54,11 +52,6 @@ impl Renderer {
         self.render_sections
             .insert(name.to_string(), RenderSection::new(start_point, size));
         self.create_border(name);
-    }
-
-    ///Clears the entire window
-    pub fn clear(&mut self) {
-        self.clear_section("full", &self.clear_colour);
     }
 
     ///Clears just a single section of the screen
@@ -88,7 +81,7 @@ impl Renderer {
         for _x in 0..length {
             print!(" ");
         }
-        Renderer::set_bg_colour(&self.clear_colour);
+        Renderer::set_bg_colour(&colours::CLEAR_COLOUR);
     }
 
     /// Draws a solid vertical line
@@ -98,7 +91,7 @@ impl Renderer {
             Renderer::set_cursor_location(begin_position + Vector2D::new(0, y));
             print!(" ");
         }
-        Renderer::set_bg_colour(&self.clear_colour);
+        Renderer::set_bg_colour(&colours::CLEAR_COLOUR);
     }
 
     /// Creates a border around the rendering section area

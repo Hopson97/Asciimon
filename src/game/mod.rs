@@ -38,6 +38,7 @@ pub const LOGO: &str = r"
 #[allow(dead_code)]
 pub enum UpdateResult {
     StatePush(Box<GameState>),
+    TransitionPush(Box<GameState>),
     StatePop,
     Exit,
 }
@@ -93,6 +94,9 @@ impl Game {
             match self.tick() {
                 Some(UpdateResult::StatePush(state)) => {
                     self.state_stack.push(state);
+                }
+                Some(UpdateResult::TransitionPush)) => {
+                    
                 }
                 Some(UpdateResult::StatePop) => {
                     self.state_stack.pop();

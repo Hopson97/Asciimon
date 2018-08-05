@@ -6,7 +6,7 @@ pub mod console;
 pub mod world;
 
 use graphics::renderer::Renderer;
-use util::vector::Vector2D;
+use math::Vector2D;
 
 use self::console::Console;
 use self::game_state::{state_explore::StateExplore, GameState};

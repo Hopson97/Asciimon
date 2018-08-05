@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use graphics::renderer::Renderer;
-use util::vector::Vector2D;
+use math::Vector2D;
 
 mod chunk;
 use self::chunk::{Chunk, CHUNK_SIZE};

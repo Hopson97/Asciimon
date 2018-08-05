@@ -1,7 +1,7 @@
 #[macro_use]
 mod graphics;
 mod game;
-mod util;
+mod math;
 
 use game::Game;
 

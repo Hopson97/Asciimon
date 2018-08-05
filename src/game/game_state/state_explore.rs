@@ -1,17 +1,15 @@
 use super::GameState;
 use game::UpdateResult;
 
-use graphics::renderer::Renderer;
 use graphics::colour::Colour;
+use graphics::renderer::Renderer;
 
 use game::console::Console;
 use game::player::Player;
 use game::world::World;
 use game::GAME_AREA_CENTRE;
 
-use util::maths::clamp;
-use util::vector;
-use util::vector::Vector2D;
+use math::{clamp, vector, Vector2D};
 
 mod colours {
     use graphics::colour::Colour;

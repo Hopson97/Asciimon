@@ -1,7 +1,6 @@
 use super::colour::Colour;
 
-use util::vector;
-use util::vector::Vector2D;
+use math::{vector, Vector2D};
 
 use super::sprite::Sprite;
 use std::collections::HashMap;

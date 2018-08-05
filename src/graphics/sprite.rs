@@ -1,5 +1,4 @@
-use util::vector;
-use util::vector::Vector2D;
+use math::{vector, Vector2D};
 
 pub struct Sprite {
     pub position: Vector2D<i32>,

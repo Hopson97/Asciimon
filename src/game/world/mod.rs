@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use graphics::renderer::Renderer;
-use util::vector::Vector2D;
+use graphics::Renderer;
+use math::Vector2D;
 
 mod chunk;
-use self::chunk::{Chunk, CHUNK_SIZE};
+pub use self::chunk::{Chunk, CHUNK_SIZE};
 
 pub struct World {
     //error_chunk: Chunk,

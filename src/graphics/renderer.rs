@@ -1,13 +1,12 @@
 use super::colour::Colour;
 
-use util::vector;
-use util::vector::Vector2D;
+use math::{vector, Vector2D};
 
 use super::sprite::Sprite;
 use std::collections::HashMap;
 
 mod colours {
-    use graphics::colour::Colour;
+    use graphics::Colour;
     define_colour!(CLEAR_COLOUR, 25, 20, 70);
     define_colour!(BORDER, 20, 20, 20);
 }

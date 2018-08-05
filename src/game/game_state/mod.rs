@@ -1,8 +1,9 @@
 pub mod state_explore;
+pub use self::state_explore::StateExplore;
 
-use game::console::Console;
+use game::Console;
 use game::UpdateResult;
-use graphics::renderer::Renderer;
+use graphics::Renderer;
 
 pub trait GameState {
     fn write_instructions(&self, console: &mut Console);

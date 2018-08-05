@@ -1,6 +1,6 @@
-use graphics::renderer::Renderer;
+use graphics::Renderer;
 
-use util::vector::Vector2D;
+use math::Vector2D;
 
 use game::{GAME_AREA_CENTRE, GAME_AREA_SIZE};
 
@@ -12,7 +12,7 @@ use std::fs;
 pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
 mod colours {
-    use graphics::colour::Colour;
+    use graphics::Colour;
     define_colour!(WATER, 32, 178, 230);
     define_colour!(SAND, 232, 210, 99);
     define_colour!(STONE, 200, 200, 200);

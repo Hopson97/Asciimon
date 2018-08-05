@@ -1,6 +1,6 @@
 mod game_state;
+mod layout;
 mod player;
-mod render_constants;
 
 pub mod console;
 pub mod world;
@@ -10,7 +10,7 @@ use util::vector::Vector2D;
 
 use self::console::Console;
 use self::game_state::{state_explore::StateExplore, GameState};
-use self::render_constants::*;
+use self::layout::*;
 
 use std::io::{stdin, stdout, Write};
 

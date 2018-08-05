@@ -42,6 +42,10 @@ impl Renderer {
         renderer
     }
 
+    pub fn size(&self) -> Vector2D<i32> {
+        self.size
+    }
+
     pub fn add_render_section(
         &mut self,
         name: &'static str,
@@ -76,10 +80,6 @@ impl Renderer {
                 }
             }
         }
-    }
-
-    pub fn size(&self) -> Vector2D<i32> {
-        self.size
     }
 
     ///Draws a solid line in the X-plane of the renderer

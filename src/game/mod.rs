@@ -7,15 +7,45 @@ pub mod world;
 use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
-use self::console::{Console, CONSOLE_WIDTH};
+use self::console::Console;
 use self::game_state::{state_explore::StateExplore, GameState};
 
 use std::io::{stdin, stdout, Write};
 
-pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D { x: 81, y: 45 };
+pub const SCREEN_SIZE: Vector2D<i32> = Vector2D { x: 120, y: 52 };
+
+pub const LOGO_POSITION: Vector2D<i32> = Vector2D { x: 0, y: 0 };
+pub const LOGO_SIZE: Vector2D<i32> = Vector2D { x: 45, y: 6 };
+
+pub const GAME_AREA_POSITION: Vector2D<i32> = Vector2D {
+    x: 0,
+    y: LOGO_SIZE.y + 1,
+};
+pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D {
+    x: SCREEN_SIZE.x - (CONSOLE_SIZE.x + 1),
+    y: SCREEN_SIZE.y - (LOGO_SIZE.y + 1),
+};
 pub const GAME_AREA_CENTRE: Vector2D<i32> = Vector2D {
     x: GAME_AREA_SIZE.x / 2,
     y: GAME_AREA_SIZE.y / 2,
+};
+
+pub const INPUT_FIELD_POSITION: Vector2D<i32> = Vector2D {
+    x: LOGO_SIZE.x + 1,
+    y: 0,
+};
+pub const INPUT_FIELD_SIZE: Vector2D<i32> = Vector2D {
+    x: SCREEN_SIZE.x - (LOGO_SIZE.x + 1) - (CONSOLE_SIZE.x + 1),
+    y: LOGO_SIZE.y,
+};
+
+pub const CONSOLE_POSITION: Vector2D<i32> = Vector2D {
+    x: SCREEN_SIZE.x - CONSOLE_SIZE.x,
+    y: 0,
+};
+pub const CONSOLE_SIZE: Vector2D<i32> = Vector2D {
+    x: 32,
+    y: SCREEN_SIZE.y,
 };
 
 mod colours {
@@ -53,31 +83,20 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(Vector2D::new(GAME_AREA_SIZE.x + CONSOLE_WIDTH, 52)),
+            renderer: Renderer::new(SCREEN_SIZE),
             state_stack: Vec::new(),
             is_running: true,
             console: Console::new(),
         };
-        let render_height = game.renderer.size().y;
-
-        //Yay for magic numbers
-        game.renderer
-            .add_render_section("game", Vector2D::new(0, 7), GAME_AREA_SIZE);
 
         game.renderer
-            .add_render_section("logo", Vector2D::new(0, 0), Vector2D::new(50, 6));
-
-        game.renderer.add_render_section(
-            "input",
-            Vector2D::new(50, 0),
-            Vector2D::new(GAME_AREA_SIZE.x - 50, 6),
-        );
-
-        game.renderer.add_render_section(
-            "console",
-            Vector2D::new(GAME_AREA_SIZE.x + 1, 0),
-            Vector2D::new(CONSOLE_WIDTH, render_height),
-        );
+            .add_render_section("game", GAME_AREA_POSITION, GAME_AREA_SIZE);
+        game.renderer
+            .add_render_section("logo", LOGO_POSITION, LOGO_SIZE);
+        game.renderer
+            .add_render_section("input", INPUT_FIELD_POSITION, INPUT_FIELD_SIZE);
+        game.renderer
+            .add_render_section("console", CONSOLE_POSITION, CONSOLE_SIZE);
 
         Game::draw_logo(&game.renderer);
 
@@ -95,9 +114,7 @@ impl Game {
                 Some(UpdateResult::StatePush(state)) => {
                     self.state_stack.push(state);
                 }
-                Some(UpdateResult::TransitionPush(state)) => {
-                    
-                }
+                Some(UpdateResult::TransitionPush(state)) => {}
                 Some(UpdateResult::StatePop) => {
                     self.state_stack.pop();
                     if self.state_stack.is_empty() {
@@ -127,14 +144,14 @@ impl Game {
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
-                
+
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
-                    ["help"] => { 
-                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                    ["help"] => {
+                        self.console.write(&"-".repeat(CONSOLE_SIZE.x as usize - 4));
                         current_state.write_instructions(&mut self.console);
-                        self.console.write("Instructions: "); 
-                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                        self.console.write("Instructions: ");
+                        self.console.write(&"-".repeat(CONSOLE_SIZE.x as usize - 4));
                         None
                     }
                     input => current_state.execute_command(input, &mut self.console),
@@ -151,7 +168,11 @@ impl Game {
         Renderer::set_text_colour(&colours::TEXT);
         renderer.clear_section("input", &colours::GAME_BACKGROUND);
         renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 1));
-        renderer.draw_string("input", "Enter 'help' for instructions.", Vector2D::new(0, 0));
+        renderer.draw_string(
+            "input",
+            "Enter 'help' for instructions.",
+            Vector2D::new(0, 0),
+        );
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
 
         stdout()
@@ -173,7 +194,7 @@ impl Game {
         renderer.clear_section("logo", &colours::GAME_BACKGROUND);
         Renderer::set_text_colour(&colours::LOGO);
         for (line_num, line) in LOGO.lines().enumerate() {
-            renderer.draw_string("logo", line, Vector2D::new(1, line_num as i32 - 1));
+            renderer.draw_string("logo", line, Vector2D::new(0, line_num as i32 - 1));
         }
         Renderer::set_text_colour(&colours::TEXT);
     }

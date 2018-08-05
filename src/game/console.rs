@@ -1,3 +1,5 @@
+use super::CONSOLE_SIZE;
+
 use graphics::colour::Colour;
 use graphics::renderer::Renderer;
 
@@ -7,12 +9,9 @@ use util::vector::Vector2D;
 
 mod colours {
     use graphics::colour::Colour;
-
     define_colour!(DEFAULT_TEXT, 200, 200, 200);
     define_colour!(BACKGROUND, 0, 0, 5);
 }
-
-pub const CONSOLE_WIDTH: i32 = 32;
 
 ///A single section of text to be rendered to the console
 struct ConsoleOutputSection {
@@ -70,7 +69,7 @@ impl Console {
     pub fn write_with_colour(&mut self, text: &str, colour: Colour) {
         let words: Vec<&str> = text.split(' ').collect();
         let mut output_section = ConsoleOutputSection::new(colour);
-        let mut current_line = String::with_capacity(CONSOLE_WIDTH as usize);
+        let mut current_line = String::with_capacity(CONSOLE_SIZE.x as usize);
 
         current_line.push_str("> ");
         let mut length = 2;
@@ -79,7 +78,7 @@ impl Console {
             length += word.len() + 1; //+ 1 for the space after the char
 
             //Prevents string going over edge of the render section
-            if length >= CONSOLE_WIDTH as usize {
+            if length >= CONSOLE_SIZE.x as usize {
                 output_section.add_line(&current_line);
                 current_line.clear();
                 current_line.push_str("  "); //to clear past the "> " of the first string

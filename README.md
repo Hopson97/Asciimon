@@ -19,7 +19,13 @@ https://www.youtube.com/watch?v=8KP8rjUCa9w
 
 In this episode, I set up the basic game engine (game state system, "render" engine), and also start on the world exploration part of the gane.
 
-## Screenshpts
+
+##Features
+
+1. Roaming the world
+2. Command system
+
+## Screenshots
 
 Roaming the world:
 

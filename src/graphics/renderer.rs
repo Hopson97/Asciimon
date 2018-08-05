@@ -18,7 +18,7 @@ struct RenderSection {
 }
 
 pub struct Renderer {
-    size: Vector2D<i32>,
+    pub size: Vector2D<i32>,
     clear_colour: Colour,
     render_sections: HashMap<String, RenderSection>,
 }
@@ -76,10 +76,6 @@ impl Renderer {
                 }
             }
         }
-    }
-
-    pub fn size(&self) -> Vector2D<i32> {
-        self.size
     }
 
     ///Draws a solid line in the X-plane of the renderer

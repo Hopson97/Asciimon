@@ -96,8 +96,8 @@ impl GameState for StateExplore {
         add_instruction("Y <n>", "Moves player in the Y plane up to <n> times", "y 10", "Moves player 10 tiles up");
     }
 
-    fn tick(&mut self, input_args: &[&str], console: &mut Console) -> Option<UpdateResult> {
-        //This is for the player move input, by converting X/Y diretion string to a integral value
+    fn execute_command(&mut self, command_args: &[&str], console: &mut Console) -> Option<UpdateResult> {
+        //This is for the player move input, by converting X/Y direction string to a integral value
         fn parse_step(n: &str) -> i32 {
             match n.parse::<i32>() {
                 Err(_) => 0,
@@ -105,7 +105,7 @@ impl GameState for StateExplore {
             }
         }
 
-        match input_args {
+        match command_args {
             [""] => {
                 let steps = self.last_move.clone();
                 self.handle_move_player_step(&steps);

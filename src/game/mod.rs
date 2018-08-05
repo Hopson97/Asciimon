@@ -133,7 +133,7 @@ impl Game {
                         self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
                         None
                     }
-                    input => current_state.tick(input, &mut self.console),
+                    input => current_state.execute_command(input, &mut self.console),
                 }
             } else {
                 return Some(UpdateResult::Exit);

@@ -1,14 +1,14 @@
 use super::CONSOLE_SIZE;
 
-use graphics::colour::Colour;
-use graphics::renderer::Renderer;
+use graphics::Colour;
+use graphics::Renderer;
 
 use std::collections::vec_deque::VecDeque;
 
 use math::Vector2D;
 
 mod colours {
-    use graphics::colour::Colour;
+    use graphics::Colour;
     define_colour!(DEFAULT_TEXT, 200, 200, 200);
     define_colour!(BACKGROUND, 0, 0, 5);
 }

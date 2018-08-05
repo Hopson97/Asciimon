@@ -1,8 +1,8 @@
 use super::GameState;
 use game::UpdateResult;
 
-use graphics::colour::Colour;
-use graphics::renderer::Renderer;
+use graphics::Colour;
+use graphics::Renderer;
 
 use game::console::Console;
 use game::player::Player;
@@ -12,7 +12,7 @@ use game::GAME_AREA_CENTRE;
 use math::{clamp, vector, Vector2D};
 
 mod colours {
-    use graphics::colour::Colour;
+    use graphics::Colour;
     define_colour!(PLAYER, 0, 153, 175);
 }
 

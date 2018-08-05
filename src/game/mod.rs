@@ -5,7 +5,7 @@ mod player;
 pub mod console;
 pub mod world;
 
-use graphics::renderer::Renderer;
+use graphics::Renderer;
 use math::Vector2D;
 
 use self::console::Console;
@@ -17,7 +17,7 @@ use std::io::{stdin, stdout, Write};
 
 
 mod colours {
-    use graphics::colour::Colour;
+    use graphics::Colour;
     define_colour!(LOGO, 50, 255, 200);
     define_colour!(TEXT, 255, 255, 255);
     define_colour!(GAME_BACKGROUND, 0, 0, 0);

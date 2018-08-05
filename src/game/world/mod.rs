@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use graphics::renderer::Renderer;
+use graphics::Renderer;
 use math::Vector2D;
 
 mod chunk;

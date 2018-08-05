@@ -1,8 +1,8 @@
 use super::GameState;
 use game::UpdateResult;
 
-use graphics::renderer::Renderer;
 use graphics::colour::Colour;
+use graphics::renderer::Renderer;
 
 use game::console::Console;
 use game::player::Player;
@@ -36,7 +36,7 @@ impl StateExplore {
     ///Attempts to the move the player's local position by x/y amount in the x/y direction
     pub fn handle_move_player(&mut self, x_offset: i32, y_offset: i32) {
         let x_move = clamp(x_offset, -1, 1);
-        let y_move = -clamp(y_offset, -1, 1);
+        let y_move = clamp(y_offset, -1, 1);
         let move_vector = Vector2D::new(x_move, y_move);
 
         for _ in 0..x_offset.abs() {
@@ -69,11 +69,16 @@ impl StateExplore {
         }
     }
 
-    fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
-        let next_position = self.player.position + move_amount;
+    fn move_player(&mut self, movement: Vector2D<i32>) -> bool {
+        let player_pos = self.player.position;
+        if (player_pos.x == 0 && movement.x < 0) || (player_pos.y == 0 && movement.y < 0) {
+            return false;
+        }
+
+        let next_position = self.player.position.add_direction(movement);
         match self.world.get_tile(next_position) {
             '.' | ',' | '|' | '\'' => {
-                self.player.move_position(move_amount);
+                self.player.move_position(movement);
                 true
             }
             _ => false,
@@ -87,16 +92,38 @@ impl GameState for StateExplore {
 
         let mut add_instruction = |command: &str, desc: &str, example: &str, example_desc: &str| {
             console.skip_line();
-            console.write_with_colour(&format!("Example: '{}', {}", example, example_desc), TEXT_COL);
+            console.write_with_colour(
+                &format!("Example: '{}', {}", example, example_desc),
+                TEXT_COL,
+            );
             console.write_with_colour(&format!("{} - {}", command, desc), TEXT_COL);
         };
 
-        add_instruction("W/A/S/D", "Moves player around world", "waass", "Move player up, 2 left, 2 down");
-        add_instruction("X <n>", "Moves player in the x plane up to <n> times", "x -10", "Moves player 10 tiles to left");
-        add_instruction("Y <n>", "Moves player in the Y plane up to <n> times", "y 10", "Moves player 10 tiles up");
+        add_instruction(
+            "W/A/S/D",
+            "Moves player around world",
+            "waass",
+            "Move player up, 2 left, 2 down",
+        );
+        add_instruction(
+            "X <n>",
+            "Moves player in the x plane up to <n> times",
+            "x -10",
+            "Moves player 10 tiles to left",
+        );
+        add_instruction(
+            "Y <n>",
+            "Moves player in the Y plane up to <n> times",
+            "y 10",
+            "Moves player 10 tiles up",
+        );
     }
 
-    fn execute_command(&mut self, command_args: &[&str], console: &mut Console) -> Option<UpdateResult> {
+    fn execute_command(
+        &mut self,
+        command_args: &[&str],
+        console: &mut Console,
+    ) -> Option<UpdateResult> {
         //This is for the player move input, by converting X/Y direction string to a integral value
         fn parse_step(n: &str) -> i32 {
             match n.parse::<i32>() {
@@ -130,9 +157,11 @@ impl GameState for StateExplore {
 
     ///Draws the player and the overworld etc
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
-        self.world.render(&renderer, self.player.position);
+        let game_panel = renderer.panel("game");
+        self.world.render(game_panel, self.player.position);
+
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);
-        renderer.draw_string("game", "@", GAME_AREA_CENTRE);
+        game_panel.draw_string("@", GAME_AREA_CENTRE);
     }
 }

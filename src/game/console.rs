@@ -1,4 +1,5 @@
 use graphics::colour::Colour;
+use graphics::panel::Panel;
 use graphics::renderer::Renderer;
 
 use std::collections::vec_deque::VecDeque;
@@ -37,15 +38,11 @@ impl ConsoleOutputSection {
         self.text.push(line.to_string());
     }
 
-    pub fn draw(&self, index: usize, renderer: &Renderer) {
+    pub fn draw(&self, index: usize, panel: &Panel) {
         Renderer::set_text_colour(&self.colour);
 
         for (line_num, line) in self.text.iter().enumerate() {
-            renderer.draw_string(
-                "console",
-                &line,
-                Vector2D::new(0, (index + line_num) as i32),
-            );
+            panel.draw_string(&line, Vector2D::new(0, (index + line_num) as u32));
         }
     }
 
@@ -83,8 +80,8 @@ impl Console {
                 output_section.add_line(&current_line);
                 current_line.clear();
                 current_line.push_str("  "); //to clear past the "> " of the first string
-                length = word.len() + 3;  
-            } 
+                length = word.len() + 3;
+            }
             current_line.push_str(&format!("{} ", word));
         }
         output_section.add_line(&current_line);
@@ -93,17 +90,18 @@ impl Console {
 
     ///Writes an empty line
     pub fn skip_line(&mut self) {
-        self.output_sections.push_front(ConsoleOutputSection::new(colours::DEFAULT_TEXT));
+        self.output_sections
+            .push_front(ConsoleOutputSection::new(colours::DEFAULT_TEXT));
     }
 
     ///Draw all the render sections that can fit, starting with the newest at the top
-    pub fn draw(&self, renderer: &mut Renderer) {
-        renderer.clear_section("console", &colours::BACKGROUND);
+    pub fn draw(&self, panel: &Panel) {
+        panel.clear(&colours::BACKGROUND);
 
         let mut y = 0;
         for (index, line) in self.output_sections.iter().enumerate() {
-            line.draw(index + y, &renderer);
-            if line.num_texts() > 0 { 
+            line.draw(index + y, &panel);
+            if line.num_texts() > 0 {
                 y += line.num_texts() - 1;
             }
         }

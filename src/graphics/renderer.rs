@@ -82,20 +82,20 @@ impl Renderer {
         }
     }
 
-    ///Draws a solid line in the X-plane of the renderer
-    fn draw_solid_line_x(&self, colour: &Colour, begin_position: Vector2D<i32>, length: i32) {
+    ///Draws a solid horizontal line
+    fn draw_line_h(&self, colour: &Colour, begin_position: Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
         Renderer::set_cursor_location(begin_position);
-        for _x in begin_position.x..length {
+        for _x in 0..length {
             print!(" ");
         }
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
-    ///Draws a solid line in the Y-Plane of the renderer
-    fn draw_solid_line_y(&self, colour: &Colour, begin_position: Vector2D<i32>, height: i32) {
+    ///Draws a solid vertical line
+    fn draw_line_v(&self, colour: &Colour, begin_position: Vector2D<i32>, height: i32) {
         Renderer::set_bg_colour(colour);
-        for y in begin_position.y..height {
+        for y in 0..height {
             Renderer::set_cursor_location(begin_position + Vector2D::new(0, y));
             print!(" ");
         }
@@ -107,22 +107,17 @@ impl Renderer {
         let sect = &self.render_sections[section];
         let bg_col = colours::BORDER;
 
-        let x = sect.start_point.x;
-        let y = sect.start_point.y;
-        let width = sect.size.x;
-        let height = sect.size.y;
+        let Vector2D { x, y } = sect.start_point;
+        let Vector2D { x: w, y: h } = sect.size;
 
-        //Top
-        self.draw_solid_line_x(&bg_col, sect.start_point, width + 2);
-
-        //Left
-        self.draw_solid_line_y(&bg_col, sect.start_point, height + 2);
-
-        //Bottom
-        self.draw_solid_line_x(&bg_col, Vector2D::new(x, y + height + 1), width + 2);
-
-        //Right
-        self.draw_solid_line_y(&bg_col, Vector2D::new(x + width + 1, y), height + 2);
+        // Top
+        self.draw_line_h(&bg_col, sect.start_point, w + 1);
+        // Left
+        self.draw_line_v(&bg_col, sect.start_point, h + 1);
+        // Bottom
+        self.draw_line_h(&bg_col, Vector2D::new(x, y + h + 1), w + 1);
+        // Right
+        self.draw_line_v(&bg_col, Vector2D::new(x + w + 1, y), h + 1);
     }
 
     /// Set the foreground colour for text printed to the terminal

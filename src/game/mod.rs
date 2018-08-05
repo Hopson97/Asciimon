@@ -1,23 +1,23 @@
 mod game_state;
-mod player;
-mod render_constants;
+mod layout;
 
 pub mod console;
+pub use self::console::Console;
+pub mod player;
+pub use self::player::Player;
 pub mod world;
+pub use self::world::World;
 
-use graphics::renderer::Renderer;
-use util::vector::Vector2D;
+use graphics::Renderer;
+use math::Vector2D;
 
-use self::console::Console;
-use self::game_state::{state_explore::StateExplore, GameState};
-use self::render_constants::*;
+use self::game_state::{GameState, StateExplore};
+use self::layout::*;
 
 use std::io::{stdin, stdout, Write};
 
-
-
 mod colours {
-    use graphics::colour::Colour;
+    use graphics::Colour;
     define_colour!(LOGO, 50, 255, 200);
     define_colour!(TEXT, 255, 255, 255);
     define_colour!(GAME_BACKGROUND, 0, 0, 0);

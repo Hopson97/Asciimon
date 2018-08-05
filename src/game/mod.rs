@@ -1,14 +1,16 @@
 mod game_state;
 mod layout;
-mod player;
 
 pub mod console;
+pub use self::console::Console;
+pub mod player;
+pub use self::player::Player;
 pub mod world;
+pub use self::world::World;
 
 use graphics::Renderer;
 use math::Vector2D;
 
-use self::console::Console;
 use self::game_state::{GameState, StateExplore};
 use self::layout::*;
 

@@ -1,7 +1,7 @@
 pub mod state_explore;
 pub use self::state_explore::StateExplore;
 
-use game::console::Console;
+use game::Console;
 use game::UpdateResult;
 use graphics::Renderer;
 

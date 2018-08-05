@@ -4,9 +4,9 @@ use game::UpdateResult;
 use graphics::Colour;
 use graphics::Renderer;
 
-use game::console::Console;
-use game::player::Player;
-use game::world::World;
+use game::Console;
+use game::Player;
+use game::World;
 use game::GAME_AREA_CENTRE;
 
 use math::{clamp, vector, Vector2D};

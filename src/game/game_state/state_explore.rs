@@ -2,6 +2,7 @@ use super::GameState;
 use game::UpdateResult;
 
 use graphics::renderer::Renderer;
+use graphics::colour::Colour;
 
 use game::console::Console;
 use game::player::Player;
@@ -81,6 +82,20 @@ impl StateExplore {
 }
 
 impl GameState for StateExplore {
+    fn write_instructions(&self, console: &mut Console) {
+        define_colour!(TEXT_COL, 100, 255, 110);
+
+        let mut add_instruction = |command: &str, desc: &str, example: &str, example_desc: &str| {
+            console.skip_line();
+            console.write_with_colour(&format!("Example: '{}', {}", example, example_desc), TEXT_COL);
+            console.write_with_colour(&format!("{} - {}", command, desc), TEXT_COL);
+        };
+
+        add_instruction("W/A/S/D", "Moves player around world", "waass", "Move player up, 2 left, 2 down");
+        add_instruction("X <n>", "Moves player in the x plane up to <n> times", "x -10", "Moves player 10 tiles to left");
+        add_instruction("Y <n>", "Moves player in the Y plane up to <n> times", "y 10", "Moves player 10 tiles up");
+    }
+
     fn tick(&mut self, input_args: &[&str], console: &mut Console) -> Option<UpdateResult> {
         //This is for the player move input, by converting X/Y diretion string to a integral value
         fn parse_step(n: &str) -> i32 {

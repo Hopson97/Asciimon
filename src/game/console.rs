@@ -91,6 +91,11 @@ impl Console {
         self.output_sections.push_front(output_section);
     }
 
+    ///Writes an empty line
+    pub fn skip_line(&mut self) {
+        self.output_sections.push_front(ConsoleOutputSection::new(colours::DEFAULT_TEXT));
+    }
+
     ///Draw all the render sections that can fit, starting with the newest at the top
     pub fn draw(&self, renderer: &mut Renderer) {
         renderer.clear_section("console", &colours::BACKGROUND);
@@ -98,7 +103,9 @@ impl Console {
         let mut y = 0;
         for (index, line) in self.output_sections.iter().enumerate() {
             line.draw(index + y, &renderer);
-            y += line.num_texts() - 1;
+            if line.num_texts() > 0 { 
+                y += line.num_texts() - 1;
+            }
         }
     }
 }

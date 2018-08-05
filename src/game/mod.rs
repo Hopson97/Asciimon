@@ -126,6 +126,13 @@ impl Game {
 
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
+                    ["help"] => { 
+                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                        current_state.write_instructions(&mut self.console);
+                        self.console.write("Instructions: "); 
+                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                        None
+                    }
                     input => current_state.tick(input, &mut self.console),
                 }
             } else {
@@ -139,7 +146,8 @@ impl Game {
     fn get_user_input(renderer: &Renderer) -> Option<String> {
         Renderer::set_text_colour(&colours::TEXT);
         renderer.clear_section("input", &colours::GAME_BACKGROUND);
-        renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 0));
+        renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 1));
+        renderer.draw_string("input", "Enter 'help' for instructions.", Vector2D::new(0, 0));
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
 
         stdout()

@@ -95,7 +95,7 @@ impl Game {
                 Some(UpdateResult::StatePush(state)) => {
                     self.state_stack.push(state);
                 }
-                Some(UpdateResult::TransitionPush)) => {
+                Some(UpdateResult::TransitionPush(state)) => {
                     
                 }
                 Some(UpdateResult::StatePop) => {

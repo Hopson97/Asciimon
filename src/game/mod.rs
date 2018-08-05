@@ -9,7 +9,7 @@ pub mod world;
 pub use self::world::World;
 
 use graphics::Renderer;
-use math::Vector2D;
+use maths::Vector2D;
 
 use self::game_state::{GameState, StateExplore};
 use self::layout::*;

@@ -9,7 +9,7 @@ use game::Player;
 use game::World;
 use game::GAME_AREA_CENTRE;
 
-use math::{clamp, vector, Vector2D};
+use maths::{clamp, vector, Vector2D};
 
 mod colours {
     use graphics::Colour;

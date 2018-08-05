@@ -1,4 +1,4 @@
-use math::Vector2D;
+use maths::Vector2D;
 
 pub struct Player {
     pub position: Vector2D<i32>,

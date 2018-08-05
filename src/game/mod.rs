@@ -161,8 +161,8 @@ impl Game {
     fn draw_logo(renderer: &Renderer) {
         renderer.clear_section("logo", &colours::GAME_BACKGROUND);
         Renderer::set_text_colour(&colours::LOGO);
-        for (line_num, line) in LOGO.lines().enumerate() {
-            renderer.draw_string("logo", line, Vector2D::new(0, line_num as i32 - 1));
+        for (line_num, line) in LOGO.lines().skip(1).enumerate() {
+            renderer.draw_string("logo", line, Vector2D::new(0, line_num as u32));
         }
         Renderer::set_text_colour(&colours::TEXT);
     }

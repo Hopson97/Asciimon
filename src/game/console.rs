@@ -43,7 +43,7 @@ impl ConsoleOutputSection {
             renderer.draw_string(
                 "console",
                 &line,
-                Vector2D::new(0, (index + line_num) as i32),
+                Vector2D::new(0, (index + line_num) as u32),
             );
         }
     }

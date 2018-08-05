@@ -82,7 +82,7 @@ impl Renderer {
         }
     }
 
-    ///Draws a solid horizontal line
+    /// Draws a solid horizontal line
     fn draw_line_h(&self, colour: &Colour, begin_position: Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
         Renderer::set_cursor_location(begin_position);
@@ -92,7 +92,7 @@ impl Renderer {
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
-    ///Draws a solid vertical line
+    /// Draws a solid vertical line
     fn draw_line_v(&self, colour: &Colour, begin_position: Vector2D<i32>, height: i32) {
         Renderer::set_bg_colour(colour);
         for y in 0..height {
@@ -102,22 +102,23 @@ impl Renderer {
         Renderer::set_bg_colour(&self.clear_colour);
     }
 
-    ///Creates a border around the rendering section area
+    /// Creates a border around the rendering section area
     pub fn create_border(&self, section: &str) {
         let sect = &self.render_sections[section];
         let bg_col = colours::BORDER;
 
-        let Vector2D { x, y } = sect.start_point;
         let Vector2D { x: w, y: h } = sect.size;
 
-        // Top
-        self.draw_line_h(&bg_col, sect.start_point, w + 1);
-        // Left
-        self.draw_line_v(&bg_col, sect.start_point, h + 1);
-        // Bottom
-        self.draw_line_h(&bg_col, Vector2D::new(x, y + h + 1), w + 1);
-        // Right
-        self.draw_line_v(&bg_col, Vector2D::new(x + w + 1, y), h + 1);
+        // top
+        self.draw_line_h(&bg_col, sect.start_point, w + 2);
+        // left
+        self.draw_line_v(&bg_col, sect.start_point - Vector2D::new(1, 0), h + 2);
+        self.draw_line_v(&bg_col, sect.start_point, h + 2);
+        // bottom
+        self.draw_line_h(&bg_col, sect.start_point + Vector2D::new(0, h + 1), w + 2);
+        // right
+        self.draw_line_v(&bg_col, sect.start_point + Vector2D::new(w + 1, 0), h + 2);
+        self.draw_line_v(&bg_col, sect.start_point + Vector2D::new(w + 2, 0), h + 2);
     }
 
     /// Set the foreground colour for text printed to the terminal
@@ -132,7 +133,7 @@ impl Renderer {
 
     /// Sets cursor location in the renderer
     pub fn set_cursor_location(pos: Vector2D<i32>) {
-        print!("\x1b[{};{}H", pos.y + 1, pos.x + 1);
+        print!("\x1b[{};{}H", pos.y + 1, pos.x + 2);
     }
 
     /*

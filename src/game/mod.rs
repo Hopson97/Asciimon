@@ -22,7 +22,7 @@ pub const GAME_AREA_POSITION: Vector2D<i32> = Vector2D {
     y: LOGO_SIZE.y + 1,
 };
 pub const GAME_AREA_SIZE: Vector2D<i32> = Vector2D {
-    x: SCREEN_SIZE.x - (CONSOLE_SIZE.x + 1),
+    x: SCREEN_SIZE.x - (CONSOLE_SIZE.x + 2),
     y: SCREEN_SIZE.y - (LOGO_SIZE.y + 1),
 };
 pub const GAME_AREA_CENTRE: Vector2D<i32> = Vector2D {
@@ -31,11 +31,11 @@ pub const GAME_AREA_CENTRE: Vector2D<i32> = Vector2D {
 };
 
 pub const INPUT_FIELD_POSITION: Vector2D<i32> = Vector2D {
-    x: LOGO_SIZE.x + 1,
+    x: LOGO_SIZE.x + 2,
     y: 0,
 };
 pub const INPUT_FIELD_SIZE: Vector2D<i32> = Vector2D {
-    x: SCREEN_SIZE.x - (LOGO_SIZE.x + 1) - (CONSOLE_SIZE.x + 1),
+    x: SCREEN_SIZE.x - (LOGO_SIZE.x + 2) - (CONSOLE_SIZE.x + 2),
     y: LOGO_SIZE.y,
 };
 

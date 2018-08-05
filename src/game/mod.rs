@@ -95,9 +95,7 @@ impl Game {
                 Some(UpdateResult::StatePush(state)) => {
                     self.state_stack.push(state);
                 }
-                Some(UpdateResult::TransitionPush(state)) => {
-                    
-                }
+                Some(UpdateResult::TransitionPush(state)) => {}
                 Some(UpdateResult::StatePop) => {
                     self.state_stack.pop();
                     if self.state_stack.is_empty() {
@@ -127,14 +125,14 @@ impl Game {
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
-                
+
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
-                    ["help"] => { 
-                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                    ["help"] => {
+                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4));
                         current_state.write_instructions(&mut self.console);
-                        self.console.write("Instructions: "); 
-                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                        self.console.write("Instructions: ");
+                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4));
                         None
                     }
                     input => current_state.execute_command(input, &mut self.console),
@@ -151,7 +149,11 @@ impl Game {
         Renderer::set_text_colour(&colours::TEXT);
         renderer.clear_section("input", &colours::GAME_BACKGROUND);
         renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 1));
-        renderer.draw_string("input", "Enter 'help' for instructions.", Vector2D::new(0, 0));
+        renderer.draw_string(
+            "input",
+            "Enter 'help' for instructions.",
+            Vector2D::new(0, 0),
+        );
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
 
         stdout()

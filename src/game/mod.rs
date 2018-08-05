@@ -9,12 +9,10 @@ use graphics::Renderer;
 use math::Vector2D;
 
 use self::console::Console;
-use self::game_state::{state_explore::StateExplore, GameState};
+use self::game_state::{GameState, StateExplore};
 use self::layout::*;
 
 use std::io::{stdin, stdout, Write};
-
-
 
 mod colours {
     use graphics::Colour;

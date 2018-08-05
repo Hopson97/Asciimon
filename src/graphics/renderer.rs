@@ -18,7 +18,7 @@ struct RenderSection {
 }
 
 pub struct Renderer {
-    pub size: Vector2D<i32>,
+    size: Vector2D<i32>,
     clear_colour: Colour,
     render_sections: HashMap<String, RenderSection>,
 }
@@ -40,6 +40,10 @@ impl Renderer {
         renderer.create_border("full");
         renderer.clear();
         renderer
+    }
+
+    pub fn size(&self) -> Vector2D<i32> {
+        self.size
     }
 
     pub fn add_render_section(

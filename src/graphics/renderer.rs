@@ -18,6 +18,7 @@ struct RenderSection {
 }
 
 pub struct Renderer {
+    size: Vector2D<i32>,
     clear_colour: Colour,
     render_sections: HashMap<String, RenderSection>,
 }
@@ -31,6 +32,7 @@ impl RenderSection {
 impl Renderer {
     pub fn new(size: Vector2D<i32>) -> Renderer {
         let mut renderer = Renderer {
+            size,
             clear_colour: colours::CLEAR_COLOUR,
             render_sections: HashMap::new(),
         };
@@ -76,9 +78,8 @@ impl Renderer {
         }
     }
 
-    ///Gets the default clear colour
-    pub fn default_clear_colour(&self) -> &Colour {
-        &self.clear_colour
+    pub fn size(&self) -> Vector2D<i32> {
+        self.size
     }
 
     ///Draws a solid line in the X-plane of the renderer

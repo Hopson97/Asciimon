@@ -7,7 +7,7 @@ pub mod world;
 use graphics::renderer::Renderer;
 use util::vector::Vector2D;
 
-use self::console::Console;
+use self::console::{Console, CONSOLE_WIDTH};
 use self::game_state::{state_explore::StateExplore, GameState};
 
 use std::io::{stdin, stdout, Write};
@@ -38,6 +38,7 @@ pub const LOGO: &str = r"
 #[allow(dead_code)]
 pub enum UpdateResult {
     StatePush(Box<GameState>),
+    TransitionPush(Box<GameState>),
     StatePop,
     Exit,
 }
@@ -52,12 +53,12 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(Vector2D::new(113, 52)),
+            renderer: Renderer::new(Vector2D::new(GAME_AREA_SIZE.x + CONSOLE_WIDTH, 52)),
             state_stack: Vec::new(),
             is_running: true,
             console: Console::new(),
         };
-        //ui::init(&mut game.renderer);
+        let render_height = game.renderer.size().y;
 
         //Yay for magic numbers
         game.renderer
@@ -75,7 +76,7 @@ impl Game {
         game.renderer.add_render_section(
             "console",
             Vector2D::new(GAME_AREA_SIZE.x + 1, 0),
-            Vector2D::new(32, 52),
+            Vector2D::new(CONSOLE_WIDTH, render_height),
         );
 
         Game::draw_logo(&game.renderer);
@@ -93,6 +94,9 @@ impl Game {
             match self.tick() {
                 Some(UpdateResult::StatePush(state)) => {
                     self.state_stack.push(state);
+                }
+                Some(UpdateResult::TransitionPush)) => {
+                    
                 }
                 Some(UpdateResult::StatePop) => {
                     self.state_stack.pop();
@@ -123,10 +127,17 @@ impl Game {
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
-
+                
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
-                    input => current_state.tick(input, &mut self.console),
+                    ["help"] => { 
+                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                        current_state.write_instructions(&mut self.console);
+                        self.console.write("Instructions: "); 
+                        self.console.write(&"-".repeat(CONSOLE_WIDTH as usize - 4)); 
+                        None
+                    }
+                    input => current_state.execute_command(input, &mut self.console),
                 }
             } else {
                 return Some(UpdateResult::Exit);
@@ -139,7 +150,8 @@ impl Game {
     fn get_user_input(renderer: &Renderer) -> Option<String> {
         Renderer::set_text_colour(&colours::TEXT);
         renderer.clear_section("input", &colours::GAME_BACKGROUND);
-        renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 0));
+        renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 1));
+        renderer.draw_string("input", "Enter 'help' for instructions.", Vector2D::new(0, 0));
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
 
         stdout()

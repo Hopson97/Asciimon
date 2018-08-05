@@ -52,7 +52,7 @@ pub struct Game {
 impl Game {
     pub fn run_game() {
         let mut game = Game {
-            renderer: Renderer::new(Vector2D::new(113, 52)),
+            renderer: Renderer::new(Vector2D::new(GAME_AREA_SIZE.x + CONSOLE_WIDTH, 52)),
             state_stack: Vec::new(),
             is_running: true,
             console: Console::new(),
@@ -123,7 +123,7 @@ impl Game {
 
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
-
+                
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
                     ["help"] => { 

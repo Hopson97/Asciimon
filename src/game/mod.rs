@@ -9,7 +9,7 @@ pub mod world;
 pub use self::world::World;
 
 use graphics::Renderer;
-use util::Vector2D;
+use util::{flush_stdout, Vector2D};
 
 use self::game_state::{GameState, StateExplore};
 use self::layout_constants::*;
@@ -95,31 +95,12 @@ impl Game {
         }
     }
 
-    fn draw<T>(&mut self, state: &mut Box<T>) 
-    where 
-        T: GameState
-    {
-        self.renderer
-            .clear_section("game", &colours::GAME_BACKGROUND);
-        state.draw(&mut self.renderer, &mut self.console);
-        //Ensure what has been drawn is flushed to stdout before getting input/updating
-        stdout()
-            .flush()
-            .expect("Could not buffer the terminal output!");
-
-        self.console.draw(&mut self.renderer);
-        self.renderer.create_border("input");
-    }
-
     fn tick(&mut self) -> Option<UpdateResult> {
         if let Some(current_state) = self.state_stack.last_mut() {
             self.renderer
                 .clear_section("game", &colours::GAME_BACKGROUND);
             current_state.draw(&mut self.renderer, &mut self.console);
-            //Ensure what has been drawn is flushed to stdout before getting input/updating
-            stdout()
-                .flush()
-                .expect("Could not buffer the terminal output!");
+            flush_stdout();
 
             self.console.draw(&mut self.renderer);
             self.renderer.create_border("input");
@@ -156,11 +137,8 @@ impl Game {
             Vector2D::new(0, 0),
         );
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
-
-        stdout()
-            .flush()
-            .expect("Could not buffer the terminal output!");
-
+        flush_stdout();
+        
         renderer.set_cursor_render_section("input", Vector2D::new(2, 2));
         let mut input = String::new();
         match stdin()

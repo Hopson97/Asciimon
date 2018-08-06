@@ -68,7 +68,7 @@ impl StateExplore {
     }
 
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
-        let next_position = self.player.position + move_amount;
+        let next_position = self.player.position() + move_amount;
         match self.world.get_tile(next_position) {
             '.' | ',' | '|' | '\'' => {
                 self.player.move_position(move_amount);
@@ -128,7 +128,7 @@ impl GameState for StateExplore {
 
     ///Draws the player and the overworld etc
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
-        self.world.render(&renderer, self.player.position);
+        self.world.render(&renderer, self.player.position());
         //Draw player position
         Renderer::set_text_colour(&colours::PLAYER);
         renderer.draw_string("game", "@", GAME_AREA_CENTRE);

@@ -1,6 +1,6 @@
 use graphics::Renderer;
 
-use maths::Vector2D;
+use util::Vector2D;
 
 use game::{GAME_AREA_CENTRE, GAME_AREA_SIZE};
 

@@ -1,7 +1,7 @@
-use maths::Vector2D;
+use util::Vector2D;
 
 pub struct Player {
-    pub position: Vector2D<i32>,
+    position: Vector2D<i32>,
 }
 
 impl Player {
@@ -13,5 +13,9 @@ impl Player {
 
     pub fn move_position(&mut self, movement: Vector2D<i32>) {
         self.position += movement;
+    }
+
+    pub fn position(&self) -> Vector2D<i32> {
+        self.position
     }
 }

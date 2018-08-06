@@ -3,6 +3,14 @@ Pokemon-inspired game created using Rust for ANSI terminals
 
 This is my first project using Rust, so feel free to point out anything "not Rusty" in the code :)
 
+## Contributing
+
+The game is early in developement, and so I am regulrally making changes to the code.
+
+Because of this, contributions will likely be unable to be merged, or possibly change things without considering plans I have for the game.
+
+So for now I am not going to be accepting any pull requests of ANY kind (At least until the game has matured a bit)
+
 ## Running
 
 ```

@@ -1,5 +1,5 @@
 mod game_state;
-mod layout;
+mod layout_constants;
 
 pub mod console;
 pub use self::console::Console;
@@ -12,7 +12,7 @@ use graphics::Renderer;
 use maths::Vector2D;
 
 use self::game_state::{GameState, StateExplore};
-use self::layout::*;
+use self::layout_constants::*;
 
 use std::io::{stdin, stdout, Write};
 

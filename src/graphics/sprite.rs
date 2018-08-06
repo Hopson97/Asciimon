@@ -1,7 +1,7 @@
 use maths::{vector, Vector2D};
 
 pub struct Sprite {
-    pub position: Vector2D<i32>,
+    pub position: Vector2D<u32>,
     lines: Vec<String>,
 }
 

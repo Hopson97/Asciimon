@@ -1,7 +1,7 @@
 use maths::Vector2D;
 
 pub struct Player {
-    pub position: Vector2D<i32>,
+    pub position: Vector2D<u32>,
 }
 
 impl Player {
@@ -12,6 +12,6 @@ impl Player {
     }
 
     pub fn move_position(&mut self, movement: Vector2D<i32>) {
-        self.position += movement;
+        self.position = self.position.add_signed(movement);
     }
 }

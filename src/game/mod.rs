@@ -9,7 +9,7 @@ pub mod world;
 pub use self::world::World;
 
 use graphics::Renderer;
-use maths::Vector2D;
+use util::Vector2D;
 
 use self::game_state::{GameState, StateExplore};
 use self::layout_constants::*;
@@ -95,10 +95,24 @@ impl Game {
         }
     }
 
+    fn draw<T>(&mut self, state: &mut Box<T>) 
+    where 
+        T: GameState
+    {
+        self.renderer
+            .clear_section("game", &colours::GAME_BACKGROUND);
+        state.draw(&mut self.renderer, &mut self.console);
+        //Ensure what has been drawn is flushed to stdout before getting input/updating
+        stdout()
+            .flush()
+            .expect("Could not buffer the terminal output!");
+
+        self.console.draw(&mut self.renderer);
+        self.renderer.create_border("input");
+    }
+
     fn tick(&mut self) -> Option<UpdateResult> {
         if let Some(current_state) = self.state_stack.last_mut() {
-            //Drawing happens first because the input is blocking, so nothing would be drawn until input has been
-            //got on the first loop
             self.renderer
                 .clear_section("game", &colours::GAME_BACKGROUND);
             current_state.draw(&mut self.renderer, &mut self.console);
@@ -122,7 +136,7 @@ impl Game {
                         self.console.write(&"-".repeat(CONSOLE_SIZE.x as usize - 4));
                         None
                     }
-                    input => current_state.execute_command(input, &mut self.console),
+                    input => {None}//current_state.execute_command(input, &mut self.console),
                 }
             } else {
                 return Some(UpdateResult::Exit);

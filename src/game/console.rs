@@ -5,7 +5,7 @@ use graphics::Renderer;
 
 use std::collections::vec_deque::VecDeque;
 
-use maths::Vector2D;
+use util::Vector2D;
 
 mod colours {
     use graphics::Colour;

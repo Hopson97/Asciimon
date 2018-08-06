@@ -1,4 +1,4 @@
-use maths::Vector2D;
+use util::Vector2D;
 
 pub const SCREEN_SIZE: Vector2D<i32> = Vector2D { x: 120, y: 52 };
 

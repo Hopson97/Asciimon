@@ -15,6 +15,8 @@ use self::game_state::{GameState, StateExplore};
 use self::layout_constants::*;
 
 use std::io::{stdin, stdout, Write};
+use std::marker::Sized;
+use std::ops::DerefMut;
 
 mod colours {
     use graphics::Colour;
@@ -76,7 +78,7 @@ impl Game {
 
     fn run(&mut self) {
         self.state_stack.push(Box::new(StateExplore::new()));
-        //Main loop!
+
         while self.is_running {
             match self.tick() {
                 Some(UpdateResult::StatePush(state)) => {
@@ -97,17 +99,19 @@ impl Game {
 
     fn tick(&mut self) -> Option<UpdateResult> {
         if let Some(current_state) = self.state_stack.last_mut() {
+            //Draw
             self.renderer
                 .clear_section("game", &colours::GAME_BACKGROUND);
             current_state.draw(&mut self.renderer, &mut self.console);
             flush_stdout();
-
             self.console.draw(&mut self.renderer);
             self.renderer.create_border("input");
 
+            //Input
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
 
+                //Handle input
                 match &input_args[..] {
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
                     ["help"] => {
@@ -117,7 +121,10 @@ impl Game {
                         self.console.write(&"-".repeat(CONSOLE_SIZE.x as usize - 4));
                         None
                     }
-                    input => {None}//current_state.execute_command(input, &mut self.console),
+                    input => {
+                        current_state.execute_command(input, &mut self.console);
+                        None
+                    }
                 }
             } else {
                 return Some(UpdateResult::Exit);
@@ -138,7 +145,7 @@ impl Game {
         );
         renderer.draw_string("input", "> ", Vector2D::new(0, 2));
         flush_stdout();
-        
+
         renderer.set_cursor_render_section("input", Vector2D::new(2, 2));
         let mut input = String::new();
         match stdin()

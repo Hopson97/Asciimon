@@ -3,9 +3,9 @@ use graphics::Renderer;
 use util::Vector2D;
 
 use game::{GAME_AREA_CENTRE, GAME_AREA_SIZE};
-
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::collections::HashMap;
 
 use std::fs;
 
@@ -22,11 +22,14 @@ mod colours {
     define_colour!(TREE_LEAVES, 34, 100, 34);
 }
 
-///Represents a section (of the map) of the world.
-/// Contains data about tiles make it up, and what position said tiles are in
+/// A chunk is a data about a section of the world map.
+/// This contains data such as:
+/// Tile data
+/// Portals (Doors, ladders etc and their destination)
 pub struct Chunk {
     pub world_position: Vector2D<i32>,
     data: Vec<Vec<char>>,
+    portals: HashMap<Vector2D<i32>, Vector2D<i32>>
 }
 
 fn path_exists(path: &str) -> bool {
@@ -41,6 +44,7 @@ impl Chunk {
         let mut chunk = Chunk {
             world_position: pos,
             data: Vec::with_capacity(CHUNK_SIZE.y as usize),
+            portals: HashMap::new()
         };
 
         let file_name = format!("data/world/{}_{}.chunk", pos.x, pos.y);

@@ -4,6 +4,8 @@ use graphics::Renderer;
 use util::Vector2D;
 
 mod chunk;
+mod portal;
+
 pub use self::chunk::{Chunk, CHUNK_SIZE};
 
 pub struct World {
@@ -26,13 +28,13 @@ impl World {
             for x in -1..=1 {
                 let chunk_pos = player_chunk_pos + Vector2D::new(x, y);
 
-                //To do: Improve the cotains key followed by the insert.
+                //Load chunks around the center point
                 if !self.chunks.contains_key(&chunk_pos) {
                     if let Some(chunk) = Chunk::load(chunk_pos) {
                         self.chunks.insert(chunk_pos, chunk);
                     }
                 }
-
+                
                 if let Some(chunk) = self.chunks.get(&chunk_pos) {
                     chunk.render(renderer, centre_position);
                 }

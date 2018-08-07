@@ -21,7 +21,6 @@ mod colours {
     define_colour!(LOGO, 50, 255, 200);
     define_colour!(TEXT, 255, 255, 255);
     define_colour!(GAME_BACKGROUND, 0, 0, 0);
-    define_colour!(UI_BACKGROUND, 50, 50, 50);
 }
 
 pub const LOGO: &str = r"

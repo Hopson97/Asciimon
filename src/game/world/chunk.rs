@@ -3,11 +3,13 @@ use graphics::Renderer;
 use util::Vector2D;
 
 use game::{GAME_AREA_CENTRE, GAME_AREA_SIZE};
+
+use std::cmp;
+use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::collections::HashMap;
 
-use std::fs;
 
 pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
@@ -29,7 +31,8 @@ mod colours {
 pub struct Chunk {
     pub world_position: Vector2D<i32>,
     data: Vec<Vec<char>>,
-    portals: HashMap<Vector2D<i32>, Vector2D<i32>>
+    max_width: usize,
+    portals: HashMap<Vector2D<i32>, Vector2D<i32>>,
 }
 
 fn path_exists(path: &str) -> bool {
@@ -50,6 +53,7 @@ impl Chunk {
         let mut chunk = Chunk {
             world_position: pos,
             data: Vec::with_capacity(CHUNK_SIZE.y as usize),
+            max_width: 0,
             portals: HashMap::new()
         };
 
@@ -61,22 +65,26 @@ impl Chunk {
         else {
             let file = File::open(file_name)
                 .unwrap_or_else(|_| panic!("Unable to open file for chunk {} {}", pos.x, pos.y));
-            let mut state = MapLoadState::FindSecton;
 
+            let mut load_state = MapLoadState::FindSecton;
+            //Load the map
             for line in BufReader::new(file).lines() {
-                match state {
+                match load_state {
                     MapLoadState::FindSecton => {
                         match line.unwrap().as_ref() {
-                            "map" => state = MapLoadState::Map,
-                            "portals" => state  = MapLoadState::Portals,
+                            "map" => load_state = MapLoadState::Map,
+                            "portals" => load_state  = MapLoadState::Portals,
                             _ => {}, //Empty lines
                         }
                     },
                     MapLoadState::Map => {
                         let curr_line = line.unwrap();
                         match curr_line.as_ref() {
-                            "end" => state = MapLoadState::FindSecton,
-                            _ => {chunk.data.push(curr_line.chars().collect())},
+                            "end" => load_state = MapLoadState::FindSecton,
+                            _ => {
+                                chunk.max_width = cmp::max(curr_line.len(), chunk.max_width);
+                                chunk.data.push(curr_line.chars().collect());
+                            },
                         }
                     },
                     MapLoadState::Portals => {
@@ -104,7 +112,7 @@ impl Chunk {
 
         //String slice of where the chunk lines are drawn from and to
         let mut begin_slice = 0;
-        let mut end_slice = CHUNK_SIZE.x;
+        let mut end_slice = self.max_width as i32;
 
         if chunk_pos.x < 0 {
             begin_slice = chunk_pos.x.abs();

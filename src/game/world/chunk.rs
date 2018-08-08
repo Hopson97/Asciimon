@@ -45,6 +45,40 @@ enum MapLoadState {
     Portals,
 }
 
+/// Reads a .chunk file into a Chunk struct
+fn load_chunk(chunk: &mut Chunk, file_name: String) {
+    let file = File::open(file_name)
+        .unwrap_or_else(|_| panic!(
+            "Unable to open file for chunk {} {}", chunk.world_position.x, chunk.world_position.y
+        ));
+
+    let mut load_state = MapLoadState::FindSecton;
+    //Load the map
+    for line in BufReader::new(file).lines() {
+        match load_state {
+            MapLoadState::FindSecton => {
+                match line.unwrap().as_ref() {
+                    "map" => load_state = MapLoadState::Map,
+                    "portals" => load_state  = MapLoadState::Portals,
+                    _ => {}, //Empty lines
+                }
+            },
+            MapLoadState::Map => {
+                let curr_line = line.unwrap();
+                match curr_line.as_ref() {
+                    "end" => load_state = MapLoadState::FindSecton,
+                    _ => {
+                        chunk.max_width = cmp::max(curr_line.len(), chunk.max_width);
+                        chunk.data.push(curr_line.chars().collect());
+                    },
+                }
+            },
+            MapLoadState::Portals => {
+            }
+        }
+    }
+}
+
 impl Chunk {
     /**
      * Loads a chunk from a file for coordinates (x, y)
@@ -63,35 +97,7 @@ impl Chunk {
             None //panic!("Path for chunk '{}' does not exist", file_name);
         } 
         else {
-            let file = File::open(file_name)
-                .unwrap_or_else(|_| panic!("Unable to open file for chunk {} {}", pos.x, pos.y));
-
-            let mut load_state = MapLoadState::FindSecton;
-            //Load the map
-            for line in BufReader::new(file).lines() {
-                match load_state {
-                    MapLoadState::FindSecton => {
-                        match line.unwrap().as_ref() {
-                            "map" => load_state = MapLoadState::Map,
-                            "portals" => load_state  = MapLoadState::Portals,
-                            _ => {}, //Empty lines
-                        }
-                    },
-                    MapLoadState::Map => {
-                        let curr_line = line.unwrap();
-                        match curr_line.as_ref() {
-                            "end" => load_state = MapLoadState::FindSecton,
-                            _ => {
-                                chunk.max_width = cmp::max(curr_line.len(), chunk.max_width);
-                                chunk.data.push(curr_line.chars().collect());
-                            },
-                        }
-                    },
-                    MapLoadState::Portals => {
-                        
-                    }
-                }
-            }
+            load_chunk(&mut chunk, file_name);
             Some(chunk)
         }
     }
@@ -114,22 +120,24 @@ impl Chunk {
         let mut begin_slice = 0;
         let mut end_slice = self.max_width as i32;
 
+        //Check for the OOB, which prevents the string being drawn before the render section...
         if chunk_pos.x < 0 {
             begin_slice = chunk_pos.x.abs();
             chunk_pos.x = 0;
         }
 
+        //..and after
         if chunk_pos.x + (end_slice - begin_slice) >= GAME_AREA_SIZE.x {
             end_slice = (GAME_AREA_SIZE.x - chunk_pos.x) + begin_slice;
         }
 
-        for y in 0..CHUNK_SIZE.y {
+        for y in 0..self.data.len() {
             self.draw_line(
                 renderer,
                 y as usize,
                 begin_slice as usize,
                 end_slice as usize,
-                chunk_pos + Vector2D::new(0, y),
+                chunk_pos + Vector2D::new(0, y as i32),
             );
         }
     }

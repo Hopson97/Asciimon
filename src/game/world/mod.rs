@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use graphics::Renderer;
 use util::Vector2D;
 
-pub mod portal;
 pub mod chunk;
+pub mod portal;
 
-pub use self::portal::Portal;
 pub use self::chunk::{Chunk, CHUNK_SIZE};
+pub use self::portal::Portal;
 
 pub struct World {
     //error_chunk: Chunk,
@@ -35,7 +35,7 @@ impl World {
                         self.chunks.insert(chunk_pos, chunk);
                     }
                 }
-                
+
                 if let Some(chunk) = self.chunks.get(&chunk_pos) {
                     chunk.render(renderer, centre_position);
                 }
@@ -63,11 +63,14 @@ impl World {
         self.get_tile(world_position) == '1'
     }
 
-    pub fn get_portal_at (&self, world_position: Vector2D<i32>) -> Option<&Portal> {
+    pub fn get_portal_at(&self, world_position: Vector2D<i32>) -> Option<&Portal> {
         let chunk_position = World::world_to_chunk_position(world_position);
         let local_x = world_position.x % CHUNK_SIZE.x;
         let local_y = world_position.y % CHUNK_SIZE.y;
 
-        self.chunks.get(&chunk_position).unwrap().get_portal(Vector2D::new(local_x, local_y))
+        self.chunks
+            .get(&chunk_position)
+            .unwrap()
+            .get_portal(Vector2D::new(local_x, local_y))
     }
 }

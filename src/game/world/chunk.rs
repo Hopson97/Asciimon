@@ -1,13 +1,13 @@
 use graphics::Renderer;
 
-use util::{Vector2D};
+use util::Vector2D;
 
 use game::{GAME_AREA_CENTRE, GAME_AREA_SIZE};
 
+use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::collections::HashMap;
 
 use super::Portal;
 
@@ -48,10 +48,12 @@ enum MapLoadState {
 
 /// Reads a .chunk file into a Chunk struct
 fn load_chunk(chunk: &mut Chunk, file_name: String) {
-    let file = File::open(file_name)
-        .unwrap_or_else(|_| panic!(
-            "Unable to open file for chunk {} {}", chunk.world_position.x, chunk.world_position.y
-        ));
+    let file = File::open(file_name).unwrap_or_else(|_| {
+        panic!(
+            "Unable to open file for chunk {} {}",
+            chunk.world_position.x, chunk.world_position.y
+        )
+    });
 
     let mut load_state = MapLoadState::FindSecton;
     //Load the map
@@ -60,20 +62,20 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
             MapLoadState::FindSecton => {
                 match line.unwrap().as_ref() {
                     "map" => load_state = MapLoadState::Map,
-                    "portals" => load_state  = MapLoadState::Portals,
-                    _ => {}, //Empty lines
+                    "portals" => load_state = MapLoadState::Portals,
+                    _ => {} //Empty lines
                 }
-            },
+            }
             MapLoadState::Map => {
                 let curr_line = line.unwrap();
                 match curr_line.as_ref() {
                     "end" => load_state = MapLoadState::FindSecton,
                     _ => {
-                        chunk.max_width = CHUNK_SIZE.x as usize;// cmp::max(curr_line.len(), chunk.max_width);
+                        chunk.max_width = CHUNK_SIZE.x as usize; // cmp::max(curr_line.len(), chunk.max_width);
                         chunk.data.push(curr_line.chars().collect());
-                    },
+                    }
                 }
-            },
+            }
             MapLoadState::Portals => {
                 let curr_line = line.unwrap();
                 match curr_line.as_ref() {
@@ -87,25 +89,19 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
                                 Ok(n) => {
                                     portal_nums.push(n);
                                     n
-                                },
+                                }
                             };
                         }
 
                         assert_eq!(portal_nums.len(), 6);
 
-                        let local_portal_location = Vector2D::new(
-                            portal_nums[0], portal_nums[1]
-                        );
-                        let portal_world_dest = Vector2D::new(
-                            portal_nums[2], portal_nums[3]
-                        );
-                        let portal_local_dest = Vector2D::new(
-                            portal_nums[4], portal_nums[5]
-                        );
+                        let local_portal_location = Vector2D::new(portal_nums[0], portal_nums[1]);
+                        let portal_world_dest = Vector2D::new(portal_nums[2], portal_nums[3]);
+                        let portal_local_dest = Vector2D::new(portal_nums[4], portal_nums[5]);
 
                         chunk.portals.insert(
-                            local_portal_location, 
-                            Portal::new(portal_world_dest, portal_local_dest)
+                            local_portal_location,
+                            Portal::new(portal_world_dest, portal_local_dest),
                         );
                     }
                 }
@@ -123,20 +119,18 @@ impl Chunk {
             world_position: pos,
             data: Vec::with_capacity(CHUNK_SIZE.y as usize),
             max_width: 0,
-            portals: HashMap::new()
+            portals: HashMap::new(),
         };
 
         let file_name = format!("data/world/{}_{}.chunk", pos.x, pos.y);
 
         if !path_exists(&file_name) {
             None //panic!("Path for chunk '{}' does not exist", file_name);
-        } 
-        else {
+        } else {
             load_chunk(&mut chunk, file_name);
             Some(chunk)
         }
     }
-
 
     pub fn render(&self, renderer: &Renderer, centre_position: Vector2D<i32>) {
         //Top left position of where the chunk is drawn from

@@ -63,8 +63,8 @@ impl StateExplore {
                 's' => vector::DOWN,
                 'd' => vector::RIGHT,
                 _ => continue,
-            }) { 
-                break 
+            }) {
+                break;
             };
         }
     }
@@ -79,7 +79,7 @@ impl StateExplore {
                     let curr_pos = self.player.position();
                     let offset = portal.unwrap().get_destination_point() - curr_pos;
                     self.player.move_position(offset);
-                    return false
+                    return false;
                 }
                 true
             }
@@ -87,7 +87,6 @@ impl StateExplore {
         }
     }
 }
-
 
 impl GameState for StateExplore {
     fn write_instructions(&self, console: &mut Console) {
@@ -155,7 +154,11 @@ impl GameState for StateExplore {
             _ => {}
         };
 
-        console.write(&format!("Player Postion: {} {}", self.player.position().x, self.player.position().y));
+        console.write(&format!(
+            "Player Postion: {} {}",
+            self.player.position().x,
+            self.player.position().y
+        ));
 
         None
     }

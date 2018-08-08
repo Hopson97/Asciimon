@@ -1,3 +1,4 @@
+
 use super::CONSOLE_SIZE;
 
 use graphics::Colour;

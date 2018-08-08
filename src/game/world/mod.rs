@@ -3,8 +3,10 @@ use std::collections::HashMap;
 use graphics::Renderer;
 use util::Vector2D;
 
-mod chunk;
+pub mod portal;
+pub mod chunk;
 
+pub use self::portal::Portal;
 pub use self::chunk::{Chunk, CHUNK_SIZE};
 
 pub struct World {
@@ -21,11 +23,11 @@ impl World {
     }
 
     pub fn render(&mut self, renderer: &Renderer, centre_position: Vector2D<i32>) {
-        let player_chunk_pos = World::player_to_chunk_position(centre_position);
+        let world_chunk_pos = World::world_to_chunk_position(centre_position);
 
         for y in -1..=1 {
             for x in -1..=1 {
-                let chunk_pos = player_chunk_pos + Vector2D::new(x, y);
+                let chunk_pos = world_chunk_pos + Vector2D::new(x, y);
 
                 //Load chunks around the center point
                 if !self.chunks.contains_key(&chunk_pos) {
@@ -42,7 +44,7 @@ impl World {
     }
 
     pub fn get_tile(&self, world_position: Vector2D<i32>) -> char {
-        let chunk_position = World::player_to_chunk_position(world_position);
+        let chunk_position = World::world_to_chunk_position(world_position);
         self.chunks.get(&chunk_position).map_or(' ', |chunk| {
             let local_x = world_position.x % CHUNK_SIZE.x;
             let local_y = world_position.y % CHUNK_SIZE.y;
@@ -50,10 +52,22 @@ impl World {
         })
     }
 
-    fn player_to_chunk_position(player_position: Vector2D<i32>) -> Vector2D<i32> {
+    fn world_to_chunk_position(world_position: Vector2D<i32>) -> Vector2D<i32> {
         Vector2D::new(
-            player_position.x / CHUNK_SIZE.x,
-            player_position.y / CHUNK_SIZE.y,
+            world_position.x / CHUNK_SIZE.x,
+            world_position.y / CHUNK_SIZE.y,
         )
+    }
+
+    pub fn is_portal_at(&self, world_position: Vector2D<i32>) -> bool {
+        self.get_tile(world_position) == '1'
+    }
+
+    pub fn get_portal_at (&self, world_position: Vector2D<i32>) -> Option<&Portal> {
+        let chunk_position = World::world_to_chunk_position(world_position);
+        let local_x = world_position.x % CHUNK_SIZE.x;
+        let local_y = world_position.y % CHUNK_SIZE.y;
+
+        self.chunks.get(&chunk_position).unwrap().get_portal(Vector2D::new(local_x, local_y))
     }
 }

@@ -7,3 +7,4 @@ authors = ["Hopson97 <mhopson@hotmail.co.uk>"]
 256colour = []
 
 [dependencies]
+lazy_static = "1.1.0"

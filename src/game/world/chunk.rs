@@ -9,6 +9,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::collections::HashMap;
 
+use super::Portal;
 
 pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
@@ -22,20 +23,6 @@ mod colours {
     define_colour!(TREE_TRUNK, 160, 82, 45);
     define_colour!(TREE_LEAVES, 34, 100, 34);
     define_colour!(NONE, 255, 0, 255);
-}
-
-struct Portal {
-    world_destination: Vector2D<i32>,
-    local_destination: Vector2D<i32>, 
-}
-
-impl Portal {
-    fn new(world_destination: Vector2D<i32>, local_destination: Vector2D<i32>) -> Portal {
-        Portal {
-            world_destination,
-            local_destination
-        }
-    }
 }
 
 /// A chunk is a data about a section of the world map.
@@ -229,5 +216,9 @@ impl Chunk {
 
     pub fn get_tile(&self, x: usize, y: usize) -> char {
         self.data[y][x]
+    }
+
+    pub fn get_portal(&self, local_position: Vector2D<i32>) -> Option<&Portal> {
+        self.portals.get(&local_position)
     }
 }

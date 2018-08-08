@@ -57,20 +57,22 @@ impl StateExplore {
     /// Collision will stop player moving in a direction, but will continue to cycle the buffer
     pub fn handle_move_player_step(&mut self, steps: &str) {
         for step in steps.chars() {
-            self.move_player(match step {
+            if !self.move_player(match step {
                 'w' => vector::UP,
                 'a' => vector::LEFT,
                 's' => vector::DOWN,
                 'd' => vector::RIGHT,
                 _ => continue,
-            });
+            }) { 
+                break 
+            };
         }
     }
 
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position() + move_amount;
         match self.world.get_tile(next_position) {
-            '.' | ',' | '|' | '\'' => {
+            '.' | ',' | '|' | '\'' | '1' => {
                 self.player.move_position(move_amount);
                 true
             }
@@ -78,6 +80,7 @@ impl StateExplore {
         }
     }
 }
+
 
 impl GameState for StateExplore {
     fn write_instructions(&self, console: &mut Console) {
@@ -144,6 +147,8 @@ impl GameState for StateExplore {
             }
             _ => {}
         };
+
+        console.write(&format!("Player Postion: {} {}", self.player.position().x, self.player.position().y));
 
         None
     }

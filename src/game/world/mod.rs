@@ -4,7 +4,6 @@ use graphics::Renderer;
 use util::Vector2D;
 
 mod chunk;
-mod portal;
 
 pub use self::chunk::{Chunk, CHUNK_SIZE};
 

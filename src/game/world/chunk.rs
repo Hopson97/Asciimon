@@ -36,6 +36,12 @@ fn path_exists(path: &str) -> bool {
     fs::metadata(path).is_ok()
 }
 
+enum MapLoadState {
+    FindSecton,
+    Map,
+    Portals,
+}
+
 impl Chunk {
     /**
      * Loads a chunk from a file for coordinates (x, y)
@@ -51,20 +57,37 @@ impl Chunk {
 
         if !path_exists(&file_name) {
             None //panic!("Path for chunk '{}' does not exist", file_name);
-        } else {
+        } 
+        else {
             let file = File::open(file_name)
                 .unwrap_or_else(|_| panic!("Unable to open file for chunk {} {}", pos.x, pos.y));
+            let mut state = MapLoadState::FindSecton;
 
             for line in BufReader::new(file).lines() {
-                chunk.data.push(line.unwrap().chars().collect());
-                if chunk.data.len() == CHUNK_SIZE.y as usize {
-                    break;
+                match state {
+                    MapLoadState::FindSecton => {
+                        match line.unwrap().as_ref() {
+                            "map" => state = MapLoadState::Map,
+                            "portals" => state  = MapLoadState::Portals,
+                            _ => {}, //Empty lines
+                        }
+                    },
+                    MapLoadState::Map => {
+                        let curr_line = line.unwrap();
+                        match curr_line.as_ref() {
+                            "end" => state = MapLoadState::FindSecton,
+                            _ => {chunk.data.push(curr_line.chars().collect())},
+                        }
+                    },
+                    MapLoadState::Portals => {
+                        
+                    }
                 }
             }
-
             Some(chunk)
         }
     }
+
 
     pub fn render(&self, renderer: &Renderer, centre_position: Vector2D<i32>) {
         //Top left position of where the chunk is drawn from

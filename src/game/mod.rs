@@ -14,9 +14,7 @@ use util::{flush_stdout, Vector2D};
 use self::game_state::{GameState, StateExplore};
 use self::layout_constants::*;
 
-use std::io::{stdin, stdout, Write};
-use std::marker::Sized;
-use std::ops::DerefMut;
+use std::io::{stdin, Write};
 
 mod colours {
     use graphics::Colour;

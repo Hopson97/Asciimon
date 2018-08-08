@@ -85,15 +85,13 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
                         let mut portal_nums: Vec<i32> = Vec::with_capacity(6);
                         for data in &portal_data {
                             match data.parse::<i32>() {
-                                Err(_) => break,
+                                Err(_) => break, //should cancel out the creation of the portal (TODO)
                                 Ok(n) => {
                                     portal_nums.push(n);
                                     n
                                 }
                             };
                         }
-
-                        assert_eq!(portal_nums.len(), 6);
 
                         let local_portal_location = Vector2D::new(portal_nums[0], portal_nums[1]);
                         let portal_world_dest = Vector2D::new(portal_nums[2], portal_nums[3]);
@@ -213,6 +211,9 @@ impl Chunk {
     }
 
     pub fn get_portal(&self, local_position: Vector2D<i32>) -> Option<&Portal> {
+        println!("GOT PORTAL AT {} ", local_position);
+      //  panic!("");
+
         self.portals.get(&local_position)
     }
 }

@@ -9,6 +9,8 @@ pub mod portal;
 pub use self::chunk::{Chunk, CHUNK_SIZE};
 pub use self::portal::Portal;
 
+/// World
+/// Manages the map chunks within the world
 pub struct World {
     //error_chunk: Chunk,
     chunks: HashMap<Vector2D<i32>, Chunk>,

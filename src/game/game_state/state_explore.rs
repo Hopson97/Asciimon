@@ -74,6 +74,7 @@ impl StateExplore {
         match self.world.get_tile(next_position) {
             '.' | ',' | '|' | '\'' | '1' => {
                 self.player.move_position(move_amount);
+                //Move player to destination portal
                 if self.world.is_portal_at(self.player.position()) {
                     let portal = self.world.get_portal_at(self.player.position());
                     let curr_pos = self.player.position();

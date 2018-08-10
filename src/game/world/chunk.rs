@@ -9,8 +9,6 @@ use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-use super::Portal;
-
 pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
 mod colours {
@@ -33,7 +31,7 @@ pub struct Chunk {
     pub world_position: Vector2D<i32>,
     data: Vec<Vec<char>>,
     max_width: usize,
-    portals: HashMap<Vector2D<i32>, Portal>,
+    portals: HashMap<Vector2D<i32>, Vector2D<i32>>, //Local position, then destination
 }
 
 fn path_exists(path: &str) -> bool {
@@ -84,6 +82,7 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
                         let portal_data: Vec<&str> = curr_line.trim().split(' ').collect();
                         let mut portal_nums: Vec<i32> = Vec::with_capacity(6);
                         for data in &portal_data {
+                            
                             match data.parse::<i32>() {
                                 Err(_) => break, //should cancel out the creation of the portal (TODO)
                                 Ok(n) => {
@@ -95,11 +94,10 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
 
                         let local_portal_location = Vector2D::new(portal_nums[0], portal_nums[1]);
                         let portal_world_dest = Vector2D::new(portal_nums[2], portal_nums[3]);
-                        let portal_local_dest = Vector2D::new(portal_nums[4], portal_nums[5]);
 
                         chunk.portals.insert(
                             local_portal_location,
-                            Portal::new(portal_world_dest, portal_local_dest),
+                            portal_world_dest,
                         );
                     }
                 }
@@ -210,7 +208,7 @@ impl Chunk {
         self.data[y][x]
     }
 
-    pub fn get_portal(&self, local_position: Vector2D<i32>) -> Option<&Portal> {
+    pub fn get_portal(&self, local_position: Vector2D<i32>) -> Option<&Vector2D<i32>> {
         println!("GOT PORTAL AT {} ", local_position);
       //  panic!("");
 

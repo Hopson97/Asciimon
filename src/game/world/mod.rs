@@ -4,10 +4,8 @@ use graphics::Renderer;
 use util::Vector2D;
 
 pub mod chunk;
-pub mod portal;
 
 pub use self::chunk::{Chunk, CHUNK_SIZE};
-pub use self::portal::Portal;
 
 /// World
 /// Manages the map chunks within the world
@@ -65,7 +63,7 @@ impl World {
         self.get_tile(world_position) == '1'
     }
 
-    pub fn get_portal_at(&self, world_position: Vector2D<i32>) -> Option<&Portal> {
+    pub fn get_portal_at(&self, world_position: Vector2D<i32>) -> Option<&Vector2D<i32>> {
         let chunk_position = World::world_to_chunk_position(world_position);
         let local_x = world_position.x % CHUNK_SIZE.x;
         let local_y = world_position.y % CHUNK_SIZE.y;

@@ -56,12 +56,12 @@ impl Renderer {
         self.create_border(name);
     }
 
-    ///Clears the entire window
+    /// Clears the entire window
     pub fn clear(&mut self) {
         self.clear_section("full", &self.clear_colour);
     }
 
-    ///Clears just a single section of the screen
+    /// Clears just a single section of the screen
     pub fn clear_section(&self, section: &'static str, colour: &Colour) {
         Renderer::set_bg_colour(&colour);
 

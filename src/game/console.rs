@@ -13,13 +13,13 @@ mod colours {
     define_colour!(BACKGROUND, 0, 0, 5);
 }
 
-///A single section of text to be rendered to the console
+/// A single section of text to be rendered to the console
 struct ConsoleOutputSection {
     text: Vec<String>,
     colour: Colour,
 }
 
-///This is the "console" that displays on the right-side of the user interface
+/// This is the "console" that displays on the right-side of the user interface
 pub struct Console {
     output_sections: VecDeque<ConsoleOutputSection>,
 }

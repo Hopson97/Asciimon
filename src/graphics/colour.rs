@@ -47,6 +47,7 @@ impl Colour {
     }
 }
 
+/// """"lighting"""""
 impl Mul<f32> for Colour {
     type Output = Colour;
 

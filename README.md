@@ -21,6 +21,8 @@ cargo run
 
 ## Videos
 
+I am creating this project as part of a series. The playlist for this can be found here: https://www.youtube.com/playlist?list=PLMZ_9w2XRxiaGnePqj8uDUsQJAiHTmy71
+
 ### Episode One
 
 https://www.youtube.com/watch?v=8KP8rjUCa9w
@@ -28,7 +30,7 @@ https://www.youtube.com/watch?v=8KP8rjUCa9w
 In this episode, I set up the basic game engine (game state system, "render" engine), and also start on the world exploration part of the gane.
 
 
-##Features
+## Features
 
 1. Roaming the world
 2. Command system

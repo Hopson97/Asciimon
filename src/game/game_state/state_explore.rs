@@ -50,7 +50,7 @@ impl StateExplore {
         }
     }
 
-    ///Cycles through a buffer of move commands one by one and steps the plyer
+    /// Cycles through a buffer of move commands one by one and steps the plyer
     /// #Example
     /// >wwwssdd
     /// Moves player 3 left, then 2 down, then 2 right.
@@ -72,9 +72,9 @@ impl StateExplore {
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position() + move_amount;
         match self.world.get_tile(next_position) {
-            '.' | ',' | '|' | '\'' | '1' => {
+            '.' | ',' | '|' | '\'' | '1' => { //Tiles player can walk on
                 self.player.move_position(move_amount);
-                //Move player to destination portal
+                //Move player to destination portal if there is one
                 if self.world.is_portal_at(self.player.position()) {
                     let portal_dest = self.world.get_portal_at(self.player.position());
                     let curr_pos = self.player.position();

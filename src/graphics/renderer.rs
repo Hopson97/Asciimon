@@ -40,11 +40,12 @@ impl Renderer {
         renderer.clear();
         renderer
     }
-
+    
     pub fn size(&self) -> Vector2D<i32> {
         self.size
     }
 
+    /// Adds a section to the UI to draw things to
     pub fn add_render_section(
         &mut self,
         name: &'static str,
@@ -56,12 +57,12 @@ impl Renderer {
         self.create_border(name);
     }
 
-    ///Clears the entire window
+    /// Clears the entire window
     pub fn clear(&mut self) {
         self.clear_section("full", &self.clear_colour);
     }
 
-    ///Clears just a single section of the screen
+    /// Clears just a single section of the screen
     pub fn clear_section(&self, section: &'static str, colour: &Colour) {
         Renderer::set_bg_colour(&colour);
 

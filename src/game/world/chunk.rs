@@ -214,4 +214,13 @@ impl Chunk {
 
         self.portals.get(&local_position)
     }
+
+    pub fn portal_count(&self) -> usize {
+        self.portals.len()
+    }
+
+    pub fn portal_locations(&self) -> Vec<&Vector2D<i32>> {
+        let keys: Vec<&Vector2D<i32>> = self.portals.keys().collect();
+        keys
+    }
 }

@@ -1,5 +1,8 @@
 pub mod state_explore;
+pub mod state_edit;
+
 pub use self::state_explore::StateExplore;
+pub use self::state_edit::StateEdit;
 
 use game::Console;
 use game::UpdateResult;

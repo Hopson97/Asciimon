@@ -11,7 +11,7 @@ pub use self::world::World;
 use graphics::Renderer;
 use util::{flush_stdout, Vector2D};
 
-use self::game_state::{GameState, StateExplore};
+use self::game_state::{GameState, StateExplore, StateEdit};
 use self::layout_constants::*;
 
 use std::io::{stdin, Write};
@@ -111,6 +111,7 @@ impl Game {
 
                 //Handle input
                 match &input_args[..] {
+                    ["editor"] => Some(UpdateResult::StatePush(Box::new(StateEdit::new()))),
                     ["exit"] | ["quit"] => Some(UpdateResult::Exit),
                     ["help"] => {
                         self.console.write(&"-".repeat(CONSOLE_SIZE.x as usize - 4));

@@ -8,7 +8,7 @@ use graphics::Renderer;
 
 use game::Console;
 
-use game::world::{Chunk, CHUNK_SIZE};
+use game::world::{Chunk, CHUNK_SIZE, chunk::save_chunk};
 
 use util::{Vector2D};
 
@@ -83,8 +83,7 @@ impl StateEdit {
 }
 
 impl GameState for StateEdit {
-    fn write_instructions(&self, console: &mut Console)
-    {
+    fn write_instructions(&self, console: &mut Console) {
 
     }
     
@@ -179,7 +178,7 @@ impl GameState for StateEdit {
                             chunk.portal_connections.insert(local, self.connect_from_world);
                             console.write(&format!("Connections: {:?} ", chunk.portal_connections));
                             console.skip_line();
-                            //save here yo
+                            save_chunk(&chunk.chunk, &chunk.portal_connections);
                         }
                         
                         self.loaded_chunks.pop();
@@ -190,6 +189,8 @@ impl GameState for StateEdit {
                         chunk.portal_connections.insert(self.connect_from, to_destination);
                             console.write(&format!("Connections: {:?} ", chunk.portal_connections));
                             console.skip_line();
+
+                        save_chunk(&chunk.chunk, &chunk.portal_connections);
 
                     }
                     ["back"] => {

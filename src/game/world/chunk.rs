@@ -28,7 +28,7 @@ mod colours {
 /// Tile data
 /// Portals (Doors, ladders etc and their destination)
 pub struct Chunk {
-    pub world_position: Vector2D<i32>,
+    world_position: Vector2D<i32>,
     data: Vec<Vec<char>>,
     max_width: usize,
     portals: HashMap<Vector2D<i32>, Vector2D<i32>>, //Local position, then destination
@@ -75,7 +75,7 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
                         for (x, tile) in chars.iter().enumerate() {
                             match tile {
                                 '1' => {
-                                    let y = chunk.portal_locations.len();
+                                    let y = chunk.data.len();
                                     chunk.portal_locations.push(Vector2D::new(x as i32, y as i32));
                                 },
                                 _ => {}
@@ -228,10 +228,18 @@ impl Chunk {
     }
 
     pub fn portal_count(&self) -> usize {
-        self.portals.len()
+        self.portal_locations.len()
     }
 
-    pub fn portal_locations(&self) -> Vec<&Vector2D<i32>> {
-        self.portal_locations
+    pub fn portal_locations(&self) -> &Vec<Vector2D<i32>> {
+        &self.portal_locations
+    }
+
+    pub fn loaded_portals(&self) -> &HashMap<Vector2D<i32>, Vector2D<i32>> {
+        &self.portals
+    }
+
+    pub fn position(&self) -> Vector2D<i32> {
+        self.world_position
     }
 }

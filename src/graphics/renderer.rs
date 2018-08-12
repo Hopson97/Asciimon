@@ -59,12 +59,12 @@ impl Renderer {
 
     /// Clears the entire window
     pub fn clear(&mut self) {
-        self.clear_section("full", &self.clear_colour);
+        self.clear_section("full", self.clear_colour);
     }
 
     /// Clears just a single section of the screen
-    pub fn clear_section(&self, section: &'static str, colour: &Colour) {
-        Renderer::set_bg_colour(&colour);
+    pub fn clear_section(&self, section: &'static str, colour: Colour) {
+        Renderer::set_bg_colour(colour);
 
         match self.render_sections.get(section) {
             None => {
@@ -83,23 +83,23 @@ impl Renderer {
     }
 
     /// Draws a solid horizontal line
-    fn draw_line_h(&self, colour: &Colour, begin_position: Vector2D<i32>, length: i32) {
+    fn draw_line_h(&self, colour: Colour, begin_position: Vector2D<i32>, length: i32) {
         Renderer::set_bg_colour(colour);
         Renderer::set_cursor_location(begin_position);
         for _x in 0..length {
             print!(" ");
         }
-        Renderer::set_bg_colour(&self.clear_colour);
+        Renderer::set_bg_colour(self.clear_colour);
     }
 
     /// Draws a solid vertical line
-    fn draw_line_v(&self, colour: &Colour, begin_position: Vector2D<i32>, height: i32) {
+    fn draw_line_v(&self, colour: Colour, begin_position: Vector2D<i32>, height: i32) {
         Renderer::set_bg_colour(colour);
         for y in 0..height {
             Renderer::set_cursor_location(begin_position + Vector2D::new(0, y));
             print!(" ");
         }
-        Renderer::set_bg_colour(&self.clear_colour);
+        Renderer::set_bg_colour(self.clear_colour);
     }
 
     /// Creates a border around the rendering section area
@@ -110,24 +110,24 @@ impl Renderer {
         let Vector2D { x: w, y: h } = sect.size;
 
         // top
-        self.draw_line_h(&bg_col, sect.start_point, w + 2);
+        self.draw_line_h(bg_col, sect.start_point, w + 2);
         // left
-        self.draw_line_v(&bg_col, sect.start_point - Vector2D::new(1, 0), h + 2);
-        self.draw_line_v(&bg_col, sect.start_point, h + 2);
+        self.draw_line_v(bg_col, sect.start_point - Vector2D::new(1, 0), h + 2);
+        self.draw_line_v(bg_col, sect.start_point, h + 2);
         // bottom
-        self.draw_line_h(&bg_col, sect.start_point + Vector2D::new(0, h + 1), w + 2);
+        self.draw_line_h(bg_col, sect.start_point + Vector2D::new(0, h + 1), w + 2);
         // right
-        self.draw_line_v(&bg_col, sect.start_point + Vector2D::new(w + 1, 0), h + 2);
-        self.draw_line_v(&bg_col, sect.start_point + Vector2D::new(w + 2, 0), h + 2);
+        self.draw_line_v(bg_col, sect.start_point + Vector2D::new(w + 1, 0), h + 2);
+        self.draw_line_v(bg_col, sect.start_point + Vector2D::new(w + 2, 0), h + 2);
     }
 
     /// Set the foreground colour for text printed to the terminal
-    pub fn set_text_colour(colour: &Colour) {
+    pub fn set_text_colour(colour: Colour) {
         print!("{}", colour.ansi_text_string());
     }
 
     /// Set the background colour for text printed to the terminal
-    pub fn set_bg_colour(colour: &Colour) {
+    pub fn set_bg_colour(colour: Colour) {
         print!("{}", colour.ansi_bg_string());
     }
 

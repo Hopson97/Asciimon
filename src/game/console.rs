@@ -37,7 +37,7 @@ impl ConsoleOutputSection {
     }
 
     pub fn draw(&self, index: usize, renderer: &Renderer) {
-        Renderer::set_text_colour(&self.colour);
+        Renderer::set_text_colour(self.colour);
 
         for (line_num, line) in self.text.iter().enumerate() {
             renderer.draw_string(
@@ -98,7 +98,7 @@ impl Console {
 
     ///Draw all the render sections that can fit, starting with the newest at the top
     pub fn draw(&self, renderer: &mut Renderer) {
-        renderer.clear_section("console", &colours::BACKGROUND);
+        renderer.clear_section("console", colours::BACKGROUND);
 
         let mut y = 0;
         for (index, line) in self.output_sections.iter().enumerate() {

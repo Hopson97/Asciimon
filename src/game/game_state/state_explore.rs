@@ -72,7 +72,8 @@ impl StateExplore {
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position() + move_amount;
         match self.world.get_tile(next_position) {
-            '.' | ',' | '|' | '\'' | '1' => { //Tiles player can walk on
+            '.' | ',' | '|' | '\'' | '1' => {
+                //Tiles player can walk on
                 self.player.move_position(move_amount);
                 //Move player to destination portal if there is one
                 if self.world.is_portal_at(self.player.position()) {

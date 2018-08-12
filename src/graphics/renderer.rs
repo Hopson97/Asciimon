@@ -40,7 +40,7 @@ impl Renderer {
         renderer.clear();
         renderer
     }
-    
+
     pub fn size(&self) -> Vector2D<i32> {
         self.size
     }

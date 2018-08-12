@@ -11,7 +11,7 @@ pub use self::world::World;
 use graphics::Renderer;
 use util::{flush_stdout, Vector2D};
 
-use self::game_state::{GameState, StateExplore, StateEdit};
+use self::game_state::{GameState, StateEdit, StateExplore};
 use self::layout_constants::*;
 
 use std::io::{stdin, Write};

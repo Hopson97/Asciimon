@@ -32,6 +32,7 @@ pub struct Chunk {
     data: Vec<Vec<char>>,
     max_width: usize,
     portals: HashMap<Vector2D<i32>, Vector2D<i32>>, //Local position, then destination
+    portal_locations: Vec<Vector2D<i32>>
 }
 
 fn path_exists(path: &str) -> bool {
@@ -69,8 +70,18 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
                 match curr_line.as_ref() {
                     "end" => load_state = MapLoadState::FindSecton,
                     _ => {
-                        chunk.max_width = CHUNK_SIZE.x as usize; // cmp::max(curr_line.len(), chunk.max_width);
-                        chunk.data.push(curr_line.chars().collect());
+                        chunk.max_width = CHUNK_SIZE.x as usize; 
+                        let chars: Vec<char> = curr_line.chars().collect();
+                        for (x, tile) in chars.iter().enumerate() {
+                            match tile {
+                                '1' => {
+                                    let y = chunk.portal_locations.len();
+                                    chunk.portal_locations.push(Vector2D::new(x as i32, y as i32));
+                                },
+                                _ => {}
+                            }
+                        }
+                        chunk.data.push(chars);
                     }
                 }
             }
@@ -116,6 +127,7 @@ impl Chunk {
             data: Vec::with_capacity(CHUNK_SIZE.y as usize),
             max_width: 0,
             portals: HashMap::new(),
+            portal_locations: Vec::new()
         };
 
         let file_name = format!("data/world/{}_{}.chunk", pos.x, pos.y);
@@ -220,7 +232,6 @@ impl Chunk {
     }
 
     pub fn portal_locations(&self) -> Vec<&Vector2D<i32>> {
-        let keys: Vec<&Vector2D<i32>> = self.portals.keys().collect();
-        keys
+        self.portal_locations
     }
 }

@@ -86,6 +86,7 @@ impl Chunk {
         let mut begin_slice = 0;
         let mut end_slice = self.max_width as i32;
 
+
         //Check for the OOB, which prevents the string being drawn before the render section...
         if chunk_pos.x < 0 {
             begin_slice = chunk_pos.x.abs();
@@ -248,13 +249,10 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
 
 //i hate file io ngl
 pub fn save_chunk(chunk: &Chunk, connections: &HashMap<Vector2D<i32>, Vector2D<i32>>) {
-    let mut path = String::new();
-    path.push_str("data/");
-    path.push_str(&chunk.position().x.to_string());
-    path.push_str("_");
-    path.push_str(&chunk.position().y.to_string());
-    path.push_str(".chunk");
-
+    let path = format!("data/world/{}_{}.chunk", 
+        chunk.position().x, 
+        chunk.position().y
+    );
     let mut file = File::create(path).unwrap();
     file.write(b"map\n")
         .expect("Unable to write");
@@ -273,14 +271,9 @@ pub fn save_chunk(chunk: &Chunk, connections: &HashMap<Vector2D<i32>, Vector2D<i
     file.write(b"portals\n")
         .expect("Unable to write");
     for portal in connections.iter() {
-        let mut line = String::new();
-        line.push_str(&portal.0.x.to_string());
-        line.push_str(" ");
-        line.push_str(&portal.0.y.to_string());
-        line.push_str(" ");
-        line.push_str(&portal.1.x.to_string());
-        line.push_str(" ");
-        line.push_str(&portal.1.y.to_string());
+        let mut line = format!("{} {} {} {}",
+            portal.0.x, portal.0.y,
+            portal.1.x, portal.1.y);
         line.push('\n');
         file.write(line.as_bytes()).expect("oops");
     }

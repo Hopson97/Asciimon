@@ -96,7 +96,6 @@ impl GameState for StateEdit {
         match self.edit_mode {
             EditMode::None => {
                 match command_args {
-                    ["load"] => {console.write("loaing and that");},
                     ["load", "map", x, y] => {
                         if self.try_load_chunk(x, y) {
                             console.write_with_colour(&format!("Loaded map at ({}, {})", x, y), Colour::new(0, 255, 0));
@@ -176,21 +175,15 @@ impl GameState for StateEdit {
                             to_destination = add_chunk_position(local, chunk.chunk.position());
 
                             chunk.portal_connections.insert(local, self.connect_from_world);
-                            console.write(&format!("Connections: {:?} ", chunk.portal_connections));
-                            console.skip_line();
                             save_chunk(&chunk.chunk, &chunk.portal_connections);
                         }
-                        
                         self.loaded_chunks.pop();
-                        
                         let chunk = self.loaded_chunks.last_mut().unwrap();
-
-                        
                         chunk.portal_connections.insert(self.connect_from, to_destination);
-                            console.write(&format!("Connections: {:?} ", chunk.portal_connections));
-                            console.skip_line();
 
                         save_chunk(&chunk.chunk, &chunk.portal_connections);
+                        self.portal_ptr = 0;
+                        self.edit_mode = EditMode::Map;
 
                     }
                     ["back"] => {
@@ -208,6 +201,7 @@ impl GameState for StateEdit {
     }
 
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
+        console.write(&format!("Current editing mode: {:?}.", self.edit_mode));
         if !self.loaded_chunks.is_empty() {
             let chunk = self.loaded_chunks.last_mut().unwrap();
 
@@ -217,16 +211,11 @@ impl GameState for StateEdit {
                 },
                 EditMode::Portal | EditMode::PortalConnect => {
                     let position = chunk.chunk.portal_locations()[self.portal_ptr];
-                    let world_position = position + Vector2D::new(
-                        chunk.chunk.position().x * CHUNK_SIZE.x,
-                        chunk.chunk.position().y * CHUNK_SIZE.y
-                    );
+                    let world_position = add_chunk_position(position, chunk.chunk.position());
                     chunk.chunk.render(renderer, world_position);
                 }
                 _ => {}
             }
-            console.write(&format!("Current mode {:?} ", self.edit_mode));
-            console.write(&format!("Portal postions: {:?} ", chunk.portal_connections));
         }
     }
 }

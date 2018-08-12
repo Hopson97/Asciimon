@@ -200,7 +200,7 @@ fn load_chunk(chunk: &mut Chunk, file_name: String) {
                 match curr_line.as_ref() {
                     "end" => load_state = MapLoadState::FindSecton,
                     _ => {
-                        chunk.max_width = CHUNK_SIZE.x as usize; 
+                        chunk.max_width = curr_line.len();
                         let chars: Vec<char> = curr_line.chars().collect();
                         for (x, tile) in chars.iter().enumerate() {
                             match tile {

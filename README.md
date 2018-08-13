@@ -7,11 +7,13 @@ This is my first project using Rust, so feel free to point out anything "not Rus
 
 The game is early in developement, and so I am regulrally making changes to the code.
 
-Because of this, contributions will likely be unable to be merged, or possibly change things without considering plans I have for the game.
+Because of this, contributions will likely be unable to be merged, or possibly change things without considering plans I have for the game:
 
-So for now I am not going to be accepting any pull requests of ANY kind (At least until the game has matured a bit)
+Small changes I am fine with. This means things that are not a major refactor or adding a feature; but rather just changing a couple of lines of code or fixing some random code style. Example: https://github.com/Hopson97/Asciimon/pull/31
 
-## Running
+Large changes are very unlikely to added. If you wish to make a large change, please let me know first, or else I probably will not merge it.
+
+Thanks for understanding!
 
 ```
 git clone https://github.com/Hopson97/Asciimon.git

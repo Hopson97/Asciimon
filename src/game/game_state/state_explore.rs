@@ -169,7 +169,7 @@ impl GameState for StateExplore {
     fn draw(&mut self, renderer: &mut Renderer, console: &mut Console) {
         self.world.render(&renderer, self.player.position());
         //Draw player position
-        Renderer::set_text_colour(&colours::PLAYER);
+        Renderer::set_text_colour(colours::PLAYER);
         renderer.draw_string("game", "@", GAME_AREA_CENTRE);
     }
 }

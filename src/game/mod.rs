@@ -69,7 +69,7 @@ impl Game {
         Game::draw_logo(&game.renderer);
 
         game.renderer
-            .clear_section("game", &colours::GAME_BACKGROUND);
+            .clear_section("game", colours::GAME_BACKGROUND);
 
         game.run();
     }
@@ -99,7 +99,7 @@ impl Game {
         if let Some(current_state) = self.state_stack.last_mut() {
             //Draw
             self.renderer
-                .clear_section("game", &colours::GAME_BACKGROUND);
+                .clear_section("game", colours::GAME_BACKGROUND);
             current_state.draw(&mut self.renderer, &mut self.console);
             flush_stdout();
             self.console.draw(&mut self.renderer);
@@ -134,8 +134,8 @@ impl Game {
     }
 
     fn get_user_input(renderer: &Renderer) -> Option<String> {
-        Renderer::set_text_colour(&colours::TEXT);
-        renderer.clear_section("input", &colours::GAME_BACKGROUND);
+        Renderer::set_text_colour(colours::TEXT);
+        renderer.clear_section("input", colours::GAME_BACKGROUND);
         renderer.draw_string("input", "Enter Input Here:", Vector2D::new(0, 1));
         renderer.draw_string(
             "input",
@@ -157,11 +157,11 @@ impl Game {
     }
 
     fn draw_logo(renderer: &Renderer) {
-        renderer.clear_section("logo", &colours::GAME_BACKGROUND);
-        Renderer::set_text_colour(&colours::LOGO);
+        renderer.clear_section("logo", colours::GAME_BACKGROUND);
+        Renderer::set_text_colour(colours::LOGO);
         for (line_num, line) in LOGO.lines().enumerate() {
             renderer.draw_string("logo", line, Vector2D::new(0, line_num as i32 - 1));
         }
-        Renderer::set_text_colour(&colours::TEXT);
+        Renderer::set_text_colour(colours::TEXT);
     }
 }

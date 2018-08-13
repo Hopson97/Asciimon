@@ -1,6 +1,6 @@
 use std::ops::Mul;
 
-#[derive(Clone, Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct Colour {
     pub r: u8,
     pub g: u8,

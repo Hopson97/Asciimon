@@ -123,17 +123,20 @@ impl Renderer {
 
     /// Set the foreground colour for text printed to the terminal
     pub fn set_text_colour(colour: Colour) {
-        print!("{}", colour.ansi_text_string());
+        use termion::color::Fg;
+        print!("{}", Fg(colour));
     }
 
     /// Set the background colour for text printed to the terminal
     pub fn set_bg_colour(colour: Colour) {
-        print!("{}", colour.ansi_bg_string());
+        use termion::color::Bg;
+        print!("{}", Bg(colour));
     }
 
     /// Sets cursor location in the renderer
     pub fn set_cursor_location(pos: Vector2D<i32>) {
-        print!("\x1b[{};{}H", pos.y + 1, pos.x + 2);
+        use termion::cursor::Goto;
+        print!("{}", Goto((pos.x + 2) as u16, (pos.y + 1) as u16));
     }
 
     /*

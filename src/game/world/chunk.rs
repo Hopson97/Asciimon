@@ -138,7 +138,8 @@ impl Chunk {
                     '#' => colours::WALL,
                     _ => colours::NONE,
                 };
-                render_string.push_str(&colour.ansi_text_string());
+                use termion::color::Fg;
+                render_string.push_str(&Fg(colour).to_string());
             }
 
             render_string.push(*c);

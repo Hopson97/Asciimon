@@ -255,7 +255,7 @@ pub fn save_chunk(chunk: &Chunk, connections: &HashMap<Vector2D<i32>, Vector2D<i
         chunk.position().y
     );
     let mut file = File::create(path).unwrap();
-    file.write(b"map\n").expect("Unable to write");
+    file.write_all(b"map\n").unwrap();
 
     for line in &chunk.data {
         let mut tiles = String::new();
@@ -263,17 +263,17 @@ pub fn save_chunk(chunk: &Chunk, connections: &HashMap<Vector2D<i32>, Vector2D<i
             tiles.push(*c);
         }
         tiles.push('\n');
-        file.write(tiles.as_bytes()).expect("Unable to write");
+        file.write_all(tiles.as_bytes()).unwrap();
     }
-    file.write(b"end\n").expect("Unable to write");
-    file.write(b"portals\n").expect("Unable to write");
+    file.write_all(b"end\n").unwrap();
+    file.write_all(b"portals\n").unwrap();
     for portal in connections.iter() {
         let mut line = format!(
             "{} {} {} {}",
             portal.0.x, portal.0.y, portal.1.x, portal.1.y
         );
         line.push('\n');
-        file.write(line.as_bytes()).expect("oops");
+        file.write_all(line.as_bytes()).expect("oops");
     }
-    file.write(b"end\n").expect("Unable to write");
+    file.write_all(b"end\n").unwrap();
 }

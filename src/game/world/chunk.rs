@@ -27,25 +27,19 @@ mod colours {
 /// Portals (Doors, ladders etc and their destination)
 pub struct Chunk {
     world_position: Vector2D<i32>,
-    data: Vec<Vec<char>>,
+    tile_data: Vec<Vec<char>>,
     max_width: usize,
-}
-
-enum MapLoadState {
-    FindSecton,
-    Map,
-    Portals,
 }
 
 impl Chunk {
     pub fn new(pos: Vector2D<i32>, tile_data: Vec<Vec<char>>) -> Chunk {
         let mut chunk = Chunk {
             world_position: pos,
-            data: tile_data,
+            tile_data: tile_data,
             max_width: 0,
         };
 
-        chunk.max_width = chunk.data[0].len();
+        chunk.max_width = chunk.tile_data[0].len();
 
         chunk
     }
@@ -78,7 +72,7 @@ impl Chunk {
             end_slice = (GAME_AREA_SIZE.x - chunk_pos.x) + begin_slice;
         }
 
-        for y in 0..self.data.len() {
+        for y in 0..self.tile_data.len() {
             self.draw_line(
                 renderer,
                 y as usize,
@@ -102,7 +96,7 @@ impl Chunk {
 
         // Set colour based on the batch of following chars
         let mut prev_char = ' ';
-        for c in &self.data[line][begin..end] {
+        for c in &self.tile_data[line][begin..end] {
             if *c != prev_char {
                 prev_char = *c;
 
@@ -128,10 +122,6 @@ impl Chunk {
     }
 
     pub fn get_tile(&self, x: usize, y: usize) -> char {
-        self.data[y][x]
-    }
-
-    pub fn position(&self) -> Vector2D<i32> {
-        self.world_position
+        self.tile_data[y][x]
     }
 }

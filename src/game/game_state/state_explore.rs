@@ -69,6 +69,8 @@ impl StateExplore {
         }
     }
 
+    /// Moves player ~1 step
+    /// Returns true if the player moved, false if not (eg collision or other event occurs)
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position() + move_amount;
         match self.world.get_tile(next_position) {

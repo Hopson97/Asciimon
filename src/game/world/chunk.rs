@@ -38,15 +38,14 @@ enum MapLoadState {
 }
 
 impl Chunk {
-    /**
-     * Loads a chunk from a file for coordinates (x, y)
-     */
-    pub fn load(pos: Vector2D<i32>, tile_data: Vec<Vec<char>>) -> Chunk {
+    pub fn new(pos: Vector2D<i32>, tile_data: Vec<Vec<char>>) -> Chunk {
         let mut chunk = Chunk {
             world_position: pos,
             data: tile_data,
             max_width: 0,
         };
+
+        chunk.max_width = chunk.data[0].len();
 
         chunk
     }

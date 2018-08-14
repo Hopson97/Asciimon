@@ -17,13 +17,15 @@ use std::fs::read_dir;
 pub struct World {
     //error_chunk: Chunk,
     chunks: HashMap<Vector2D<i32>, Chunk>,
+    portal_connections: HashMap<Vector2D<i32>, Vector2D<i32>>
 }
 
 impl World {
     pub fn new() -> World {
-        let world = World {
+        let mut world = World {
             //error_chunk: Chunk::load_from_name(String::from("error").unwrap(),
             chunks: HashMap::with_capacity(20),
+            portal_connections: HashMap::new()
         };
 
         let mut portal_ids: Vec<(i32, Vector2D<i32>)> = Vec::new();
@@ -36,16 +38,17 @@ impl World {
             for (id, world_position) in data.portals() {
                portal_ids.push((*id, *world_position));
             }
+            world.chunks.insert(pos, Chunk::new(pos, data.tile_data().to_vec()));
         }
 
-        let mut connections: HashMap<Vector2D<i32>, Vector2D<i32>> = HashMap::new();
+        
         for (i_a, id_a) in portal_ids.iter().enumerate() {
             for (i_b, id_b) in portal_ids.iter().enumerate() {
                 if i_a == i_b {
                     continue;
                 } 
                 if id_a.0 == id_b.0 {
-                    connections.insert(id_a.1, id_b.1);
+                    world.portal_connections.insert(id_a.1, id_b.1);
                     break;
                 }
             }
@@ -86,17 +89,7 @@ impl World {
         self.get_tile(world_position) == '1'
     }
 
-    pub fn get_portal_at(&self, world_position: Vector2D<i32>)  {
-        let chunk_position = World::world_to_chunk_position(world_position);
-        let local_x = world_position.x % CHUNK_SIZE.x;
-        let local_y = world_position.y % CHUNK_SIZE.y;
-
-
-        //return Some(&Vector2D::new(0, 0));
-/*
-        self.chunks
-            .get(&chunk_position)
-            .unwrap()
-            .get_portal(Vector2D::new(local_x, local_y))*/
+    pub fn get_portal_at(&self, world_position: Vector2D<i32>) -> Vector2D<i32> {
+        self.portal_connections[&world_position]
     }
 }

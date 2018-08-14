@@ -1,5 +1,5 @@
 pub mod chunk;
-mod map_loader;
+mod chunk_loader;
 
 use std::collections::HashMap;
 use graphics::Renderer;
@@ -7,7 +7,7 @@ use util::Vector2D;
 
 
 pub use self::chunk::{Chunk, CHUNK_SIZE};
-use self::map_loader::MapLoadData;
+use self::chunk_loader::{ChunkLoadData, load_chunk};
 
 /// World
 /// Manages the map chunks within the world
@@ -18,10 +18,14 @@ pub struct World {
 
 impl World {
     pub fn new() -> World {
-        World {
+        let world = World {
             //error_chunk: Chunk::load_from_name(String::from("error").unwrap(),
             chunks: HashMap::with_capacity(20),
-        }
+        };
+
+        let data = load_chunk(Vector2D::new(0, 0));
+
+        world
     }
 
     pub fn render(&mut self, renderer: &Renderer, centre_position: Vector2D<i32>) {

@@ -6,22 +6,22 @@ use std::collections::HashMap;
 use util::Vector2D;
 use super::chunk::CHUNK_SIZE;
 
-enum MapLoadState {
+enum ChunkLoadState {
     FindSecton,
     Map,
     Portals,
 }
 
-pub struct MapLoadData {
-    pub tile_data: Vec<Vec<char>>,
-    portal_positions:   Vec<Vector2D<i32>>,
-    portal_ids:         Vec<i32>,
-    pub portals:        HashMap<i32, Vector2D<i32>>
+pub struct ChunkLoadData {
+    tile_data: Vec<Vec<char>>,
+    portal_positions: Vec<Vector2D<i32>>,
+    portal_ids: Vec<i32>,
+    portals: HashMap<i32, Vector2D<i32>>
 }
 
-impl MapLoadData {
-    fn new() -> MapLoadData {
-        MapLoadData {
+impl ChunkLoadData {
+    fn new() -> ChunkLoadData {
+        ChunkLoadData {
             tile_data: Vec::with_capacity(CHUNK_SIZE.y as usize),
             portal_positions:   Vec::with_capacity(5),
             portal_ids:         Vec::with_capacity(5),
@@ -46,7 +46,7 @@ fn map_file_name(location: Vector2D<i32>) -> String {
     format!("data/world/{}_{}.chunk", location.x, location.y)
 }
 
-fn load_section_line(line: String, data: &mut MapLoadData, line_handler: fn(String, &mut MapLoadData)) -> bool {
+fn load_section_line(line: String, data: &mut ChunkLoadData, line_handler: fn(String, &mut ChunkLoadData)) -> bool {
     match line.as_ref() {
         "end" => false,
         _ => {
@@ -56,7 +56,7 @@ fn load_section_line(line: String, data: &mut MapLoadData, line_handler: fn(Stri
     }
 }
 
-fn handle_map_line(line: String, data: &mut MapLoadData) {
+fn handle_map_line(line: String, data: &mut ChunkLoadData) {
     let char_line: Vec<char> = line.chars().collect();
 
     for (x, ch) in char_line.iter().enumerate() {
@@ -71,7 +71,7 @@ fn handle_map_line(line: String, data: &mut MapLoadData) {
     data.tile_data.push(char_line);
 }
 
-fn handle_portal_line(line: String, data: &mut MapLoadData) {
+fn handle_portal_line(line: String, data: &mut ChunkLoadData) {
     let id = line.parse::<i32>();
     match id {
         Ok(id) => data.portal_ids.push(id),
@@ -79,8 +79,8 @@ fn handle_portal_line(line: String, data: &mut MapLoadData) {
     }
 }
 
-pub fn load_map(location: Vector2D<i32>) -> Option<MapLoadData> {
-    let mut data = MapLoadData::new();
+pub fn load_chunk(location: Vector2D<i32>) -> Option<ChunkLoadData> {
+    let mut data = ChunkLoadData::new();
 
     let path = map_file_name(location);
     if !path_exists(&path) {
@@ -88,26 +88,26 @@ pub fn load_map(location: Vector2D<i32>) -> Option<MapLoadData> {
     }
 
     let file = File::open(path).unwrap(); 
-    let mut load_state = MapLoadState::FindSecton;
+    let mut load_state = ChunkLoadState::FindSecton;
 
     for line in BufReader::new(file).lines() {
         let line = line.unwrap();
         match load_state {
-            MapLoadState::FindSecton => {
+            ChunkLoadState::FindSecton => {
                 match line.as_ref() {
-                    "map" => load_state = MapLoadState::Map,
-                    "portals" => load_state = MapLoadState::Portals,
+                    "map" => load_state = ChunkLoadState::Map,
+                    "portals" => load_state = ChunkLoadState::Portals,
                     _ => {}
                 }
             }
-            MapLoadState::Map => {
+            ChunkLoadState::Map => {
                 if !load_section_line(line, &mut data, handle_map_line) {
-                    load_state = MapLoadState::FindSecton;
+                    load_state = ChunkLoadState::FindSecton;
                 }
             },
-            MapLoadState::Portals => {
+            ChunkLoadState::Portals => {
                 if !load_section_line(line, &mut data, handle_portal_line) {
-                    load_state = MapLoadState::FindSecton;
+                    load_state = ChunkLoadState::FindSecton;
                 }
             }
         }

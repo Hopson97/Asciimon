@@ -14,8 +14,28 @@ enum MapLoadState {
 
 pub struct MapLoadData {
     pub tile_data: Vec<Vec<char>>,
-    pub portal_positions: Vec<Vector2D<i32>>,
-    pub portal_ids:       Vec<i32>
+    portal_positions:   Vec<Vector2D<i32>>,
+    portal_ids:         Vec<i32>,
+    pub portals:        HashMap<i32, Vector2D<i32>>
+}
+
+impl MapLoadData {
+    fn new() -> MapLoadData {
+        MapLoadData {
+            tile_data: Vec::with_capacity(CHUNK_SIZE.y as usize),
+            portal_positions:   Vec::with_capacity(5),
+            portal_ids:         Vec::with_capacity(5),
+            portals:            HashMap::with_capacity(5)
+        }
+    }
+
+    pub fn tile_data(&self) -> &Vec<Vec<char>> {
+        &self.tile_data
+    }
+
+    pub fn portals(&self) -> &HashMap<i32, Vector2D<i32>> {
+        &self.portals
+    }
 }
 
 fn path_exists(path: &str) -> bool {
@@ -60,11 +80,7 @@ fn handle_portal_line(line: String, data: &mut MapLoadData) {
 }
 
 pub fn load_map(location: Vector2D<i32>) -> Option<MapLoadData> {
-    let mut data = MapLoadData {
-        tile_data: Vec::with_capacity(CHUNK_SIZE.y as usize),
-        portal_positions:   Vec::with_capacity(5),
-        portal_ids:         Vec::with_capacity(5),
-    };
+    let mut data = MapLoadData::new();
 
     let path = map_file_name(location);
     if !path_exists(&path) {
@@ -97,6 +113,13 @@ pub fn load_map(location: Vector2D<i32>) -> Option<MapLoadData> {
         }
     }
 
+    if !(data.portal_ids.len() == data.portal_positions.len()) {
+        return None
+    }
+    
+    for (i, portal_id) in data.portal_ids.iter().enumerate() {
+        data.portals.insert(*portal_id, data.portal_positions[i]);
+    }
 
     Some(data)
 }

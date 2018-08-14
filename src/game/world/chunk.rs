@@ -5,10 +5,6 @@ use util::Vector2D;
 use game::{GAME_AREA_CENTRE, GAME_AREA_SIZE};
 
 use std::collections::HashMap;
-use std::fs;
-use std::fs::File;
-use std::io::Write;
-use std::io::{BufRead, BufReader};
 
 pub const CHUNK_SIZE: Vector2D<i32> = Vector2D { x: 100, y: 50 };
 
@@ -33,12 +29,6 @@ pub struct Chunk {
     world_position: Vector2D<i32>,
     data: Vec<Vec<char>>,
     max_width: usize,
-    portals: HashMap<Vector2D<i32>, Vector2D<i32>>, //Local position, then destination
-    portal_locations: Vec<Vector2D<i32>>,
-}
-
-fn path_exists(path: &str) -> bool {
-    fs::metadata(path).is_ok()
 }
 
 enum MapLoadState {
@@ -51,23 +41,14 @@ impl Chunk {
     /**
      * Loads a chunk from a file for coordinates (x, y)
      */
-    pub fn load(pos: Vector2D<i32>) -> Option<Chunk> {
+    pub fn load(pos: Vector2D<i32>, tile_data: Vec<Vec<char>>) -> Chunk {
         let mut chunk = Chunk {
             world_position: pos,
-            data: Vec::with_capacity(CHUNK_SIZE.y as usize),
+            data: tile_data,
             max_width: 0,
-            portals: HashMap::new(),
-            portal_locations: Vec::new(),
         };
 
-        let file_name = format!("data/world/{}_{}.chunk", pos.x, pos.y);
-
-        if !path_exists(&file_name) {
-            None //panic!("Path for chunk '{}' does not exist", file_name);
-        } else {
-            load_chunk(&mut chunk, file_name);
-            Some(chunk)
-        }
+        chunk
     }
 
     pub fn render(&self, renderer: &Renderer, centre_position: Vector2D<i32>) {
@@ -151,129 +132,7 @@ impl Chunk {
         self.data[y][x]
     }
 
-    pub fn get_portal(&self, local_position: Vector2D<i32>) -> Option<&Vector2D<i32>> {
-        println!("GOT PORTAL AT {} ", local_position);
-        //  panic!("");
-
-        self.portals.get(&local_position)
-    }
-
-    pub fn portal_count(&self) -> usize {
-        self.portal_locations.len()
-    }
-
-    pub fn portal_locations(&self) -> &Vec<Vector2D<i32>> {
-        &self.portal_locations
-    }
-
-    pub fn loaded_portals(&self) -> &HashMap<Vector2D<i32>, Vector2D<i32>> {
-        &self.portals
-    }
-
     pub fn position(&self) -> Vector2D<i32> {
         self.world_position
     }
-}
-
-/// Reads a .chunk file into a Chunk struct
-fn load_chunk(chunk: &mut Chunk, file_name: String) {
-    let file = File::open(file_name).unwrap_or_else(|_| {
-        panic!(
-            "Unable to open file for chunk {} {}",
-            chunk.world_position.x, chunk.world_position.y
-        )
-    });
-
-    let mut load_state = MapLoadState::FindSecton;
-    //Load the map
-    for line in BufReader::new(file).lines() {
-        match load_state {
-            MapLoadState::FindSecton => {
-                match line.unwrap().as_ref() {
-                    "map" => load_state = MapLoadState::Map,
-                    "portals" => load_state = MapLoadState::Portals,
-                    _ => {} //Empty lines
-                }
-            }
-            MapLoadState::Map => {
-                let curr_line = line.unwrap();
-                match curr_line.as_ref() {
-                    "end" => load_state = MapLoadState::FindSecton,
-                    _ => {
-                        chunk.max_width = curr_line.len();
-                        let chars: Vec<char> = curr_line.chars().collect();
-                        for (x, tile) in chars.iter().enumerate() {
-                            match tile {
-                                '1' => {
-                                    let y = chunk.data.len();
-                                    chunk
-                                        .portal_locations
-                                        .push(Vector2D::new(x as i32, y as i32));
-                                }
-                                _ => {}
-                            }
-                        }
-                        chunk.data.push(chars);
-                    }
-                }
-            }
-            MapLoadState::Portals => {
-                let curr_line = line.unwrap();
-                match curr_line.as_ref() {
-                    "end" => load_state = MapLoadState::FindSecton,
-                    _ => {
-                        let portal_data: Vec<&str> = curr_line.trim().split(' ').collect();
-                        let mut portal_nums: Vec<i32> = Vec::with_capacity(6);
-                        for data in &portal_data {
-                            match data.parse::<i32>() {
-                                Err(_) => break, //should cancel out the creation of the portal (TODO)
-                                Ok(n) => {
-                                    portal_nums.push(n);
-                                    n
-                                }
-                            };
-                        }
-
-                        let local_portal_location = Vector2D::new(portal_nums[0], portal_nums[1]);
-                        let portal_world_dest = Vector2D::new(portal_nums[2], portal_nums[3]);
-
-                        chunk
-                            .portals
-                            .insert(local_portal_location, portal_world_dest);
-                    }
-                }
-            }
-        }
-    }
-}
-
-//i hate file io ngl
-pub fn save_chunk(chunk: &Chunk, connections: &HashMap<Vector2D<i32>, Vector2D<i32>>) {
-    let path = format!(
-        "data/world/{}_{}.chunk",
-        chunk.position().x,
-        chunk.position().y
-    );
-    let mut file = File::create(path).unwrap();
-    file.write(b"map\n").expect("Unable to write");
-
-    for line in &chunk.data {
-        let mut tiles = String::new();
-        for c in line.iter() {
-            tiles.push(*c);
-        }
-        tiles.push('\n');
-        file.write(tiles.as_bytes()).expect("Unable to write");
-    }
-    file.write(b"end\n").expect("Unable to write");
-    file.write(b"portals\n").expect("Unable to write");
-    for portal in connections.iter() {
-        let mut line = format!(
-            "{} {} {} {}",
-            portal.0.x, portal.0.y, portal.1.x, portal.1.y
-        );
-        line.push('\n');
-        file.write(line.as_bytes()).expect("oops");
-    }
-    file.write(b"end\n").expect("Unable to write");
 }

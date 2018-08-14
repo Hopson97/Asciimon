@@ -41,17 +41,15 @@ impl World {
         let mut connections: HashMap<Vector2D<i32>, Vector2D<i32>> = HashMap::new();
         for (i_a, id_a) in portal_ids.iter().enumerate() {
             for (i_b, id_b) in portal_ids.iter().enumerate() {
-                if i_a == i_b {continue;} 
+                if i_a == i_b {
+                    continue;
+                } 
                 if id_a.0 == id_b.0 {
                     connections.insert(id_a.1, id_b.1);
                     break;
                 }
             }
         }
-
-        panic!("Success! {:#?} SIZE: {}", connections, connections.len());
-
-
         world
     }
 
@@ -61,14 +59,6 @@ impl World {
         for y in -1..=1 {
             for x in -1..=1 {
                 let chunk_pos = world_chunk_pos + Vector2D::new(x, y);
-
-                //Load chunks around the center point
-                if !self.chunks.contains_key(&chunk_pos) {
-                    if let Some(chunk) = Chunk::load(chunk_pos) {
-                        self.chunks.insert(chunk_pos, chunk);
-                    }
-                }
-
                 if let Some(chunk) = self.chunks.get(&chunk_pos) {
                     chunk.render(renderer, centre_position);
                 }
@@ -96,14 +86,17 @@ impl World {
         self.get_tile(world_position) == '1'
     }
 
-    pub fn get_portal_at(&self, world_position: Vector2D<i32>) -> Option<&Vector2D<i32>> {
+    pub fn get_portal_at(&self, world_position: Vector2D<i32>)  {
         let chunk_position = World::world_to_chunk_position(world_position);
         let local_x = world_position.x % CHUNK_SIZE.x;
         let local_y = world_position.y % CHUNK_SIZE.y;
 
+
+        //return Some(&Vector2D::new(0, 0));
+/*
         self.chunks
             .get(&chunk_position)
             .unwrap()
-            .get_portal(Vector2D::new(local_x, local_y))
+            .get_portal(Vector2D::new(local_x, local_y))*/
     }
 }

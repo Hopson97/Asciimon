@@ -79,7 +79,7 @@ impl StateExplore {
                 if self.world.is_portal_at(self.player.position()) {
                     let portal_dest = self.world.get_portal_at(self.player.position());
                     let curr_pos = self.player.position();
-                    let offset = *portal_dest.unwrap() - curr_pos;
+                    let offset = portal_dest - curr_pos;
                     self.player.move_position(offset);
                     return false;
                 }

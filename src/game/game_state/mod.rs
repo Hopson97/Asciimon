@@ -1,7 +1,5 @@
-pub mod state_edit;
 pub mod state_explore;
 
-pub use self::state_edit::StateEdit;
 pub use self::state_explore::StateExplore;
 
 use game::Console;

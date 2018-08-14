@@ -1,11 +1,13 @@
-use std::collections::HashMap;
+pub mod chunk;
+mod map_loader;
 
+use std::collections::HashMap;
 use graphics::Renderer;
 use util::Vector2D;
 
-pub mod chunk;
 
 pub use self::chunk::{Chunk, CHUNK_SIZE};
+use self::map_loader::MapLoadData;
 
 /// World
 /// Manages the map chunks within the world

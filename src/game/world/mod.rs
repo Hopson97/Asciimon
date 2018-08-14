@@ -26,16 +26,30 @@ impl World {
             chunks: HashMap::with_capacity(20),
         };
 
-        let data = load_chunk(Vector2D::new(0, 0));
-
-        let mut portal_ids: HashMap<i32, Vector2D<i32>> = HashMap::new();
+        let mut portal_ids: Vec<(i32, Vector2D<i32>)> = Vec::new();
         let dir_path = "data/world/";
         for path in read_dir(dir_path).unwrap() {
             let path_string = String::from(path.unwrap().path().to_str().unwrap());
             let pos = extract_pos_from_path(dir_path.len(), path_string);
 
+            let data = load_chunk(pos).unwrap();
+            for (id, world_position) in data.portals() {
+               portal_ids.push((*id, *world_position));
+            }
         }
-       
+
+        let mut connections: HashMap<Vector2D<i32>, Vector2D<i32>> = HashMap::new();
+        for (i_a, id_a) in portal_ids.iter().enumerate() {
+            for (i_b, id_b) in portal_ids.iter().enumerate() {
+                if i_a == i_b {continue;} 
+                if id_a.0 == id_b.0 {
+                    connections.insert(id_a.1, id_b.1);
+                    break;
+                }
+            }
+        }
+
+        panic!("Success! {:#?} SIZE: {}", connections, connections.len());
 
 
         world

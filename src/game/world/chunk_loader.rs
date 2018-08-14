@@ -88,10 +88,12 @@ pub fn load_chunk(location: Vector2D<i32>) -> Option<ChunkLoadData> {
         }
     }
 
+    //Check all portals have a matching ID
     if !(data.portal_ids.len() == data.portal_positions.len()) {
         return None
     }
     
+    //Add found portals into the map
     for (i, portal_id) in data.portal_ids.iter().enumerate() {
         data.portals.insert(
             *portal_id, 

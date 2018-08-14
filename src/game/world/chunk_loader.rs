@@ -38,45 +38,16 @@ impl ChunkLoadData {
     }
 }
 
-fn path_exists(path: &str) -> bool {
-    fs::metadata(path).is_ok()
-}
+pub fn extract_pos_from_path(dir_path_len: usize, path_string: String) -> Vector2D<i32> {
+    let x_end = path_string.find('_').unwrap();
+    let y_end = path_string.find('.').unwrap();
+    let x = &path_string[dir_path_len..x_end ];
+    let y = &path_string[x_end + 1..y_end];
+                
+    let x = x.parse::<i32>().unwrap();
+    let y = y.parse::<i32>().unwrap();
 
-fn map_file_name(location: Vector2D<i32>) -> String {
-    format!("data/world/{}_{}.chunk", location.x, location.y)
-}
-
-fn load_section_line(line: String, data: &mut ChunkLoadData, line_handler: fn(String, &mut ChunkLoadData)) -> bool {
-    match line.as_ref() {
-        "end" => false,
-        _ => {
-            line_handler(line, data);
-            true
-        }
-    }
-}
-
-fn handle_map_line(line: String, data: &mut ChunkLoadData) {
-    let char_line: Vec<char> = line.chars().collect();
-
-    for (x, ch) in char_line.iter().enumerate() {
-        match ch {
-            '1' => {
-                let y = data.tile_data.len() as i32;
-                data.portal_positions.push(Vector2D::new(x as i32, y))
-            },
-            _ => {} 
-        }
-    }
-    data.tile_data.push(char_line);
-}
-
-fn handle_portal_line(line: String, data: &mut ChunkLoadData) {
-    let id = line.parse::<i32>();
-    match id {
-        Ok(id) => data.portal_ids.push(id),
-        Err(_) => panic!("Map ID must be a integral value!")
-    }
+    Vector2D::new(x, y)
 }
 
 pub fn load_chunk(location: Vector2D<i32>) -> Option<ChunkLoadData> {
@@ -118,8 +89,56 @@ pub fn load_chunk(location: Vector2D<i32>) -> Option<ChunkLoadData> {
     }
     
     for (i, portal_id) in data.portal_ids.iter().enumerate() {
-        data.portals.insert(*portal_id, data.portal_positions[i]);
+        data.portals.insert(
+            *portal_id, 
+            add_chunk_position(data.portal_positions[i], location)
+        );
     }
 
     Some(data)
+}
+
+fn path_exists(path: &str) -> bool {
+    fs::metadata(path).is_ok()
+}
+
+fn map_file_name(location: Vector2D<i32>) -> String {
+    format!("data/world/{}_{}.chunk", location.x, location.y)
+}
+
+fn load_section_line(line: String, data: &mut ChunkLoadData, line_handler: fn(String, &mut ChunkLoadData)) -> bool {
+    match line.as_ref() {
+        "end" => false,
+        _ => {
+            line_handler(line, data);
+            true
+        }
+    }
+}
+
+fn handle_map_line(line: String, data: &mut ChunkLoadData) {
+    let char_line: Vec<char> = line.chars().collect();
+
+    for (x, ch) in char_line.iter().enumerate() {
+        match ch {
+            '1' => {
+                let y = data.tile_data.len() as i32;
+                data.portal_positions.push(Vector2D::new(x as i32, y))
+            },
+            _ => {} 
+        }
+    }
+    data.tile_data.push(char_line);
+}
+
+fn handle_portal_line(line: String, data: &mut ChunkLoadData) {
+    let id = line.parse::<i32>();
+    match id {
+        Ok(id) => data.portal_ids.push(id),
+        Err(_) => panic!("Map ID must be a integral value!")
+    }
+}
+
+fn add_chunk_position(local: Vector2D<i32>, world: Vector2D<i32>) -> Vector2D<i32> {
+    local + Vector2D::new(world.x * CHUNK_SIZE.x, world.y * CHUNK_SIZE.y)
 }

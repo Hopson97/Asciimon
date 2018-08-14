@@ -7,7 +7,10 @@ use util::Vector2D;
 
 
 pub use self::chunk::{Chunk, CHUNK_SIZE};
-use self::chunk_loader::{ChunkLoadData, load_chunk};
+use self::chunk_loader::{ChunkLoadData, load_chunk, extract_pos_from_path};
+
+use std::fs::read_dir;
+
 
 /// World
 /// Manages the map chunks within the world
@@ -24,6 +27,16 @@ impl World {
         };
 
         let data = load_chunk(Vector2D::new(0, 0));
+
+        let mut portal_ids: HashMap<i32, Vector2D<i32>> = HashMap::new();
+        let dir_path = "data/world/";
+        for path in read_dir(dir_path).unwrap() {
+            let path_string = String::from(path.unwrap().path().to_str().unwrap());
+            let pos = extract_pos_from_path(dir_path.len(), path_string);
+
+        }
+       
+
 
         world
     }

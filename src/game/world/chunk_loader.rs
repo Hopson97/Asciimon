@@ -6,6 +6,7 @@ use std::collections::HashMap;
 use util::Vector2D;
 use super::chunk::CHUNK_SIZE;
 
+/// Used to identify the different sections of the .chunk files
 enum ChunkLoadState {
     FindSecton,
     Map,
@@ -38,6 +39,8 @@ impl ChunkLoadData {
     }
 }
 
+/// Extracts X/Y from a chunk file
+/// Eg, '2_5.chunk' as the path_string param would return x: 2, y: 5
 pub fn extract_pos_from_path(dir_path_len: usize, path_string: String) -> Vector2D<i32> {
     let x_end = path_string.find('_').unwrap();
     let y_end = path_string.find('.').unwrap();
@@ -50,6 +53,7 @@ pub fn extract_pos_from_path(dir_path_len: usize, path_string: String) -> Vector
     Vector2D::new(x, y)
 }
 
+///Reads a chunk file and extracts the data from it
 pub fn load_chunk(location: Vector2D<i32>) -> Option<ChunkLoadData> {
     let mut data = ChunkLoadData::new();
 
@@ -98,14 +102,17 @@ pub fn load_chunk(location: Vector2D<i32>) -> Option<ChunkLoadData> {
     Some(data)
 }
 
+/// on tin
 fn path_exists(path: &str) -> bool {
     fs::metadata(path).is_ok()
 }
 
+/// Gets map file from from x/y coords
 fn map_file_name(location: Vector2D<i32>) -> String {
     format!("data/world/{}_{}.chunk", location.x, location.y)
 }
 
+/// Just so that I don't have to repeat writing match with "end" over and over
 fn load_section_line(line: String, data: &mut ChunkLoadData, line_handler: fn(String, &mut ChunkLoadData)) -> bool {
     match line.as_ref() {
         "end" => false,
@@ -116,6 +123,7 @@ fn load_section_line(line: String, data: &mut ChunkLoadData, line_handler: fn(St
     }
 }
 
+/// Reads and extracts a line from the map section of the .chunk file
 fn handle_map_line(line: String, data: &mut ChunkLoadData) {
     let char_line: Vec<char> = line.chars().collect();
 
@@ -131,6 +139,7 @@ fn handle_map_line(line: String, data: &mut ChunkLoadData) {
     data.tile_data.push(char_line);
 }
 
+/// Reads and extracts a line from the portal section of the .chunk file
 fn handle_portal_line(line: String, data: &mut ChunkLoadData) {
     let id = line.parse::<i32>();
     match id {
@@ -139,6 +148,7 @@ fn handle_portal_line(line: String, data: &mut ChunkLoadData) {
     }
 }
 
+///Adds the world position of a chunk to a local world position to that chunk
 fn add_chunk_position(local: Vector2D<i32>, world: Vector2D<i32>) -> Vector2D<i32> {
     local + Vector2D::new(world.x * CHUNK_SIZE.x, world.y * CHUNK_SIZE.y)
 }

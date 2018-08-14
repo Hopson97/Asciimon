@@ -28,7 +28,8 @@ impl World {
             portal_connections: HashMap::new()
         };
 
-        let mut portal_ids: Vec<(i32, Vector2D<i32>)> = Vec::new();
+        // Iterate through the data/world/ directory to load up all the chunks
+        let mut portals: Vec<(i32, Vector2D<i32>)> = Vec::new();
         let dir_path = "data/world/";
         for path in read_dir(dir_path).unwrap() {
             let path_string = String::from(path.unwrap().path().to_str().unwrap());
@@ -36,19 +37,19 @@ impl World {
 
             let data = load_chunk(pos).unwrap();
             for (id, world_position) in data.portals() {
-               portal_ids.push((*id, *world_position));
+               portals.push((*id, *world_position));
             }
             world.chunks.insert(pos, Chunk::new(pos, data.tile_data().to_vec()));
         }
 
-        
-        for (i_a, id_a) in portal_ids.iter().enumerate() {
-            for (i_b, id_b) in portal_ids.iter().enumerate() {
-                if i_a == i_b {
+        // Connects the portals together
+        for (index_a, portal_a) in portals.iter().enumerate() {
+            for (index_b, portal_b) in portals.iter().enumerate() {
+                if index_a == index_b { //Ensure a portal doesn't connect to itself
                     continue;
                 } 
-                if id_a.0 == id_b.0 {
-                    world.portal_connections.insert(id_a.1, id_b.1);
+                if portal_a.0 == portal_b.0 {
+                    world.portal_connections.insert(portal_a.1, portal_b.1);
                     break;
                 }
             }

@@ -121,6 +121,10 @@ impl Chunk {
         renderer.draw_string("game", &render_string, draw_point);
     }
 
+    pub fn is_in_bounds(&self, x: usize, y: usize) -> bool {
+        self.tile_data.len() >= y && self.tile_data[y].len() >= x
+    }
+
     pub fn get_tile(&self, x: usize, y: usize) -> char {
         self.tile_data[y][x]
     }

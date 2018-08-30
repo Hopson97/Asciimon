@@ -125,28 +125,6 @@ impl GameState for StateExplore {
         );
     }
 
-    fn handle_input(&mut self, key: u8) -> Option<UpdateResult> {  
-        match key {
-            b'w' =>  {
-                self.move_player(vector::UP);
-                Some(UpdateResult::Redraw)
-                },
-            b'a' =>  {
-                self.move_player(vector::LEFT);
-                Some(UpdateResult::Redraw)
-                },
-            b's' =>  {
-                self.move_player(vector::DOWN);
-                Some(UpdateResult::Redraw)
-                },
-            b'd' =>  {
-                self.move_player(vector::RIGHT);
-                Some(UpdateResult::Redraw)
-                },
-            _ => None
-        }
-    }
-
     fn execute_command(
         &mut self,
         command_args: &[&str],

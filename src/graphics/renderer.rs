@@ -14,8 +14,6 @@ mod colours {
 struct RenderSection {
     start_point: Vector2D<i32>,
     size: Vector2D<i32>,
-
-
 }
 
 pub struct Renderer {

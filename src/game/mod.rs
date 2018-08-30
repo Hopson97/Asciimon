@@ -14,7 +14,9 @@ use util::{flush_stdout, Vector2D};
 use self::game_state::{GameState, StateExplore};
 use self::layout_constants::*;
 
-use std::io::{stdin, Write};
+use std::io::{stdin, Write, Read};
+
+use crossterm::{Crossterm, Screen};
 
 mod colours {
     use graphics::Colour;
@@ -38,6 +40,7 @@ pub enum UpdateResult {
     StatePush(Box<GameState>),
     TransitionPush(Box<GameState>),
     StatePop,
+    Redraw,
     Exit,
 }
 
@@ -46,15 +49,20 @@ pub struct Game {
     state_stack: Vec<Box<GameState>>,
     is_running: bool,
     console: Console,
+    crossterm: Crossterm,
+    needs_redraw: bool
 }
 
 impl Game {
     pub fn run_game() {
+        let screen = Screen::new(true);
         let mut game = Game {
             renderer: Renderer::new(SCREEN_SIZE),
             state_stack: Vec::new(),
             is_running: true,
             console: Console::new(),
+            crossterm: Crossterm::new(&screen),
+            needs_redraw: true
         };
 
         game.renderer
@@ -89,6 +97,7 @@ impl Game {
                         self.is_running = false;
                     }
                 }
+                Some(UpdateResult::Redraw) => self.needs_redraw = true, 
                 Some(UpdateResult::Exit) => self.is_running = false,
                 None => {}
             }
@@ -96,16 +105,30 @@ impl Game {
     }
 
     fn tick(&mut self) -> Option<UpdateResult> {
+        let input = self.crossterm.input();
+        let mut stdin = input.read_async().bytes();
         if let Some(current_state) = self.state_stack.last_mut() {
             //Draw
-            self.renderer
-                .clear_section("game", colours::GAME_BACKGROUND);
-            current_state.draw(&mut self.renderer, &mut self.console);
-            flush_stdout();
-            self.console.draw(&mut self.renderer);
-            self.renderer.create_border("input");
-
+            if self.needs_redraw {
+                self.renderer
+                    .clear_section("game", colours::GAME_BACKGROUND);
+                current_state.draw(&mut self.renderer, &mut self.console);
+                flush_stdout();
+                self.console.draw(&mut self.renderer);
+                self.renderer.create_border("input");
+                self.needs_redraw = false;
+            }
+            self.console.write("Hllo");
             //Input
+            let mut key: u8 = b' ';
+            let pressed_key = stdin.next();
+            if let Some(Ok(input_key)) = pressed_key {
+                key = input_key;
+                return current_state.handle_input(key)
+            }
+            self.console.write("Hllo");
+            None
+            /*
             if let Some(input) = Game::get_user_input(&self.renderer) {
                 let input_args: Vec<&str> = input.trim().split(' ').collect();
 
@@ -127,6 +150,7 @@ impl Game {
             } else {
                 return Some(UpdateResult::Exit);
             }
+            */
         } else {
             return Some(UpdateResult::Exit);
         }

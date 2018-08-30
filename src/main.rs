@@ -1,3 +1,5 @@
+extern crate crossterm;
+
 #[macro_use]
 mod graphics;
 mod game;

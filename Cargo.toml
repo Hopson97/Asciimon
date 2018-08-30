@@ -7,3 +7,4 @@ authors = ["Hopson97 <mhopson@hotmail.co.uk>"]
 256colour = []
 
 [dependencies]
+crossterm = "0.4.1"

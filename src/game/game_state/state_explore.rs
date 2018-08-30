@@ -73,6 +73,10 @@ impl StateExplore {
     /// Returns true if the player moved, false if not (eg collision or other event occurs)
     fn move_player(&mut self, move_amount: Vector2D<i32>) -> bool {
         let next_position = self.player.position() + move_amount;
+        if !self.world.is_tile_in_bounds(next_position) {
+            return false;
+        }
+
         match self.world.get_tile(next_position) {
             '.' | ',' | '|' | '\'' | '1' => {
                 //Tiles player can walk on

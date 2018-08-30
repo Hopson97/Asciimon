@@ -47,7 +47,7 @@ impl World {
             for (index_b, portal_b) in portals.iter().enumerate() {
                 if index_a == index_b { //Ensure a portal doesn't connect to itself
                     continue;
-                } 
+                }
                 if portal_a.0 == portal_b.0 {
                     world.portal_connections.insert(portal_a.1, portal_b.1);
                     break;
@@ -68,6 +68,15 @@ impl World {
                 }
             }
         }
+    }
+
+    pub fn is_tile_in_bounds(&self, world_position: Vector2D<i32>) -> bool {
+        let chunk_position = World::world_to_chunk_position(world_position);
+        self.chunks.get(&chunk_position).map_or(false, |chunk| {
+            let local_x = world_position.x % CHUNK_SIZE.x;
+            let local_y = world_position.y % CHUNK_SIZE.y;
+            chunk.is_in_bounds(local_x as usize, local_y as usize)
+        })
     }
 
     pub fn get_tile(&self, world_position: Vector2D<i32>) -> char {

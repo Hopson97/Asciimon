@@ -35,15 +35,15 @@ pub const LOGO: &str = r"
 
 #[allow(dead_code)]
 pub enum UpdateResult {
-    StatePush(Box<GameState>),
-    TransitionPush(Box<GameState>),
+    StatePush(Box<dyn GameState>),
+    TransitionPush(Box<dyn GameState>),
     StatePop,
     Exit,
 }
 
 pub struct Game {
     renderer: Renderer,
-    state_stack: Vec<Box<GameState>>,
+    state_stack: Vec<Box<dyn GameState>>,
     is_running: bool,
     console: Console,
 }

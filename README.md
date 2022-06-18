@@ -5,7 +5,7 @@ This is my first project using Rust, so feel free to point out anything "not Rus
 
 ## Contributing
 
-The game is early in developement, and so I am regulrally making changes to the code.
+The game is early in development, and so I am regularly making changes to the code.
 
 Because of this, contributions will likely be unable to be merged, or possibly change things without considering plans I have for the game:
 
@@ -29,7 +29,7 @@ I am creating this project as part of a series. The playlist for this can be fou
 
 https://www.youtube.com/watch?v=8KP8rjUCa9w
 
-In this episode, I set up the basic game engine (game state system, "render" engine), and also start on the world exploration part of the gane.
+In this episode, I set up the basic game engine (game state system, "render" engine), and also start on the world exploration part of the game.
 
 
 ## Features
@@ -42,3 +42,4 @@ In this episode, I set up the basic game engine (game state system, "render" eng
 Roaming the world:
 
 ![Roaming the world](https://i.imgur.com/METYDAP.png)
+
